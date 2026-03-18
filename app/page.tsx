@@ -52,7 +52,7 @@ export default function Page() {
       <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
         <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-4">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" className="h-20 w-auto object-contain drop-shadow-xl" />
+            <img src="/logo.png" className="h-64 w-auto object-contain drop-shadow-xl" />
             <span className="font-semibold text-blue-800 text-2xl tracking-wide">POF Seafood</span>
           </div>
 
@@ -68,7 +68,7 @@ export default function Page() {
 
       {/* HERO */}
       <section className="bg-blue-900 text-white text-center py-14 px-4">
-        <img src="/logo.png" className="h-44 mx-auto mb-6 object-contain drop-shadow-2xl" />
+        <img src="/logo.png" className="h-56 mx-auto mb-6 object-contain drop-shadow-2xl" />
         <h1 className="text-5xl md:text-6xl font-semibold mb-4 tracking-tight">Fresh Seafood. Better Prices.</h1>
         <p className="text-xl mb-6 opacity-90">Order direct & save money every time</p>
         <button onClick={() => (window.location.href = BRAND.orderLink)} className="bg-red-600 px-8 py-4 rounded-xl text-lg">Order Now</button>
