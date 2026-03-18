@@ -165,34 +165,30 @@ export default function App() {
               </div>
             </motion.div>
 
-            {/* VIDEO CONTENT - Now clearly visible on the right */}
-            <motion.div
-              initial={{ x: 50, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white aspect-video bg-slate-100">
-               <video
-  src="/PlentyOfFisVideo.mp4"
+{/* VIDEO CONTENT - Clean & Minimal with Fade */}
+<motion.div
+  initial={{ x: 50, opacity: 0 }}
+  animate={{ x: 0, opacity: 1 }}
+  transition={{ duration: 0.6, delay: 0.2 }}
+  className="relative"
+>
+  <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white aspect-video bg-slate-100">
+    
+<video
   autoPlay
   loop
   muted
   playsInline
-  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    console.error("Video failed to load");
-                  }}
-                >
-                  <source src="/PlentyOfFisVideo.mp4" type="video/mp4" />
+  className="w-full h-full object-cover pointer-events-none"
+  onLoadedData={(e) => {
+    e.currentTarget.classList.add("video-fade");
+  }}
+>
+  <source src="/PlentyOfFisVideo.mp4" type="video/mp4" />
 </video>
-                {/* Play Button Overlay (Visual only) */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/10 group cursor-pointer">
-                  <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-xl transform transition-transform group-hover:scale-110">
-                    <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-red-600 border-b-[10px] border-b-transparent ml-1"></div>
-                  </div>
-                </div>
-              </div>
+
+  </div>
+</motion.div>
               
               {/* Decorative elements */}
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-red-600/10 rounded-full blur-3xl -z-10"></div>
