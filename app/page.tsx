@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+"use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ShoppingCart, Phone, MapPin, Mail, Clock, CheckCircle2, DollarSign, Zap, Gift, Menu as MenuIcon, X } from "lucide-react";
@@ -70,10 +71,14 @@ export default function App() {
           {/* LOGO - Independent & Larger */}
           <div className="flex items-center gap-2 sm:gap-4">
             <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0">
-               <img 
-          src="/logo.png" 
-          className="absolute -top-6 left-0 h-28 w-auto object-contain drop-shadow-xl" 
-        />
+              <img 
+                src="https://storage.googleapis.com/static.fast.ai/files/PlentyOfFishLogo.png" 
+                alt="POF Logo"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://picsum.photos/seed/fish/200/200";
+                }}
+                className="absolute -top-3 sm:-top-6 left-0 h-24 sm:h-36 w-auto object-contain drop-shadow-2xl z-50" 
+              />
             </div>
             <span className="font-display text-blue-900 text-xl sm:text-3xl tracking-tight mt-1">
               POF SEAFOOD
@@ -124,14 +129,20 @@ export default function App() {
           <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:30px_30px]"></div>
         </div>
 
-        <div className="relative max-w-5xl mx-auto text-center py-6 sm:py-10 px-4">
+        <div className="relative max-w-5xl mx-auto text-center py-4 sm:py-6 px-4">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {/* HERO IMAGE - Smaller and Transparent as requested */}
-          <img src="/logo.png" className="h-44 mx-auto mb-6 object-contain drop-shadow-2xl" />
+            {/* HERO IMAGE - Even Smaller as requested */}
+            <img 
+              src="https://storage.googleapis.com/static.fast.ai/files/PlentyOfFishLogo.png" 
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "https://picsum.photos/seed/fish/400/400";
+              }}
+              className="h-20 sm:h-24 mx-auto mb-4 object-contain drop-shadow-xl" 
+            />
             <h1 className="font-display text-4xl sm:text-6xl md:text-7xl mb-6 leading-tight tracking-tight">
               <span className="bg-red-600 text-white px-6 py-2 rounded-[2rem] inline-block shadow-xl shadow-red-600/20">
                 FRESH SEAFOOD.<br/>BETTER PRICES.
@@ -315,10 +326,10 @@ export default function App() {
           <div className="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4">
-         <img 
-          src="/logo.png" 
-          className="absolute -top-6 left-0 h-28 w-auto object-contain drop-shadow-xl" 
-        />
+          <img 
+            src="https://storage.googleapis.com/static.fast.ai/files/PlentyOfFishLogo.png" 
+            className="h-32 mx-auto mb-8 object-contain drop-shadow-2xl" 
+          />
           <h2 className="font-display text-4xl sm:text-6xl mb-6 leading-tight uppercase">ORDER DIRECT.<br/>SAVE MORE.</h2>
           <button
             onClick={() => window.open(BRAND.orderLink, '_blank')}
@@ -334,10 +345,13 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
             <div className="flex items-center gap-4 mb-6">
-                <img 
-          src="/logo.png" 
-          className="absolute -top-6 left-0 h-28 w-auto object-contain drop-shadow-xl" 
-        />
+              <img 
+                src="https://storage.googleapis.com/static.fast.ai/files/PlentyOfFishLogo.png" 
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://picsum.photos/seed/fish/100/100";
+                }}
+                className="h-16 w-auto object-contain" 
+              />
               <span className="font-display text-3xl tracking-tight">POF SEAFOOD</span>
             </div>
             <p className="text-slate-400 max-w-sm mb-8">
