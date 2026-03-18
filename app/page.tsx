@@ -46,81 +46,77 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-white text-gray-900 leading-relaxed">
+    <div className="bg-white text-gray-900 text-lg leading-relaxed">
 
       {/* HEADER */}
       <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
-        <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-3">
+        <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-4">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" className="h-12" />
-            <span className="font-semibold text-blue-800">POF Seafood</span>
+            <img src="/logo.png" className="h-20 w-auto object-contain drop-shadow-xl" />
+            <span className="font-semibold text-blue-800 text-2xl tracking-wide">POF Seafood</span>
           </div>
 
-          {/* NAV */}
-          <nav className="hidden md:flex gap-6 text-sm font-medium">
+          <nav className="hidden md:flex gap-8 text-base font-medium">
             <a href="#menu" className="hover:text-red-600">Menu</a>
             <a href="#deals" className="hover:text-red-600">Deals</a>
             <a href="#contact" className="hover:text-red-600">Contact</a>
           </nav>
 
-          <button onClick={() => (window.location.href = BRAND.orderLink)} className="bg-red-600 text-white px-5 py-2 rounded-xl">Order Now</button>
+          <button onClick={() => (window.location.href = BRAND.orderLink)} className="bg-red-600 text-white px-6 py-3 rounded-xl text-base">Order Now</button>
         </div>
       </header>
 
-      {/* HERO (FIXED SIZE) */}
+      {/* HERO */}
       <section className="bg-blue-900 text-white text-center py-14 px-4">
-        <img src="/logo.png" className="h-28 mx-auto mb-4" />
-        <h1 className="text-3xl md:text-4xl font-semibold mb-3">Fresh Seafood. Better Prices.</h1>
-        <p className="text-base mb-5 opacity-90">Order direct & save money every time</p>
-        <button onClick={() => (window.location.href = BRAND.orderLink)} className="bg-red-600 px-6 py-3 rounded-xl text-base">Order Now</button>
+        <img src="/logo.png" className="h-44 mx-auto mb-6 object-contain drop-shadow-2xl" />
+        <h1 className="text-5xl md:text-6xl font-semibold mb-4 tracking-tight">Fresh Seafood. Better Prices.</h1>
+        <p className="text-xl mb-6 opacity-90">Order direct & save money every time</p>
+        <button onClick={() => (window.location.href = BRAND.orderLink)} className="bg-red-600 px-8 py-4 rounded-xl text-lg">Order Now</button>
       </section>
 
-      {/* 💵 CASH INCENTIVE (TOP) */}
-      <section className="bg-green-50 border-y py-6 text-center">
-        <h2 className="text-lg md:text-xl font-semibold mb-1">💵 Pay Cash & Save More</h2>
-        <p className="text-gray-700 text-sm">Avoid card fees • Best pricing in-store</p>
+      {/* CASH TOP */}
+      <section className="bg-green-50 border-y py-8 text-center">
+        <h2 className="text-2xl font-semibold mb-2">💵 Pay Cash & Save More</h2>
+        <p className="text-base text-gray-700">Avoid card fees • Best pricing in-store</p>
       </section>
 
-      {/* VALUE STACK */}
-      <section className="py-10 text-center">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 text-sm">
+      {/* VALUE */}
+      <section className="py-12 text-center">
+        <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 text-base">
           <div>💰 Save $3–$5 per order</div>
           <div>⚡ Faster than DoorDash</div>
           <div>🎁 Exclusive deals</div>
         </div>
       </section>
 
-      {/* FULL MENU SECTION */}
-      <section id="menu" className="py-14 px-4 bg-gray-50">
-        <div className="max-w-5xl mx-auto text-center mb-8">
-          <h2 className="text-3xl font-semibold mb-2">Full Menu</h2>
-          <p className="text-gray-600">Fresh seafood, combos, sides & more</p>
+      {/* MENU */}
+      <section id="menu" className="py-16 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto text-center mb-10">
+          <h2 className="text-4xl font-semibold mb-3">Full Menu</h2>
+          <p className="text-lg text-gray-600">Fresh seafood, combos, sides & more</p>
         </div>
 
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
           {menu.map((item, i) => (
             <div key={i} className="rounded-xl shadow hover:shadow-lg transition bg-white">
-              <div className="relative">
-                {item.badge && <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">{item.badge}</span>}
-                <img src={item.img} className="w-full h-44 object-cover" />
-              </div>
-              <div className="p-4">
-                <h3 className="font-medium">{item.name}</h3>
-                <p className="text-gray-600 text-sm">{item.desc}</p>
-                <p className="font-semibold mt-1">{item.price}</p>
+              <img src={item.img} className="w-full h-52 object-cover" />
+              <div className="p-5">
+                <h3 className="font-semibold text-xl">{item.name}</h3>
+                <p className="text-gray-600">{item.desc}</p>
+                <p className="font-semibold text-lg mt-2">{item.price}</p>
 
-                <div className="mt-3 border-t pt-2">
-                  <p className="text-xs text-gray-500 mb-1">Add to your order:</p>
+                <div className="mt-4 border-t pt-3">
+                  <p className="text-sm text-gray-500 mb-2">Add to your order:</p>
                   <div className="flex flex-wrap gap-2">
                     {addons.map((a, idx) => (
-                      <span key={idx} className="text-xs bg-gray-100 px-2 py-1 rounded">{a.name} {a.price}</span>
+                      <span key={idx} className="text-sm bg-gray-100 px-2 py-1 rounded">{a.name} {a.price}</span>
                     ))}
                   </div>
                 </div>
 
                 <button
                   onClick={() => (window.location.href = BRAND.orderLink)}
-                  className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg text-sm"
+                  className="mt-4 w-full bg-red-600 text-white py-3 rounded-lg text-base"
                 >
                   Add to Order
                 </button>
@@ -129,11 +125,10 @@ export default function Page() {
           ))}
         </div>
 
-        {/* 👉 LINK TO FULL ORDER MENU */}
         <div className="text-center mt-10">
           <button
             onClick={() => (window.location.href = BRAND.orderLink)}
-            className="bg-blue-900 text-white px-6 py-3 rounded-lg"
+            className="bg-blue-900 text-white px-8 py-4 rounded-lg text-lg"
           >
             View Full Online Menu
           </button>
@@ -141,49 +136,43 @@ export default function Page() {
       </section>
 
       {/* DEALS */}
-      <section id="deals" className="bg-gray-100 py-14 text-center">
-        <h2 className="text-2xl font-semibold mb-3">🔥 Family Combo Deals</h2>
-        <p className="mb-4">Most customers upgrade to combos and save more</p>
+      <section id="deals" className="bg-gray-100 py-16 text-center">
+        <h2 className="text-3xl font-semibold mb-4">🔥 Family Combo Deals</h2>
+        <p className="text-lg mb-6">Most customers upgrade to combos and save more</p>
         <button
           onClick={() => (window.location.href = BRAND.orderLink)}
-          className="bg-red-600 text-white px-6 py-3 rounded-lg"
+          className="bg-red-600 text-white px-8 py-4 rounded-lg text-lg"
         >
           View Combo Deals
         </button>
       </section>
 
       {/* SMS */}
-      <section className="py-14 text-center">
-        <h2 className="text-2xl font-semibold mb-3">Get 10% Off Your Next Order</h2>
+      <section className="py-16 text-center">
+        <h2 className="text-3xl font-semibold mb-4">Get 10% Off Your Next Order</h2>
         {submitted ? (
-          <p className="text-green-600">✅ Check your phone!</p>
+          <p className="text-green-600 text-lg">✅ Check your phone!</p>
         ) : (
           <div className="flex justify-center gap-2">
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" className="border px-3 py-2 rounded" />
-            <button onClick={handleSMS} className="bg-red-600 text-white px-4 py-2 rounded">Get Code</button>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" className="border px-4 py-3 rounded text-base" />
+            <button onClick={handleSMS} className="bg-red-600 text-white px-6 py-3 rounded text-base">Get Code</button>
           </div>
         )}
       </section>
 
-      {/* CASH */}
-      <section className="bg-green-50 border-y py-8 text-center">
-        <h2 className="text-xl font-semibold mb-1">💵 Pay Cash & Save More</h2>
-        <p className="text-gray-700 text-sm">Avoid card fees • Best pricing in-store</p>
-      </section>
-
       {/* CTA */}
-      <section className="bg-blue-900 text-white text-center py-14">
-        <h2 className="text-2xl font-semibold mb-3">Order Direct. Save More.</h2>
+      <section className="bg-blue-900 text-white text-center py-16">
+        <h2 className="text-3xl font-semibold mb-4">Order Direct. Save More.</h2>
         <button
           onClick={() => (window.location.href = BRAND.orderLink)}
-          className="bg-red-600 px-8 py-3 rounded-xl"
+          className="bg-red-600 px-10 py-5 rounded-xl text-lg"
         >
           Order Now
         </button>
       </section>
 
       {/* FOOTER */}
-      <footer id="contact" className="text-center text-sm py-8 bg-gray-200 space-y-1">
+      <footer id="contact" className="text-center text-base py-10 bg-gray-200 space-y-2">
         <p className="font-medium">📍 {BRAND.address}</p>
         <p>📞 {BRAND.displayPhone}</p>
         <p>✉️ {BRAND.email}</p>
