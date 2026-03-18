@@ -188,8 +188,7 @@ export default function App() {
 </video>
 
   </div>
-</motion.div>
-              
+             
               {/* Decorative elements */}
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-red-600/10 rounded-full blur-3xl -z-10"></div>
               <div className="absolute -top-6 -left-6 w-32 h-32 bg-blue-900/10 rounded-full blur-3xl -z-10"></div>
