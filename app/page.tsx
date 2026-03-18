@@ -119,45 +119,86 @@ export default function App() {
         )}
       </header>
 
-      {/* HERO - White background to prevent blue from overpowering */}
-      <section className="relative bg-white text-slate-900 overflow-hidden border-b border-slate-100">
+      {/* HERO - Split Layout for better video visibility */}
+      <section className="relative bg-white text-slate-900 overflow-hidden border-b border-slate-100 py-12 sm:py-20">
         {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0">
           <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:30px_30px]"></div>
         </div>
 
-        <div className="relative max-w-5xl mx-auto text-center py-4 sm:py-6 px-4">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            {/* HERO IMAGE - Even Smaller as requested */}
-       <img src="/logo.png" className="h-44 mx-auto mb-6 object-contain drop-shadow-2xl" />
-            <h1 className="font-display text-4xl sm:text-6xl md:text-7xl mb-6 leading-tight tracking-tight">
-              <span className="bg-red-600 text-white px-6 py-2 rounded-[2rem] inline-block shadow-xl shadow-red-600/20">
-                FRESH SEAFOOD.<br/>BETTER PRICES.
-              </span>
-            </h1>
-            <p className="text-base sm:text-xl mb-8 text-slate-600 font-medium max-w-2xl mx-auto">
-              Order direct and save money every time. Skip the apps, keep the cash.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button 
-                onClick={() => window.open(BRAND.orderLink, '_blank')}
-                className="bg-red-600 hover:bg-red-700 text-white px-10 py-4 rounded-2xl text-xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-red-600/30 active:scale-95"
-              >
-                Order Online Now
-              </button>
-              <a 
-                href={BRAND.phone}
-                className="bg-blue-900 hover:bg-blue-800 text-white px-10 py-4 rounded-2xl text-xl font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-blue-900/20"
-              >
-                <Phone className="w-5 h-5" />
-                Call To Order
-              </a>
-            </div>
-          </motion.div>
+        <div className="relative max-w-7xl mx-auto px-4 z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            {/* TEXT CONTENT */}
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="text-center lg:text-left"
+            >
+              {/* HERO IMAGE - Even Smaller as requested */}
+               <img 
+          src="/logo.png" 
+          className="absolute -top-6 left-0 h-28 w-auto object-contain drop-shadow-xl" 
+        />
+              <h1 className="font-display text-4xl sm:text-6xl mb-6 leading-tight tracking-tight text-blue-900">
+                FRESH SEAFOOD.<br/>
+                <span className="text-red-600">BETTER PRICES.</span>
+              </h1>
+              <p className="text-lg sm:text-xl mb-8 text-slate-600 font-medium max-w-xl mx-auto lg:mx-0">
+                Order direct and save money every time. Skip the expensive apps and keep the cash in your pocket.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                <button 
+                  onClick={() => window.open(BRAND.orderLink, '_blank')}
+                  className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-2xl text-lg font-bold uppercase tracking-widest transition-all shadow-xl shadow-red-600/30 active:scale-95"
+                >
+                  Order Online
+                </button>
+                <a 
+                  href={BRAND.phone}
+                  className="bg-blue-900 hover:bg-blue-800 text-white px-8 py-4 rounded-2xl text-lg font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-blue-900/20"
+                >
+                  <Phone className="w-5 h-5" />
+                  Call Now
+                </a>
+              </div>
+            </motion.div>
+
+            {/* VIDEO CONTENT - Now clearly visible on the right */}
+            <motion.div
+              initial={{ x: 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white aspect-video bg-slate-100">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error("Video failed to load");
+                  }}
+                >
+                  <source src={BRAND.videoUrl} type="video/mp4" />
+                </video>
+                {/* Play Button Overlay (Visual only) */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/10 group cursor-pointer">
+                  <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-xl transform transition-transform group-hover:scale-110">
+                    <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-red-600 border-b-[10px] border-b-transparent ml-1"></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-red-600/10 rounded-full blur-3xl -z-10"></div>
+              <div className="absolute -top-6 -left-6 w-32 h-32 bg-blue-900/10 rounded-full blur-3xl -z-10"></div>
+            </motion.div>
+
+          </div>
         </div>
       </section>
 
