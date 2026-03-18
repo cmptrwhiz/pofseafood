@@ -19,10 +19,10 @@ const BRAND = {
   gaId: "G-XXXXXXXXXX",
 };
 
-const menuItems = [
-  { name: "Shrimp Basket", desc: "Crispy shrimp, fries, house sauce", price: "$15.99", img: "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&q=80&w=800" },
-  { name: "Fish & Chips", desc: "Golden fried fish, seasoned fries", price: "$14.99", img: "https://images.unsplash.com/photo-1524338198850-8a2ff63aaceb?auto=format&fit=crop&q=80&w=800" },
-  { name: "Seafood Combo", desc: "Best value combo (Save $5)", price: "$19.99", img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&q=80&w=800", badge: "Best Value" }
+const menu = [
+  { name: "Shrimp Basket", desc: "Crispy shrimp, fries, house sauce", price: "$15.99", img: "/images/shrimp.png" },
+  { name: "Fish & Chips", desc: "Golden fried fish, seasoned fries", price: "$14.99", img: "/images/fish.png" },
+  { name: "Seafood Combo", desc: "Best value combo (Save $5)", price: "$19.99", img: "/images/combo.png", badge: "Best Value" }
 ];
 
 const addons = [
