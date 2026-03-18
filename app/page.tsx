@@ -173,12 +173,13 @@ export default function App() {
               className="relative"
             >
               <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white aspect-video bg-slate-100">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
+               <video
+  src="/PlentyOfFisVideo.mp4"
+  autoPlay
+  loop
+  muted
+  playsInline
+  className="w-full h-full object-cover"
                   onError={(e) => {
                     console.error("Video failed to load");
                   }}
