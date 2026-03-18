@@ -48,23 +48,23 @@ export default function Page() {
   return (
     <div className="bg-white text-gray-900 text-lg leading-relaxed">
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
-        <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-4">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" className="h-28 w-auto object-contain drop-shadow-xl" />
-            <span className="font-semibold text-blue-800 text-2xl tracking-wide">POF Seafood</span>
-          </div>
+     {/* HEADER */}
+<header className="sticky top-0 z-50 bg-white border-b shadow-sm overflow-visible">
+  <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-3">
+    <div className="flex items-center gap-3">
+      <img src="/logo.png" className="h-28 w-auto object-contain drop-shadow-xl -mb-8" />
+      <span className="font-semibold text-blue-800 text-2xl tracking-wide">POF Seafood</span>
+    </div>
 
-          <nav className="hidden md:flex gap-8 text-base font-medium">
-            <a href="#menu" className="hover:text-red-600">Menu</a>
-            <a href="#deals" className="hover:text-red-600">Deals</a>
-            <a href="#contact" className="hover:text-red-600">Contact</a>
-          </nav>
+    <nav className="hidden md:flex gap-8 text-base font-medium">
+      <a href="#menu" className="hover:text-red-600">Menu</a>
+      <a href="#deals" className="hover:text-red-600">Deals</a>
+      <a href="#contact" className="hover:text-red-600">Contact</a>
+    </nav>
 
-          <button onClick={() => (window.location.href = BRAND.orderLink)} className="bg-red-600 text-white px-6 py-3 rounded-xl text-base">Order Now</button>
-        </div>
-      </header>
+    <button onClick={() => (window.location.href = BRAND.orderLink)} className="bg-red-600 text-white px-6 py-3 rounded-xl text-base">Order Now</button>
+  </div>
+</header>
 
       {/* HERO */}
       <section className="bg-blue-900 text-white text-center py-14 px-4">
