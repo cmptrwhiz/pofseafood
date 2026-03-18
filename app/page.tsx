@@ -184,8 +184,8 @@ export default function App() {
                     console.error("Video failed to load");
                   }}
                 >
-                  <source src={BRAND.videoUrl} type="video/mp4" />
-                </video>
+                  <source src="/PlentyOfFisVideo.mp4" type="video/mp4" />
+</video>
                 {/* Play Button Overlay (Visual only) */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10 group cursor-pointer">
                   <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-xl transform transition-transform group-hover:scale-110">
