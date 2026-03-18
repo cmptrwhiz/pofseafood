@@ -17,6 +17,7 @@ const BRAND = {
   email: "info@orderplentyoffishseafood.com",
   status: "Open • Closes 9PM",
   gaId: "G-XXXXXXXXXX",
+  videoUrl: "/PlentyOfFishVideo.mp4",
 };
 
 const menuItems = [
