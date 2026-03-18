@@ -48,11 +48,18 @@ export default function Page() {
   return (
     <div className="bg-white text-gray-900 text-lg leading-relaxed">
 
-     {/* HEADER */}
+ {/* HEADER */}
 <header className="sticky top-0 z-50 bg-white border-b shadow-sm overflow-visible">
-  <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-3">
-    <div className="flex items-center gap-3">
-      <img src="/logo.png" className="h-28 w-auto object-contain drop-shadow-xl -mb-8" />
+  <div className="max-w-6xl mx-auto flex justify-between items-center px-4 h-16">
+    
+    {/* Logo absolutely positioned so it doesn't affect header height */}
+    <div className="relative flex items-center gap-3">
+      <div className="relative w-20 h-16">
+        <img 
+          src="/logo.png" 
+          className="absolute -top-6 left-0 h-28 w-auto object-contain drop-shadow-xl" 
+        />
+      </div>
       <span className="font-semibold text-blue-800 text-2xl tracking-wide">POF Seafood</span>
     </div>
 
