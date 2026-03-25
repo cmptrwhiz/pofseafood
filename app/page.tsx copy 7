@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ShoppingCart, Phone, MapPin, Mail, Clock, CheckCircle2, DollarSign, Zap, Gift, Menu as MenuIcon, X } from "lucide-react";
-import FullMenu from "./components/FullMenu";
+import FullMenu, { MenuItem } from "./components/FullMenu";
 
 const BRAND = {
   name: "Plenty of Fish Seafood",
