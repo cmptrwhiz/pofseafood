@@ -24,10 +24,6 @@
   100% { transform: rotate(-45deg) translateX(100%); opacity: 0; }
 }
 
-.star-clip {
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-}
-
 .bubble {
   position: absolute;
   background: rgba(255, 255, 255, 0.3);
@@ -52,23 +48,3 @@
   pointer-events: none;
   animation: lightRay 12s linear infinite;
 }
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* End of styles */

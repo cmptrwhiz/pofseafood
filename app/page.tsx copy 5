@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ShoppingCart, Phone, MapPin, Mail, Clock, CheckCircle2, DollarSign, Zap, Gift, Menu as MenuIcon, X } from "lucide-react";
-import FullMenu, { MenuItem } from "./components/FullMenu";
+import FullMenu from "./components/FullMenu";
 
 const BRAND = {
   name: "Plenty of Fish Seafood",
@@ -40,7 +40,6 @@ const addons = [
 
 export default function App() {
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -49,15 +48,8 @@ export default function App() {
   const [cart, setCart] = useState<{ name: string; price: number; quantity: number }[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [orderInfo, setOrderInfo] = useState({ name: "", phone: "", time: "" });
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [lastOrder, setLastOrder] = useState<{
-    name: string;
-    time: string;
-    items: { name: string; quantity: number; price: number }[];
-    total: number;
-  } | null>(null);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: { name: string; price: string }) => {
     const priceNum = parseFloat(item.price.replace('$', ''));
     setCart(prev => {
       const existing = prev.find(i => i.name === item.name);
@@ -105,20 +97,17 @@ export default function App() {
     }
   }, [view]);
 
-  const handleJoinList = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!phone && !email) return;
+  const handleSMS = async () => {
+    if (!phone) return;
     try {
       await fetch("/api/sms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, email })
+        body: JSON.stringify({ phone })
       });
       setSubmitted(true);
-      setPhone("");
-      setEmail("");
     } catch (err) {
-      console.error("Join list failed", err);
+      console.error("SMS failed", err);
     }
   };
 
@@ -410,64 +399,6 @@ export default function App() {
                   Call Now
                 </a>
               </div>
-
-              {/* SEAMLESS CONTACT COLLECTION */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="mt-12 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl max-w-xl mx-auto lg:mx-0"
-              >
-                {!submitted ? (
-                  <form onSubmit={handleJoinList} className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="w-4 h-4 text-amber-400" />
-                      <p className="text-white font-bold uppercase tracking-widest text-xs">Join VIP List for Exclusive Deals</p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="flex-grow relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                        <input 
-                          type="email" 
-                          placeholder="Email Address" 
-                          required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-colors text-sm"
-                        />
-                      </div>
-                      <div className="flex-grow relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                        <input 
-                          type="tel" 
-                          placeholder="Phone Number" 
-                          required
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-colors text-sm"
-                        />
-                      </div>
-                      <button 
-                        type="submit"
-                        className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
-                      >
-                        Join
-                      </button>
-                    </div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-tighter">By joining, you agree to receive marketing updates. No spam, just fish.</p>
-                  </form>
-                ) : (
-                  <motion.div 
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="text-center py-4"
-                  >
-                    <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
-                    <h4 className="text-white font-bold uppercase tracking-widest">You're in the School!</h4>
-                    <p className="text-blue-100/60 text-xs mt-1">Check your phone/email for your first deal.</p>
-                  </motion.div>
-                )}
-              </motion.div>
             </motion.div>
             {/* VIDEO CONTENT - SMALLER & POSITIONED RIGHT */}
             <motion.div
@@ -535,52 +466,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* FAN FAVORITES */}
-      <section className="py-24 px-4 bg-blue-950/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl sm:text-6xl text-white uppercase mb-4">FAN FAVORITES</h2>
-            <p className="text-blue-100/60 max-w-2xl mx-auto">The items that put us on the map. Fresh, crispy, and always delicious.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {menuItems.slice(0, 2).map((item, i) => (
-              <motion.div 
-                key={i}
-                whileHover={{ y: -10 }}
-                className="group bg-white/5 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-sm hover:bg-white/10 transition-all"
-              >
-                <div className="aspect-[4/3] overflow-hidden relative">
-                  <img 
-                    src={item.img} 
-                    alt={item.name}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${item.name}/800/600`;
-                    }}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <div className="p-8">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-2xl font-display text-white uppercase">{item.name}</h3>
-                    <span className="text-xl font-black text-emerald-400">{item.price}</span>
-                  </div>
-                  <p className="text-blue-100/50 text-sm mb-8">{item.desc}</p>
-                  <button 
-                    onClick={() => addToCart(item)}
-                    className="w-full bg-white/10 hover:bg-white text-white hover:text-blue-950 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2"
-                  >
-                    <ShoppingCart className="w-4 h-4" /> Add to Catch
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CATCH OF THE DAY (Gallery) */}
-      <section className="py-24 px-4 bg-black/20">
+      {/* GALLERY SECTION */}
+       <section className="py-24 px-4 bg-black/20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-display text-4xl sm:text-6xl text-white mb-4 uppercase">CATCH OF THE DAY</h2>
@@ -589,9 +476,9 @@ export default function App() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { local: "/sandwich.png", fallback: "https://images.unsplash.com/photo-1559742811-822873691df8?auto=format&fit=crop&w=800&q=80" },
-              { local: "/fish.png", fallback: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80" },
-              { local: "/snapper.png", fallback: "https://images.unsplash.com/photo-1534604973900-c41ab4c5e636?auto=format&fit=crop&w=800&q=80" },
-              { local: "/combo.png", fallback: "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=800&q=80" }
+              { local: "/snapper.png", fallback: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80" },
+              { local: "/combo.png", fallback: "https://images.unsplash.com/photo-1534604973900-c41ab4c5e636?auto=format&fit=crop&w=800&q=80" },
+              { local: "/shrimp.png", fallback: "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=800&q=80" }
             ].map((img, i) => (
               <motion.div 
                 key={i}
@@ -613,91 +500,22 @@ export default function App() {
         </div>
       </section>
 
-      {/* FAVORITES & COMBOS */}
-      <section className="py-24 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl sm:text-6xl text-white uppercase mb-4">FAVORITES & COMBOS</h2>
-            <p className="text-blue-100/60 max-w-2xl mx-auto">Upgrade your meal with our signature combos. More food, better value!</p>
-          </div>
-          <div className="max-w-xl mx-auto">
-            {menuItems.slice(2, 3).map((item, i) => (
-              <motion.div 
-                key={i}
-                whileHover={{ y: -10 }}
-                className="group bg-white/5 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-sm hover:bg-white/10 transition-all"
-              >
-                <div className="aspect-[16/9] overflow-hidden relative">
-                  <img 
-                    src={item.img} 
-                    alt={item.name}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${item.name}/800/600`;
-                    }}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                    referrerPolicy="no-referrer"
-                  />
-                  {item.badge && (
-                    <div className="absolute top-6 right-6 bg-amber-400 text-blue-950 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-                      {item.badge}
-                    </div>
-                  )}
-                </div>
-                <div className="p-8">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-3xl font-display text-white uppercase">{item.name}</h3>
-                    <span className="text-2xl font-black text-emerald-400">{item.price}</span>
-                  </div>
-                  <p className="text-blue-100/50 text-lg mb-8">{item.desc}</p>
-                  <button 
-                    onClick={() => addToCart(item)}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-5 rounded-2xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-xl shadow-red-600/20"
-                  >
-                    <ShoppingCart className="w-5 h-5" /> Add to Catch
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+      {/* DEALS */}
+      <section id="deals" className="relative py-24 bg-red-600/80 backdrop-blur-md text-white overflow-hidden border-y border-white/10">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+           <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
         </div>
-      </section>
-
-      {/* DEALS SECTION */}
-      <section id="deals" className="py-24 px-4 bg-blue-950/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl sm:text-6xl text-white uppercase mb-4">FAMILY COMBO DEALS</h2>
-            <p className="text-blue-100/60 max-w-2xl mx-auto">Feed the whole school with our legendary family packs. The best value in the AV!</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {[
-              { name: "Family Feast", desc: "8pc Fish, 12pc Shrimp, Large Fries, Large Slaw", price: "$54.99", badge: "Best Seller" },
-              { name: "Captain's Platter", desc: "2pc Fish, 4pc Shrimp, 2pc Oysters, and Clam Strips", price: "$28.99" }
-            ].map((deal, i) => (
-              <motion.div 
-                key={i}
-                whileHover={{ y: -10 }}
-                className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-sm relative overflow-hidden group"
-              >
-                {deal.badge && (
-                  <div className="absolute top-0 right-0 bg-emerald-500 text-white px-4 py-1 rounded-bl-2xl text-[10px] font-black uppercase tracking-widest">
-                    {deal.badge}
-                  </div>
-                )}
-                <h3 className="text-2xl font-display text-white uppercase mb-2">{deal.name}</h3>
-                <p className="text-blue-100/50 text-sm mb-6">{deal.desc}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-3xl font-black text-white">{deal.price}</span>
-                  <button 
-                    onClick={() => addToCart(deal)}
-                    className="bg-white/10 hover:bg-white text-white hover:text-blue-950 px-6 py-3 rounded-xl font-bold uppercase tracking-widest transition-all"
-                  >
-                    Add to Order
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        <div className="relative max-w-4xl mx-auto text-center px-4">
+          <h2 className="font-display text-5xl sm:text-7xl mb-6 drop-shadow-lg">FAMILY COMBO DEALS</h2>
+          <p className="text-xl sm:text-2xl mb-10 font-medium opacity-90">
+            Most customers upgrade to combos and save even more. Feed the whole crew for less!
+          </p>
+          <button
+            onClick={() => setView("menu")}
+            className="bg-white text-red-600 px-12 py-6 rounded-2xl text-2xl font-black uppercase tracking-widest shadow-2xl hover:bg-slate-50 transition-all active:scale-95"
+          >
+            View Combo Deals
+          </button>
         </div>
       </section>
 
@@ -730,58 +548,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* SMS OPT-IN / VIP CLUB */}
-      <section className="py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-blue-600/5 pointer-events-none" />
-        <div className="max-w-4xl mx-auto relative z-10">
-          <div className="bg-gradient-to-br from-blue-900 to-blue-950 p-8 sm:p-16 rounded-[3rem] border border-white/10 shadow-2xl text-center">
-            {!submitted ? (
-              <>
-                <div className="inline-block p-4 bg-white/10 rounded-3xl mb-8">
-                  <Gift className="w-12 h-12 text-amber-400" />
-                </div>
-                <h2 className="font-display text-4xl sm:text-6xl text-white mb-6 uppercase">JOIN THE VIP CLUB</h2>
-                <p className="text-blue-100/60 text-lg mb-12 max-w-2xl mx-auto">
-                  Get exclusive secret menu items, early access to deals, and a special gift on your birthday. 
-                  No scrolling required—we'll send the best catches straight to you.
-                </p>
-                <form onSubmit={handleJoinList} className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
-                  <input 
-                    type="email" 
-                    placeholder="Email Address" 
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="flex-grow bg-white/5 border border-white/10 rounded-2xl py-5 px-8 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-all text-lg"
-                  />
-                  <input 
-                    type="tel" 
-                    placeholder="Phone Number" 
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="flex-grow bg-white/5 border border-white/10 rounded-2xl py-5 px-8 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-all text-lg"
-                  />
-                  <button 
-                    type="submit"
-                    className="bg-red-600 hover:bg-red-700 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-red-600/20"
-                  >
-                    Join Now
-                  </button>
-                </form>
-                <p className="text-xs text-white/30 mt-6 uppercase tracking-widest">
-                  Secure & Private • Unsubscribe anytime
-                </p>
-              </>
-            ) : (
-              <div className="py-12">
-                <CheckCircle2 className="w-20 h-20 text-emerald-400 mx-auto mb-8" />
-                <h2 className="font-display text-4xl text-white mb-4 uppercase">WELCOME TO THE FAMILY</h2>
-                <p className="text-blue-100/60 text-xl">We've sent a confirmation to your phone and email.</p>
-              </div>
-            )}
-          </div>
-        </div>
+      {/* SMS OPT-IN */}
+      <section className="py-24 px-4">
+        {/* ... existing SMS code ... */}
       </section>
 
       {/* FIND US SECTION */}
@@ -1000,19 +769,9 @@ export default function App() {
                     </div>
                     <button 
                       onClick={() => {
-                        if (!orderInfo.name || !orderInfo.time) {
-                          alert("Please provide your name and pickup time.");
-                          return;
-                        }
-                        setLastOrder({ 
-                          name: orderInfo.name, 
-                          time: orderInfo.time,
-                          items: [...cart],
-                          total: cartTotal
-                        });
-                        setShowSuccessModal(true);
+                        alert(`Order Placed for ${orderInfo.name}! We'll see you in ${orderInfo.time}.`);
                         setCart([]);
-                        setOrderInfo({ name: "", phone: "", time: "" });
+                        setView("home");
                       }}
                       className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-6 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-emerald-600/20 transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
@@ -1027,125 +786,6 @@ export default function App() {
               </div>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* MOBILE STICKY ACTION BAR */}
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
-        <div className="bg-blue-950/90 backdrop-blur-xl border border-white/20 rounded-3xl p-2 shadow-2xl flex items-center gap-2">
-          <a 
-            href={BRAND.phone}
-            className="flex-1 bg-white/10 hover:bg-white/20 text-white py-4 rounded-2xl flex items-center justify-center gap-2 font-bold uppercase tracking-widest text-xs transition-all"
-          >
-            <Phone className="w-4 h-4 text-blue-400" /> Call
-          </a>
-          <button 
-            onClick={() => setView("menu")}
-            className="flex-[2] bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs shadow-lg shadow-red-600/20 transition-all active:scale-95"
-          >
-            <ShoppingCart className="w-4 h-4" /> Order Now
-          </button>
-        </div>
-      </div>
-
-      {/* SUCCESS MODAL */}
-      <AnimatePresence>
-        {showSuccessModal && lastOrder && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-blue-950/90 backdrop-blur-2xl"
-            />
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 50 }}
-              className="relative bg-blue-900 border border-white/20 rounded-[3rem] p-8 sm:p-12 max-w-xl w-full text-center shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
-            >
-              {/* Decorative Bubbles */}
-              <div className="absolute -top-10 -left-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-              
-              {/* Floating Bubbles */}
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ 
-                    y: [-20, -100],
-                    x: [0, (i % 2 === 0 ? 20 : -20)],
-                    opacity: [0, 0.4, 0]
-                  }}
-                  transition={{ 
-                    duration: 4 + Math.random() * 4,
-                    repeat: Infinity,
-                    delay: i * 0.8
-                  }}
-                  className="absolute bg-white/20 rounded-full blur-[1px]"
-                  style={{ 
-                    width: `${10 + Math.random() * 20}px`,
-                    height: `${10 + Math.random() * 20}px`,
-                    left: `${10 + Math.random() * 80}%`,
-                    bottom: '-20px'
-                  }}
-                />
-              ))}
-
-              <div className="relative z-10 flex-grow overflow-y-auto pr-2 custom-scrollbar">
-                <div className="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                  <CheckCircle2 className="w-12 h-12 text-emerald-400" />
-                </div>
-                
-                <h2 className="font-display text-4xl sm:text-5xl text-white mb-4 uppercase leading-tight tracking-tight">
-                  CATCH CONFIRMED!
-                </h2>
-                
-                <p className="text-blue-100/70 text-lg mb-8">
-                  Thanks, <span className="text-white font-bold">{lastOrder.name}</span>! Your order is being prepared. We'll see you in <span className="text-emerald-400 font-bold">{lastOrder.time === 'ASAP' ? '15-20 minutes' : lastOrder.time === '30mins' ? '30 minutes' : '1 hour'}</span>.
-                </p>
-
-                {/* ORDER SUMMARY */}
-                <div className="bg-white/5 rounded-3xl p-6 mb-8 border border-white/10 text-left">
-                  <h3 className="text-xs font-bold text-blue-200/50 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <ShoppingCart className="w-4 h-4" /> Order Summary
-                  </h3>
-                  <div className="space-y-3 mb-6">
-                    {lastOrder.items.map((item, i) => (
-                      <div key={i} className="flex justify-between items-center text-sm">
-                        <span className="text-blue-100/80">
-                          <span className="font-bold text-white">{item.quantity}x</span> {item.name}
-                        </span>
-                        <span className="text-white font-medium">${(item.price * item.quantity).toFixed(2)}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                    <span className="text-white font-bold uppercase tracking-widest text-sm">Total</span>
-                    <span className="text-2xl font-black text-emerald-400">${lastOrder.total.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                <div className="bg-white/5 rounded-3xl p-6 mb-8 border border-white/10 text-left">
-                  <div className="flex items-center gap-3 mb-2">
-                    <MapPin className="w-4 h-4 text-blue-400" />
-                    <span className="text-xs font-bold text-white uppercase tracking-widest">Pickup Location</span>
-                  </div>
-                  <p className="text-sm text-blue-100/60 ml-7">{BRAND.address}</p>
-                </div>
-
-                <button 
-                  onClick={() => {
-                    setShowSuccessModal(false);
-                    setView("home");
-                  }}
-                  className="w-full bg-white text-blue-950 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl transition-all active:scale-95 hover:bg-blue-50"
-                >
-                  Back to Home
-                </button>
-              </div>
-            </motion.div>
-          </div>
         )}
       </AnimatePresence>
     </div>

@@ -1,11 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Luckiest+Guy&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Luckiest Guy", system-ui, sans-serif;
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+/* Smooth fade-in for video */
+.video-fade {
+  opacity: 0;
+  animation: videoFadeIn 1.2s ease-out forwards;
+}
+
+@keyframes videoFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* Underwater Animations */
 @keyframes float {
   0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
   50% { opacity: 0.5; }
@@ -22,10 +57,6 @@
   0% { transform: rotate(-45deg) translateX(-100%); opacity: 0; }
   50% { opacity: 0.2; }
   100% { transform: rotate(-45deg) translateX(100%); opacity: 0; }
-}
-
-.star-clip {
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 
 .bubble {
@@ -52,23 +83,3 @@
   pointer-events: none;
   animation: lightRay 12s linear infinite;
 }
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* End of styles */
