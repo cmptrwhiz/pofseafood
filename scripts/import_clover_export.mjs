@@ -128,170 +128,165 @@ async function main() {
   }
 
   const categoryIdMap = new Map();
-  const modifierGroupIdMap = new Map();
 
-  await prisma.$transaction(async (tx) => {
-    await tx.modifierOption.deleteMany({
-      where: {
-        modifierGroup: {
-          menuItem: {
-            merchantConnectionId: merchantConnection.id,
-          },
-        },
-      },
-    });
-
-    await tx.modifierGroup.deleteMany({
-      where: {
+  await prisma.modifierOption.deleteMany({
+    where: {
+      modifierGroup: {
         menuItem: {
           merchantConnectionId: merchantConnection.id,
         },
       },
-    });
+    },
+  });
 
-    await tx.menuItem.deleteMany({
-      where: {
+  await prisma.modifierGroup.deleteMany({
+    where: {
+      menuItem: {
         merchantConnectionId: merchantConnection.id,
       },
-    });
+    },
+  });
 
-    await tx.menuCategory.deleteMany({
+  await prisma.menuItem.deleteMany({
+    where: {
+      merchantConnectionId: merchantConnection.id,
+    },
+  });
+
+  await prisma.menuCategory.deleteMany({
+    where: {
+      merchantConnectionId: merchantConnection.id,
+    },
+  });
+
+  for (const [index, category] of uniqueCategories.entries()) {
+    const categoryName = cleanText(category.name);
+    const categoryKey = slugify(categoryName);
+    const cloverCategoryId = makeImportedId("category", categoryName, index);
+    const savedCategory = await prisma.menuCategory.upsert({
       where: {
-        merchantConnectionId: merchantConnection.id,
-      },
-    });
-
-    for (const [index, category] of uniqueCategories.entries()) {
-      const categoryName = (category.name || "").trim();
-      const categoryKey = slugify(categoryName);
-      const cloverCategoryId = makeImportedId("category", categoryName, index);
-      const savedCategory = await tx.menuCategory.upsert({
-        where: {
-          merchantConnectionId_cloverCategoryId: {
-            merchantConnectionId: merchantConnection.id,
-            cloverCategoryId,
-          },
-        },
-        create: {
+        merchantConnectionId_cloverCategoryId: {
           merchantConnectionId: merchantConnection.id,
           cloverCategoryId,
-          name: categoryName,
-          sortOrder: index,
-          isActive: true,
         },
-        update: {
-          name: categoryName,
-          sortOrder: index,
-          isActive: true,
-        },
-      });
+      },
+      create: {
+        merchantConnectionId: merchantConnection.id,
+        cloverCategoryId,
+        name: categoryName,
+        sortOrder: index,
+        isActive: true,
+      },
+      update: {
+        name: categoryName,
+        sortOrder: index,
+        isActive: true,
+      },
+    });
 
-      categoryIdMap.set(categoryKey, savedCategory.id);
-    }
+    categoryIdMap.set(categoryKey, savedCategory.id);
+  }
 
-    const importableItems = payload.items.filter(shouldImportMenuItem);
+  const importableItems = payload.items.filter(shouldImportMenuItem);
 
-    for (const [itemIndex, item] of importableItems.entries()) {
-      const itemName = cleanText(item.name);
-      const itemDescription = cleanText(item.description);
-      const primaryCategoryName = item.categoryNames?.[0] || null;
-      const primaryCategoryKey = primaryCategoryName
-        ? slugify(primaryCategoryName)
-        : null;
-      const cloverItemId =
-        item.sourceId || makeImportedId("item", itemName, itemIndex);
-      const savedItem = await tx.menuItem.upsert({
-        where: {
-          merchantConnectionId_cloverItemId: {
-            merchantConnectionId: merchantConnection.id,
-            cloverItemId,
-          },
-        },
-        create: {
+  for (const [itemIndex, item] of importableItems.entries()) {
+    const itemName = cleanText(item.name);
+    const itemDescription = cleanText(item.description);
+    const primaryCategoryName = item.categoryNames?.[0] || null;
+    const primaryCategoryKey = primaryCategoryName
+      ? slugify(primaryCategoryName)
+      : null;
+    const cloverItemId =
+      item.sourceId || makeImportedId("item", itemName, itemIndex);
+    const savedItem = await prisma.menuItem.upsert({
+      where: {
+        merchantConnectionId_cloverItemId: {
           merchantConnectionId: merchantConnection.id,
-          menuCategoryId: primaryCategoryKey
-            ? categoryIdMap.get(primaryCategoryKey) || null
-            : null,
           cloverItemId,
-          name: itemName,
-          description: itemDescription || null,
-          priceCents: item.priceCents || 0,
-          isAvailable: true,
-          isHidden: !!item.hidden,
         },
-        update: {
-          menuCategoryId: primaryCategoryKey
-            ? categoryIdMap.get(primaryCategoryKey) || null
-            : null,
-          name: itemName,
-          description: itemDescription || null,
-          priceCents: item.priceCents || 0,
-          isAvailable: true,
-          isHidden: !!item.hidden,
+      },
+      create: {
+        merchantConnectionId: merchantConnection.id,
+        menuCategoryId: primaryCategoryKey
+          ? categoryIdMap.get(primaryCategoryKey) || null
+          : null,
+        cloverItemId,
+        name: itemName,
+        description: itemDescription || null,
+        priceCents: item.priceCents || 0,
+        isAvailable: true,
+        isHidden: !!item.hidden,
+      },
+      update: {
+        menuCategoryId: primaryCategoryKey
+          ? categoryIdMap.get(primaryCategoryKey) || null
+          : null,
+        name: itemName,
+        description: itemDescription || null,
+        priceCents: item.priceCents || 0,
+        isAvailable: true,
+        isHidden: !!item.hidden,
+      },
+    });
+
+    for (const [groupIndex, groupName] of (item.modifierGroupNames || []).entries()) {
+      if (!groupName) {
+        continue;
+      }
+
+      const groupTemplate = payload.modifierGroups.find(
+        (modifierGroup) => modifierGroup.name === groupName
+      );
+
+      const savedGroup = await prisma.modifierGroup.create({
+        data: {
+          menuItemId: savedItem.id,
+          cloverModifierGroupId: makeImportedId(
+            "modifier-group",
+            `${savedItem.name}-${groupName}`,
+            groupIndex
+          ),
+          name: groupName,
+          minRequired: groupTemplate?.requiredQuantity || 0,
+          maxAllowed: groupTemplate?.maxQuantity || 1,
         },
       });
 
-      for (const [groupIndex, groupName] of (item.modifierGroupNames || []).entries()) {
-        if (!groupName) {
-          continue;
-        }
-
-        const groupTemplate = payload.modifierGroups.find(
-          (modifierGroup) => modifierGroup.name === groupName
-        );
-
-        const savedGroup = await tx.modifierGroup.create({
+      for (const [optionIndex, option] of (groupTemplate?.options || []).entries()) {
+        await prisma.modifierOption.create({
           data: {
-            menuItemId: savedItem.id,
-            cloverModifierGroupId: makeImportedId(
-              "modifier-group",
-              `${savedItem.name}-${groupName}`,
-              groupIndex
+            modifierGroupId: savedGroup.id,
+            cloverModifierId: makeImportedId(
+              "modifier",
+              `${groupName}-${option.name}`,
+              optionIndex
             ),
-            name: groupName,
-            minRequired: groupTemplate?.requiredQuantity || 0,
-            maxAllowed: groupTemplate?.maxQuantity || 1,
+            name: option.name,
+            priceDeltaCents: option.priceCents || 0,
           },
         });
-
-        modifierGroupIdMap.set(`${savedItem.id}:${groupName}`, savedGroup.id);
-
-        for (const [optionIndex, option] of (groupTemplate?.options || []).entries()) {
-          await tx.modifierOption.create({
-            data: {
-              modifierGroupId: savedGroup.id,
-              cloverModifierId: makeImportedId(
-                "modifier",
-                `${groupName}-${option.name}`,
-                optionIndex
-              ),
-              name: option.name,
-              priceDeltaCents: option.priceCents || 0,
-            },
-          });
-        }
       }
     }
+  }
 
-    await tx.syncEvent.create({
-      data: {
-        merchantConnectionId: merchantConnection.id,
-        source: "spreadsheet",
-        eventType: "menu.import.spreadsheet",
-        payloadJson: payload,
-        status: "received",
-      },
-    });
+  await prisma.syncEvent.create({
+    data: {
+      merchantConnectionId: merchantConnection.id,
+      source: "spreadsheet",
+      eventType: "menu.import.spreadsheet",
+      payloadJson: payload,
+      status: "received",
+    },
+  });
 
-    await tx.merchantConnection.update({
-      where: {
-        id: merchantConnection.id,
-      },
-      data: {
-        lastSyncAt: new Date(),
-        syncStatus: "spreadsheet_imported",
-      },
-    });
+  await prisma.merchantConnection.update({
+    where: {
+      id: merchantConnection.id,
+    },
+    data: {
+      lastSyncAt: new Date(),
+      syncStatus: "spreadsheet_imported",
+    },
   });
 
     const summary = {
