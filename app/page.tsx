@@ -74,9 +74,8 @@ export default function App() {
   const [featuredMenuItems, setFeaturedMenuItems] = useState<DisplayMenuItem[]>(
     FALLBACK_FEATURED_MENU_ITEMS
   );
-  const [fullMenuData, setFullMenuData] = useState<DisplayMenuCategory[]>(
-    FALLBACK_FULL_MENU
-  );
+  const [fullMenuData, setFullMenuData] = useState<DisplayMenuCategory[]>([]);
+  const [isMenuLoading, setIsMenuLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [orderInfo, setOrderInfo] = useState({
     name: "",
@@ -163,6 +162,13 @@ export default function App() {
         }
       } catch (error) {
         console.error("menu-load-failed", error);
+        if (isActive) {
+          setFullMenuData(FALLBACK_FULL_MENU);
+        }
+      } finally {
+        if (isActive) {
+          setIsMenuLoading(false);
+        }
       }
     };
 
@@ -1273,6 +1279,7 @@ export default function App() {
               orderLink={BRAND.orderLink} 
               onAddToCart={addToCart}
               menuData={fullMenuData}
+              isLoading={isMenuLoading}
             />
           </motion.div>
         ) : (

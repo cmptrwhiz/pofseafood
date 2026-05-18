@@ -12,9 +12,8 @@ import { BRAND } from "@/lib/site-data";
 
 export default function MenuPage() {
   const router = useRouter();
-  const [menuData, setMenuData] = useState<DisplayMenuCategory[]>(
-    FALLBACK_FULL_MENU
-  );
+  const [menuData, setMenuData] = useState<DisplayMenuCategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isActive = true;
@@ -35,6 +34,13 @@ export default function MenuPage() {
         }
       } catch (error) {
         console.error("menu-route-load-failed", error);
+        if (isActive) {
+          setMenuData(FALLBACK_FULL_MENU);
+        }
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -55,6 +61,7 @@ export default function MenuPage() {
       orderLink={BRAND.orderLink}
       onAddToCart={handleAddToCart}
       menuData={menuData}
+      isLoading={isLoading}
     />
   );
 }

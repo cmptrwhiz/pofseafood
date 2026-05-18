@@ -5,6 +5,10 @@ import {
   FALLBACK_FEATURED_MENU_ITEMS,
   FALLBACK_FULL_MENU,
   MONDAY_MADNESS_CATEGORY,
+  TACO_TUESDAY_CATEGORY,
+  bucketUncategorizedItem,
+  normalizeCategoryTitle,
+  sortDisplayCategories,
   type DisplayMenuCategory,
   isDisplayableMenuItem,
   toDisplayMenuItem,
@@ -85,15 +89,21 @@ export async function GET() {
       });
     }
 
-    const categorySections = merchantConnection.menuCategories
-      .map((category: MerchantMenuCategory) => {
-        const items = dedupeByName(
-          category.menuItems.filter(isDisplayableMenuItem)
-        );
+    const groupedCategories = new Map<string, MerchantMenuItem[]>();
+
+    for (const category of merchantConnection.menuCategories) {
+      const normalizedTitle = normalizeCategoryTitle(category.name);
+      const existingItems = groupedCategories.get(normalizedTitle) || [];
+      existingItems.push(...category.menuItems.filter(isDisplayableMenuItem));
+      groupedCategories.set(normalizedTitle, existingItems);
+    }
+
+    const categorySections = [...groupedCategories.entries()]
+      .map(([title, rawItems]) => {
+        const items = dedupeByName(rawItems);
 
         return {
-          title: category.name,
-          rawItems: items,
+          title,
           items: items.map(toDisplayMenuItem),
         };
       })
@@ -115,18 +125,39 @@ export async function GET() {
     }));
 
     if (uncategorizedItems.length > 0) {
-      fullMenu.unshift({
-        title: "Fresh Picks",
-        items: uncategorizedItems.map(toDisplayMenuItem),
-      });
+      const uncategorizedBuckets = new Map<string, ReturnType<typeof toDisplayMenuItem>[]>();
+
+      for (const item of uncategorizedItems) {
+        const bucket = bucketUncategorizedItem(item.name);
+        const bucketItems = uncategorizedBuckets.get(bucket) || [];
+        bucketItems.push(toDisplayMenuItem(item));
+        uncategorizedBuckets.set(bucket, bucketItems);
+      }
+
+      for (const [title, items] of uncategorizedBuckets.entries()) {
+        fullMenu.push({
+          title,
+          items,
+        });
+      }
     }
 
+    const hasTacoTuesdayCategory = fullMenu.some(
+      (category) => category.title === "Taco Tuesdays"
+    );
+
     fullMenu.unshift(MONDAY_MADNESS_CATEGORY);
+
+    if (!hasTacoTuesdayCategory) {
+      fullMenu.unshift(TACO_TUESDAY_CATEGORY);
+    }
+
+    const orderedMenu = sortDisplayCategories(fullMenu);
 
     return NextResponse.json({
       source: "clover",
       featuredItems: FALLBACK_FEATURED_MENU_ITEMS,
-      fullMenu: fullMenu.length > 0 ? fullMenu : FALLBACK_FULL_MENU,
+      fullMenu: orderedMenu.length > 0 ? orderedMenu : FALLBACK_FULL_MENU,
     });
   } catch (error) {
     console.error("menu-route-failed", error);

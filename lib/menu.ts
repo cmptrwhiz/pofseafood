@@ -123,6 +123,121 @@ export const MONDAY_MADNESS_CATEGORY: DisplayMenuCategory = {
   ],
 };
 
+export const TACO_TUESDAY_CATEGORY: DisplayMenuCategory = {
+  title: "Taco Tuesdays",
+  items: [
+    {
+      name: "Salmon Taco",
+      desc: "Tuesday taco special with seasoned salmon and fresh toppings.",
+      price: "$3.49",
+      img: "/Images/fishchips.jpg",
+      badge: "Tuesday Deal",
+    },
+    {
+      name: "Fish Taco",
+      desc: "Tuesday fish taco special built for a fast lunch run.",
+      price: "$2.35",
+      img: "/Images/fishchips.jpg",
+    },
+    {
+      name: "Shrimp Taco",
+      desc: "Tuesday shrimp taco special with crispy shrimp and house flavor.",
+      price: "$3.09",
+      img: "/Images/shrimp.png",
+    },
+  ],
+};
+
+const CATEGORY_TITLE_NORMALIZERS: Array<[RegExp, string]> = [
+  [/^taco tuesdays?$/i, "Taco Tuesdays"],
+  [/^fish\s*\/\s*lb\.?$/i, "Fish by the Pound"],
+  [/^fish for lunch$/i, "Lunch Specials"],
+  [/^fish for dinner$/i, "Dinner Plates"],
+  [/^side orders$/i, "Sides"],
+  [/^additional side orders$/i, "Sides"],
+  [/^drinks\s*&\s*desserts$/i, "Desserts & Drinks"],
+  [/^combo meals$/i, "Combo Meals"],
+  [/^family meals$/i, "Family Meals"],
+  [/^specials$/i, "House Specials"],
+  [/^fast meals$/i, "Fast Meals"],
+];
+
+export const MENU_DISPLAY_ORDER = [
+  "Monday Madness",
+  "Taco Tuesdays",
+  "Featured Favorites",
+  "Lunch Specials",
+  "Fish Baskets",
+  "Shrimp Baskets",
+  "Combo Meals",
+  "Family Meals",
+  "Tacos",
+  "Dinner Plates",
+  "Fish by the Pound",
+  "House Specials",
+  "Fast Meals",
+  "Sides",
+  "Desserts",
+  "Drinks",
+  "Desserts & Drinks",
+] as const;
+
+export function normalizeCategoryTitle(title: string) {
+  const trimmed = title.trim();
+  for (const [pattern, normalized] of CATEGORY_TITLE_NORMALIZERS) {
+    if (pattern.test(trimmed)) {
+      return normalized;
+    }
+  }
+
+  return trimmed;
+}
+
+export function bucketUncategorizedItem(name: string) {
+  if (/taco/i.test(name)) {
+    return "Tacos";
+  }
+
+  if (/(cake|cheesecake|cobbler|pie|pudding|brownies?|red velvet|lemon cake|pound cake)/i.test(name)) {
+    return "Desserts";
+  }
+
+  if (/(coca cola|diet coke|sprite|pepsi|dr pepper|powerade|orange crush|bottled water|arizona)/i.test(name)) {
+    return "Drinks";
+  }
+
+  if (/(ranch|sauce|pickles|lemons?|rolls?|rice|yam|salad|peppers|fries|mac\s*&\s*cheese|man n cheese)/i.test(name)) {
+    return "Sides";
+  }
+
+  if (/(nuggets?|fried rice|over rice|lobster & fries|salmon and shrimp fried rice|shrimp fried rice)/i.test(name)) {
+    return "House Specials";
+  }
+
+  return "Featured Favorites";
+}
+
+export function sortDisplayCategories(categories: DisplayMenuCategory[]) {
+  return [...categories].sort((a, b) => {
+    const aIndex = MENU_DISPLAY_ORDER.indexOf(a.title as (typeof MENU_DISPLAY_ORDER)[number]);
+    const bIndex = MENU_DISPLAY_ORDER.indexOf(b.title as (typeof MENU_DISPLAY_ORDER)[number]);
+
+    if (aIndex === -1 && bIndex === -1) {
+      return a.title.localeCompare(b.title);
+    }
+
+    if (aIndex === -1) {
+      return 1;
+    }
+
+    if (bIndex === -1) {
+      return -1;
+    }
+
+    return aIndex - bIndex;
+  });
+}
+
 const ITEM_IMAGE_RULES: Array<{ match: RegExp; img: string; badge?: string }> = [
   { match: /shrimp/i, img: "/Images/shrimp.png" },
   { match: /(oyster|lobster|crab)/i, img: "/Images/combo.png" },

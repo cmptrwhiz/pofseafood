@@ -8,6 +8,7 @@ interface FullMenuProps {
   orderLink: string;
   onAddToCart: (item: DisplayMenuItem) => void;
   menuData?: DisplayMenuCategory[];
+  isLoading?: boolean;
 }
 
 export default function FullMenu({
@@ -15,6 +16,7 @@ export default function FullMenu({
   orderLink,
   onAddToCart,
   menuData = FALLBACK_FULL_MENU,
+  isLoading = false,
 }: FullMenuProps) {
   return (
     <motion.div 
@@ -52,7 +54,15 @@ export default function FullMenu({
           </p>
         </div>
 
-        {/* Menu Sections */}
+        {isLoading ? (
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 text-center">
+            <p className="text-lg font-bold text-white">Loading the latest menu...</p>
+            <p className="mt-3 text-sm text-blue-100/60">
+              Pulling current categories, specials, and pricing.
+            </p>
+          </div>
+        ) : (
+        /* Menu Sections */
         <div className="space-y-16">
           {menuData.map((category, idx) => (
             <section key={idx}>
@@ -88,6 +98,7 @@ export default function FullMenu({
             </section>
           ))}
         </div>
+        )}
 
         {/* Footer Note */}
         <div className="mt-24 text-center border-t border-white/10 pt-12">
