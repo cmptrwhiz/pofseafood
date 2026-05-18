@@ -1,0 +1,39 @@
+{
+  "purchase_price": 1850000,
+  "annual_gross_rent": 228000,
+  "other_income": 12000,
+  "expenses": {
+    "taxes": 14800,
+    "insurance": 5200,
+    "repairs": 7500,
+    "utilities": 9600,
+    "admin": 2400,
+    "other": 3800
+  },
+  "financing": {
+    "annual_debt_service": 118000,
+    "interest_rate": 0.0675,
+    "amortization_years": 30,
+    "loan_to_value": 0.72
+  },
+  "risk_factors": {
+    "market_cap_rate": 0.0625,
+    "cap_rate_expansion_bps": 100,
+    "tax_reset_rate": 0.013,
+    "insurance_rate": 0.0038,
+    "repair_reserve_rate": 0.055,
+    "management_fee_rate": 0.08,
+    "vacancy_rate": 0.06,
+    "stress_interest_rate_increase": 0.02,
+    "stress_noi_haircut": 0.12,
+    "tenant_quality": 7,
+    "location_quality": 8,
+    "market_volatility": 5,
+    "deferred_maintenance": 4,
+    "tenant_concentration": 3,
+    "regulatory_risk": 4,
+    "liquidity_risk": 5,
+    "value_add_potential": 6,
+    "rent_growth_potential": 5
+  }
+}

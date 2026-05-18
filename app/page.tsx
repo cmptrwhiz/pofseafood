@@ -8,6 +8,14 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ShoppingCart, Phone, MapPin, Mail, Clock, CheckCircle2, DollarSign, Zap, Gift, Menu as MenuIcon, X } from "lucide-react";
 import FullMenu from "./components/FullMenu";
+import {
+  FALLBACK_FEATURED_MENU_ITEMS,
+  FALLBACK_FULL_MENU,
+  type DisplayMenuCategory,
+  type DisplayMenuItem,
+} from "@/lib/menu";
+
+const CONSENT_TEXT_VERSION = "checkout-consent-v1";
 
 const BRAND = {
   name: "Plenty of Fish Seafood",
@@ -26,17 +34,32 @@ const testimonials = [
   { name: "David R.", text: "Direct ordering was so easy. Saved $6 compared to my last DoorDash order!", stars: 5 }
 ];
 
-const menuItems = [
-  { name: "Shrimp Basket", desc: "Crispy shrimp, fries, house sauce", price: "$15.99", img: "/images/shrimp.png" },
-  { name: "Fish & Chips", desc: "Golden fried fish, seasoned fries", price: "$14.99", img: "/images/fish.png" },
-  { name: "Seafood Combo", desc: "Best value combo (Save $5)", price: "$19.99", img: "/images/combo.png", badge: "Best Value" }
-];
-
 const addons = [
   { name: "Extra Shrimp", price: "+$4" },
   { name: "Large Fries", price: "+$3" },
   { name: "Drink", price: "+$2" }
 ];
+
+const mondayMadnessItems = [
+  {
+    title: "50% Off Lunches",
+    detail: "Every Monday from 11:00 AM to 2:00 PM at our Lancaster location.",
+    value: "Half Off",
+  },
+  {
+    title: "Jumbo Shrimp Deals",
+    detail: "Discounted jumbo shrimp plates and jumbo shrimp lunch combinations.",
+    value: "Limited Time",
+  },
+  {
+    title: "Handfilled Nuggets",
+    detail: "Often featured as a $10 special with catfish, snapper, or salmon.",
+    value: "$10 Special",
+  },
+];
+
+const HEADER_LOGO_SRC = "/logo.png";
+const RUNNER_MASCOT_SRC = "/old logo-final.png";
 
 export default function App() {
   const [phone, setPhone] = useState("");
@@ -47,17 +70,40 @@ export default function App() {
   const [view, setView] = useState<"home" | "menu" | "checkout">("home");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [cart, setCart] = useState<{ name: string; price: number; quantity: number }[]>([]);
+  const [featuredMenuItems, setFeaturedMenuItems] = useState<DisplayMenuItem[]>(
+    FALLBACK_FEATURED_MENU_ITEMS
+  );
+  const [fullMenuData, setFullMenuData] = useState<DisplayMenuCategory[]>(
+    FALLBACK_FULL_MENU
+  );
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [orderInfo, setOrderInfo] = useState({ name: "", phone: "", time: "" });
+  const [orderInfo, setOrderInfo] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    time: "",
+    smsConsent: false,
+    emailConsent: false,
+  });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [lastOrder, setLastOrder] = useState<{
     name: string;
+    phone: string;
+    email?: string;
     time: string;
+    smsConsent: boolean;
+    emailConsent: boolean;
+    automation: {
+      orderReceivedSmsQueued: boolean;
+      readySmsEligible: boolean;
+      promoSmsEligible: boolean;
+    };
     items: { name: string; quantity: number; price: number }[];
     total: number;
   } | null>(null);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: DisplayMenuItem) => {
     const priceNum = parseFloat(item.price.replace('$', ''));
     setCart(prev => {
       const existing = prev.find(i => i.name === item.name);
@@ -86,6 +132,44 @@ export default function App() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadMenu = async () => {
+      try {
+        const response = await fetch("/api/menu", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error("Menu request failed");
+        }
+
+        const data = (await response.json()) as {
+          featuredItems?: DisplayMenuItem[];
+          fullMenu?: DisplayMenuCategory[];
+        };
+
+        if (!isActive) {
+          return;
+        }
+
+        if (Array.isArray(data.featuredItems) && data.featuredItems.length > 0) {
+          setFeaturedMenuItems(data.featuredItems);
+        }
+
+        if (Array.isArray(data.fullMenu) && data.fullMenu.length > 0) {
+          setFullMenuData(data.fullMenu);
+        }
+      } catch (error) {
+        console.error("menu-load-failed", error);
+      }
+    };
+
+    loadMenu();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const getStatus = () => {
@@ -119,6 +203,78 @@ export default function App() {
       setEmail("");
     } catch (err) {
       console.error("Join list failed", err);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    if (!orderInfo.name || !orderInfo.phone || !orderInfo.time) {
+      alert("Please provide your name, phone number, and pickup time.");
+      return;
+    }
+
+    setIsPlacingOrder(true);
+
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: {
+            name: orderInfo.name,
+            phone: orderInfo.phone,
+            email: orderInfo.email || null,
+          },
+          consents: {
+            sms: orderInfo.smsConsent,
+            email: orderInfo.emailConsent,
+            textVersion: CONSENT_TEXT_VERSION,
+          },
+          order: {
+            pickupTime: orderInfo.time,
+            total: cartTotal,
+            items: cart,
+            fulfillmentType: "pickup",
+          },
+          session: {
+            referrer: typeof document !== "undefined" ? document.referrer || null : null,
+            path: typeof window !== "undefined" ? window.location.pathname : "/",
+            deviceType: typeof window !== "undefined" && window.innerWidth < 768 ? "mobile" : "desktop",
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Order submission failed");
+      }
+
+      setLastOrder({
+        name: orderInfo.name,
+        phone: orderInfo.phone,
+        email: orderInfo.email || undefined,
+        time: orderInfo.time,
+        smsConsent: orderInfo.smsConsent,
+        emailConsent: orderInfo.emailConsent,
+        automation: data.automation,
+        items: [...cart],
+        total: cartTotal,
+      });
+      setShowSuccessModal(true);
+      setCart([]);
+      setOrderInfo({
+        name: "",
+        phone: "",
+        email: "",
+        time: "",
+        smsConsent: false,
+        emailConsent: false,
+      });
+    } catch (err) {
+      console.error("Checkout failed", err);
+      alert("We couldn't submit the order right now. Please try again.");
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
@@ -208,6 +364,20 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
+            <motion.img
+              src={RUNNER_MASCOT_SRC}
+              alt=""
+              aria-hidden="true"
+              initial={{ x: "-14vw", y: "73vh", opacity: 1, rotate: -8 }}
+              animate={{
+                x: ["-14vw", "18vw", "38vw", "10vw"],
+                y: ["73vh", "72vh", "75vh", "73vh"],
+                rotate: [-8, 4, -5, -8],
+                scale: [1, 1.05, 0.98, 1],
+              }}
+              transition={{ duration: 7.5, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }}
+              className="pointer-events-none fixed left-0 top-0 z-[60] w-24 select-none drop-shadow-[0_22px_28px_rgba(0,18,51,0.45)] sm:w-28 lg:w-32"
+            />
             {/* UNDERWATER BACKGROUND VISUALS */}
       <div className="fixed inset-0 pointer-events-none z-[-1]">
         {/* Deep Sea Gradient */}
@@ -265,7 +435,7 @@ export default function App() {
           <div className="flex items-center gap-2 sm:gap-4">
             <div className="relative w-16 h-16 sm:w-24 sm:h-24 flex-shrink-0">
               <img 
-                src="/logo.png" 
+                src={HEADER_LOGO_SRC} 
                 alt="POF Logo"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://picsum.photos/seed/fish/200/200";
@@ -361,7 +531,7 @@ export default function App() {
 
               {/* INLINE MENU ITEMS */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-10">
-                {menuItems.map((item, i) => (
+                {featuredMenuItems.map((item, i) => (
                   <motion.div 
                     key={i} 
                     initial={{ y: 20, opacity: 0 }}
@@ -463,26 +633,76 @@ export default function App() {
                     className="text-center py-4"
                   >
                     <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
-                    <h4 className="text-white font-bold uppercase tracking-widest">You're in the School!</h4>
+                    <h4 className="text-white font-bold uppercase tracking-widest">You're on the VIP List!</h4>
                     <p className="text-blue-100/60 text-xs mt-1">Check your phone/email for your first deal.</p>
                   </motion.div>
                 )}
               </motion.div>
             </motion.div>
-            {/* VIDEO CONTENT - SMALLER & POSITIONED RIGHT */}
+            {/* DIRECT ORDER ADVANTAGE */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative w-full max-w-[300px] sm:max-w-[350px] lg:mt-8"
+              initial={{ x: 44, opacity: 0, scale: 0.96 }}
+              animate={{ x: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.25 }}
+              className="relative w-full max-w-md lg:max-w-sm xl:max-w-md"
             >
-              <div className="relative star-clip overflow-hidden shadow-2xl border-4 border-white aspect-square bg-slate-100 animate-pulse-slow">
-                <video autoPlay loop muted playsInline className="w-full h-full object-cover">
-                  <source src={BRAND.videoUrl} type="video/mp4" />
-                </video>
+              <div className="absolute -inset-6 rounded-[3rem] bg-[radial-gradient(circle_at_70%_20%,rgba(16,185,129,0.22),transparent_42%),radial-gradient(circle_at_15%_85%,rgba(239,68,68,0.18),transparent_38%)] blur-xl" />
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.08] p-5 text-white shadow-2xl backdrop-blur-xl">
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-white to-red-500" />
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="mb-2 text-[10px] font-black uppercase tracking-[0.35em] text-emerald-300">Direct Order Advantage</p>
+                    <h2 className="font-display text-3xl uppercase leading-none sm:text-4xl">
+                      Save More.
+                      <span className="block text-emerald-300">Eat Better.</span>
+                    </h2>
+                  </div>
+                  <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border border-white/60 bg-slate-100 shadow-lg">
+                    <video autoPlay loop muted playsInline className="h-full w-full object-cover">
+                      <source src={BRAND.videoUrl} type="video/mp4" />
+                    </video>
+                    <div className="absolute bottom-1 left-1 rounded-full bg-red-600 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest text-white">
+                      Live
+                    </div>
+                  </div>
+                </div>
+
+                <div className="my-5 grid grid-cols-3 gap-2">
+                  {[
+                    { value: "$3-$5", label: "Cash savings" },
+                    { value: "15-20", label: "Min pickup" },
+                    { value: "0", label: "App fees" }
+                  ].map((stat) => (
+                    <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/10 p-3 text-center">
+                      <div className="text-lg font-black text-white">{stat.value}</div>
+                      <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-blue-100/60">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-3">
+                  {[
+                    { icon: <DollarSign className="h-4 w-4" />, text: "Lower direct pricing than third-party apps" },
+                    { icon: <Zap className="h-4 w-4" />, text: "Hot pickup orders without delivery delays" },
+                    { icon: <Gift className="h-4 w-4" />, text: "VIP deals you only get from us" }
+                  ].map((perk) => (
+                    <div key={perk.text} className="flex items-center gap-3 rounded-2xl bg-blue-950/35 px-3 py-2 text-sm font-bold text-blue-50">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-400 text-blue-950">
+                        {perk.icon}
+                      </span>
+                      <span>{perk.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setView("menu")}
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black uppercase tracking-[0.2em] text-blue-950 shadow-xl transition-all hover:bg-emerald-100 active:scale-95"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  Build My Order
+                </button>
               </div>
-              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-red-600/20 rounded-full blur-3xl -z-10"></div>
-              <div className="absolute -top-10 -left-10 w-32 h-32 bg-blue-900/20 rounded-full blur-3xl -z-10"></div>
             </motion.div>
           </div>
         </div>
@@ -535,6 +755,49 @@ export default function App() {
         </div>
       </section>
 
+      {/* MONDAY MADNESS */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-emerald-300 font-black uppercase tracking-[0.35em] text-xs mb-3">Weekly Special</p>
+            <h2 className="font-display text-4xl sm:text-6xl text-white uppercase mb-4">MONDAY MADNESS</h2>
+            <p className="text-blue-100/60 max-w-3xl mx-auto text-lg">
+              Mondays are built for lunch runs, shrimp deals, and fast pickup. Catch the special from 11:00 AM to 2:00 PM.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {mondayMadnessItems.map((special, index) => (
+              <motion.div
+                key={special.title}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+                className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.15),transparent_40%)]" />
+                <div className="relative">
+                  <div className="mb-6 inline-flex rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-300">
+                    Mondays Only
+                  </div>
+                  <h3 className="text-2xl font-display text-white uppercase mb-3">{special.title}</h3>
+                  <p className="text-blue-100/60 leading-relaxed min-h-[72px]">{special.detail}</p>
+                  <div className="mt-8 flex items-center justify-between">
+                    <span className="text-2xl font-black text-emerald-400">{special.value}</span>
+                    <button
+                      onClick={() => setView("menu")}
+                      className="rounded-2xl bg-red-600 px-5 py-3 text-sm font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-red-600/25 transition-all hover:bg-red-700 active:scale-95"
+                    >
+                      View Menu
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAN FAVORITES */}
       <section className="py-24 px-4 bg-blue-950/20">
         <div className="max-w-7xl mx-auto">
@@ -543,7 +806,7 @@ export default function App() {
             <p className="text-blue-100/60 max-w-2xl mx-auto">The items that put us on the map. Fresh, crispy, and always delicious.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {menuItems.slice(0, 2).map((item, i) => (
+            {featuredMenuItems.slice(0, 2).map((item, i) => (
               <motion.div 
                 key={i}
                 whileHover={{ y: -10 }}
@@ -621,7 +884,7 @@ export default function App() {
             <p className="text-blue-100/60 max-w-2xl mx-auto">Upgrade your meal with our signature combos. More food, better value!</p>
           </div>
           <div className="max-w-xl mx-auto">
-            {menuItems.slice(2, 3).map((item, i) => (
+            {featuredMenuItems.slice(2, 3).map((item, i) => (
               <motion.div 
                 key={i}
                 whileHover={{ y: -10 }}
@@ -667,7 +930,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-display text-4xl sm:text-6xl text-white uppercase mb-4">FAMILY COMBO DEALS</h2>
-            <p className="text-blue-100/60 max-w-2xl mx-auto">Feed the whole school with our legendary family packs. The best value in the AV!</p>
+            <p className="text-blue-100/60 max-w-2xl mx-auto">Feed the whole crew with our legendary family packs. The best value in the AV!</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {[
@@ -705,7 +968,7 @@ export default function App() {
       <section className="py-24 bg-blue-950/30">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="font-display text-4xl sm:text-6xl text-white mb-4">WHAT THE SCHOOL IS SAYING</h2>
+            <h2 className="font-display text-4xl sm:text-6xl text-white mb-4">WHAT OUR CUSTOMERS ARE SAYING</h2>
             <div className="flex justify-center gap-1">
               {[...Array(5)].map((_, i) => <Zap key={i} className="w-6 h-6 text-amber-400 fill-amber-400" />)}
             </div>
@@ -788,46 +1051,104 @@ export default function App() {
       <section id="contact" className="py-24 px-4 bg-blue-950/50">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <h2 className="font-display text-4xl sm:text-6xl text-white uppercase">FIND THE SCHOOL</h2>
+            <div className="space-y-4">
+              <p className="text-xs font-black uppercase tracking-[0.35em] text-emerald-300">Visit Plenty Of Fish</p>
+              <h2 className="font-display text-4xl sm:text-6xl text-white uppercase">FIND US FAST</h2>
+              <p className="max-w-2xl text-lg text-blue-100/65">
+                Swing by for crispy seafood, quick pickup, and direct-order savings. We made this section more useful so customers can call, map, and head over fast.
+              </p>
+            </div>
             <div className="space-y-6">
-              <div className="flex items-start gap-4 p-6 bg-white/5 rounded-3xl border border-white/10">
+              <div className="flex items-start gap-4 p-6 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm shadow-xl">
                 <MapPin className="w-8 h-8 text-blue-400 flex-shrink-0" />
                 <div>
                   <h3 className="text-xl font-bold text-white mb-1">Our Location</h3>
                   <p className="text-blue-100/70">{BRAND.address}</p>
-                  <button 
-                    onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(BRAND.address)}`, '_blank')}
-                    className="mt-4 text-blue-400 font-bold uppercase tracking-widest text-sm hover:text-blue-300 transition-colors flex items-center gap-2"
-                  >
-                    Get Directions <Zap className="w-4 h-4" />
-                  </button>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <button 
+                      onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(BRAND.address)}`, '_blank')}
+                      className="text-blue-400 font-bold uppercase tracking-widest text-sm hover:text-blue-300 transition-colors flex items-center gap-2"
+                    >
+                      Get Directions <Zap className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(BRAND.address)}`, '_blank')}
+                      className="text-white/70 font-bold uppercase tracking-widest text-sm hover:text-white transition-colors"
+                    >
+                      View Map
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-4 p-6 bg-white/5 rounded-3xl border border-white/10">
-                <Phone className="w-8 h-8 text-emerald-400 flex-shrink-0" />
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-1">Call Ahead</h3>
-                  <p className="text-blue-100/70">Skip the wait by calling in your order.</p>
-                  <a href={BRAND.phone} className="text-2xl font-black text-white mt-2 block">{BRAND.displayPhone}</a>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-start gap-4 p-6 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm shadow-xl">
+                  <Phone className="w-8 h-8 text-emerald-400 flex-shrink-0" />
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-1">Call Ahead</h3>
+                    <p className="text-blue-100/70">Skip the wait by calling in your order.</p>
+                    <a href={BRAND.phone} className="text-2xl font-black text-white mt-2 block">{BRAND.displayPhone}</a>
+                  </div>
                 </div>
+                <div className="flex items-start gap-4 p-6 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm shadow-xl">
+                  <Clock className="w-8 h-8 text-amber-300 flex-shrink-0" />
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-1">Pickup Hours</h3>
+                    <p className="text-blue-100/70">Monday - Saturday</p>
+                    <p className="text-2xl font-black text-white mt-2 block">11AM - 9PM</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { label: "Pickup", value: "Fast" },
+                  { label: "Direct Savings", value: "$3-$5" },
+                  { label: "Best For", value: "Combos" },
+                  { label: "Order Type", value: "Call or Web" },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center backdrop-blur-sm">
+                    <div className="text-lg font-black text-white">{stat.value}</div>
+                    <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-100/55">{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="relative aspect-video lg:aspect-square rounded-[3rem] overflow-hidden border-4 border-white/10 shadow-2xl group">
-            <img 
-              src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=80" 
-              alt="Map Placeholder" 
-              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-blue-900/20 group-hover:bg-transparent transition-colors" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <button 
-                onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(BRAND.address)}`, '_blank')}
-                className="bg-white text-blue-950 px-8 py-4 rounded-2xl font-bold uppercase tracking-widest shadow-2xl hover:scale-105 transition-transform"
-              >
-                Open in Google Maps
-              </button>
+          <div className="relative aspect-video lg:aspect-square rounded-[3rem] overflow-hidden border-4 border-white/10 shadow-2xl group bg-[radial-gradient(circle_at_20%_20%,rgba(96,165,250,0.25),transparent_30%),linear-gradient(160deg,#18366b_0%,#0b1f47_55%,#08162f_100%)]">
+            <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:28px_28px] opacity-50" />
+            <div className="absolute inset-0 p-6 sm:p-8">
+              <div className="flex h-full flex-col justify-between rounded-[2.3rem] border border-white/10 bg-black/10 p-6 backdrop-blur-[2px]">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.35em] text-emerald-300">Lancaster, California</p>
+                  <h3 className="mt-3 text-3xl font-display text-white uppercase leading-none sm:text-4xl">Quick Pickup.<br />Easy Directions.</h3>
+                  <p className="mt-4 max-w-sm text-sm text-blue-100/70">
+                    Order ahead, head over, and grab your seafood fast. Plenty Of Fish is easy to find and even easier to come back to.
+                  </p>
+                </div>
+
+                <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-xl">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="mt-1 h-5 w-5 text-blue-300" />
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.25em] text-white/60">Pickup Destination</p>
+                      <p className="mt-2 text-base font-bold text-white">{BRAND.address}</p>
+                    </div>
+                  </div>
+                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                    <button 
+                      onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(BRAND.address)}`, '_blank')}
+                      className="bg-white text-blue-950 px-6 py-4 rounded-2xl font-bold uppercase tracking-widest shadow-2xl hover:scale-[1.02] transition-transform"
+                    >
+                      Open in Google Maps
+                    </button>
+                    <a
+                      href={BRAND.phone}
+                      className="border border-white/20 bg-white/5 px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-white text-center hover:bg-white/10 transition-colors"
+                    >
+                      Call Before You Go
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -840,7 +1161,7 @@ export default function App() {
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4">
           <img 
-            src="/logo.png" 
+            src={HEADER_LOGO_SRC} 
             className="h-48 sm:h-72 mx-auto mb-8 object-contain drop-shadow-2xl" 
           />
           <h2 className="font-display text-4xl sm:text-6xl mb-6 leading-tight uppercase">ORDER DIRECT.<br/>SAVE MORE.</h2>
@@ -860,7 +1181,7 @@ export default function App() {
           <div className="md:col-span-2">
             <div className="flex items-center gap-4 mb-6">
               <img 
-                src="/logo.png" 
+                src={HEADER_LOGO_SRC} 
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://picsum.photos/seed/fish/100/100";
                 }}
@@ -937,6 +1258,7 @@ export default function App() {
               onBack={() => setView("home")} 
               orderLink={BRAND.orderLink} 
               onAddToCart={addToCart}
+              menuData={fullMenuData}
             />
           </motion.div>
         ) : (
@@ -980,6 +1302,19 @@ export default function App() {
                     />
                   </div>
                   <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <label className="text-xs font-bold text-blue-200/50 uppercase tracking-widest">Email Address</label>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-300">10% Off Next Order</span>
+                    </div>
+                    <input 
+                      type="email"
+                      value={orderInfo.email}
+                      onChange={(e) => setOrderInfo({...orderInfo, email: e.target.value})}
+                      placeholder="Optional, but worth it"
+                      className="w-full bg-white/10 border border-emerald-400/30 rounded-2xl px-6 py-4 text-white placeholder:text-white/35 focus:ring-2 focus:ring-emerald-400 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <label className="text-xs font-bold text-blue-200/50 uppercase tracking-widest">Pickup Time</label>
                     <select 
                       value={orderInfo.time}
@@ -993,31 +1328,48 @@ export default function App() {
                     </select>
                   </div>
 
+                  <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5 space-y-4">
+                    <div className="space-y-3">
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={orderInfo.smsConsent}
+                          onChange={(e) => setOrderInfo({...orderInfo, smsConsent: e.target.checked})}
+                          className="mt-1 h-4 w-4 rounded border-white/30 bg-white/10 text-emerald-400 focus:ring-emerald-400"
+                        />
+                        <span className="text-sm text-blue-100/80">
+                          I agree to receive order updates and promotional texts. Msg & data rates may apply. Reply STOP to opt out.
+                        </span>
+                      </label>
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={orderInfo.emailConsent}
+                          onChange={(e) => setOrderInfo({...orderInfo, emailConsent: e.target.checked})}
+                          className="mt-1 h-4 w-4 rounded border-white/30 bg-white/10 text-emerald-400 focus:ring-emerald-400"
+                        />
+                        <span className="text-sm text-blue-100/80">
+                          Send me deals and updates by email.
+                        </span>
+                      </label>
+                    </div>
+                    <p className="text-[10px] uppercase tracking-widest text-blue-200/40">
+                      Consent version: {CONSENT_TEXT_VERSION}
+                    </p>
+                  </div>
+
                   <div className="pt-8 border-t border-white/10">
                     <div className="flex justify-between text-2xl font-display text-white uppercase mb-6">
                       <span>Total Due</span>
                       <span>${cartTotal.toFixed(2)}</span>
                     </div>
                     <button 
-                      onClick={() => {
-                        if (!orderInfo.name || !orderInfo.time) {
-                          alert("Please provide your name and pickup time.");
-                          return;
-                        }
-                        setLastOrder({ 
-                          name: orderInfo.name, 
-                          time: orderInfo.time,
-                          items: [...cart],
-                          total: cartTotal
-                        });
-                        setShowSuccessModal(true);
-                        setCart([]);
-                        setOrderInfo({ name: "", phone: "", time: "" });
-                      }}
+                      onClick={handlePlaceOrder}
+                      disabled={isPlacingOrder}
                       className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-6 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-emerald-600/20 transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
                       <CheckCircle2 className="w-6 h-6" />
-                      Place Pickup Order
+                      {isPlacingOrder ? "Placing Order..." : "Place Pickup Order"}
                     </button>
                     <p className="text-center mt-4 text-xs text-blue-200/40 uppercase tracking-widest">
                       Payment will be collected at pickup.
@@ -1104,6 +1456,40 @@ export default function App() {
                 <p className="text-blue-100/70 text-lg mb-8">
                   Thanks, <span className="text-white font-bold">{lastOrder.name}</span>! Your order is being prepared. We'll see you in <span className="text-emerald-400 font-bold">{lastOrder.time === 'ASAP' ? '15-20 minutes' : lastOrder.time === '30mins' ? '30 minutes' : '1 hour'}</span>.
                 </p>
+
+                <div className="bg-white/5 rounded-3xl p-5 mb-8 border border-white/10 text-left">
+                  <h3 className="text-xs font-bold text-blue-200/50 uppercase tracking-widest mb-3">Customer Capture</h3>
+                  <div className="space-y-2 text-sm text-blue-100/75">
+                    <p><span className="font-bold text-white">Phone:</span> {lastOrder.phone}</p>
+                    {lastOrder.email && <p><span className="font-bold text-white">Email:</span> {lastOrder.email}</p>}
+                    <p><span className="font-bold text-white">SMS:</span> {lastOrder.smsConsent ? "Opted in" : "Transactional only"}</p>
+                    <p><span className="font-bold text-white">Email:</span> {lastOrder.emailConsent ? "Opted in" : "Not subscribed"}</p>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 rounded-3xl p-6 mb-8 border border-white/10 text-left">
+                  <h3 className="text-xs font-bold text-blue-200/50 uppercase tracking-widest mb-4">Automation Queue</h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-100/80">SMS: Order received</span>
+                      <span className={`font-bold ${lastOrder.automation.orderReceivedSmsQueued ? "text-emerald-400" : "text-blue-200/40"}`}>
+                        {lastOrder.automation.orderReceivedSmsQueued ? "Queued" : "Consent needed"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-100/80">SMS: Ready for pickup</span>
+                      <span className={`font-bold ${lastOrder.automation.readySmsEligible ? "text-emerald-400" : "text-blue-200/40"}`}>
+                        {lastOrder.automation.readySmsEligible ? "Eligible" : "Consent needed"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-100/80">Later promo follow-up</span>
+                      <span className={`font-bold ${lastOrder.automation.promoSmsEligible ? "text-amber-300" : "text-blue-200/40"}`}>
+                        {lastOrder.automation.promoSmsEligible ? "Ready for campaign" : "Consent needed"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
                 {/* ORDER SUMMARY */}
                 <div className="bg-white/5 rounded-3xl p-6 mb-8 border border-white/10 text-left">

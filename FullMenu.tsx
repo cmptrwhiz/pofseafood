@@ -2,13 +2,13 @@ import React from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, ShoppingCart, Info } from "lucide-react";
 
-export interface MenuItem {
+export type MenuItem = {
   name: string;
-  desc: string;
   price: string;
+  desc: string;
   img?: string;
   badge?: string;
-}
+};
 
 interface MenuCategory {
   title: string;

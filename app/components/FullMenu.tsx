@@ -1,79 +1,21 @@
 import React from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, ShoppingCart, Info } from "lucide-react";
+import { FALLBACK_FULL_MENU, type DisplayMenuCategory, type DisplayMenuItem } from "@/lib/menu";
 
-interface MenuItem {
-  name: string;
-  desc: string;
-  price: string;
-  img?: string;
-  badge?: string;
+interface FullMenuProps {
+  onBack: () => void;
+  orderLink: string;
+  onAddToCart: (item: DisplayMenuItem) => void;
+  menuData?: DisplayMenuCategory[];
 }
 
-interface MenuCategory {
-  title: string;
-  items: MenuItem[];
-}
-
-const MENU_DATA: MenuCategory[] = [
-  {
-    title: "Fish Baskets",
-    items: [
-      { name: "Catfish Basket (2pc)", desc: "Crispy catfish fillets with fries, coleslaw, and bread", price: "$14.99" },
-      { name: "Catfish Basket (3pc)", desc: "Crispy catfish fillets with fries, coleslaw, and bread", price: "$17.99" },
-      { name: "Red Snapper Basket (2pc)", desc: "Golden fried snapper with fries, coleslaw, and bread", price: "$15.99" },
-      { name: "Red Snapper Basket (3pc)", desc: "Golden fried snapper with fries, coleslaw, and bread", price: "$18.99" },
-      { name: "Tilapia Basket (2pc)", desc: "Fried tilapia fillets with fries, coleslaw, and bread", price: "$13.99" },
-      { name: "Cod Basket (3pc)", desc: "Classic fish & chips style cod with fries and slaw", price: "$16.99" },
-    ]
-  },
-  {
-    title: "Shrimp Baskets",
-    items: [
-      { name: "Jumbo Shrimp (6pc)", desc: "Large crispy shrimp with fries and house sauce", price: "$15.99" },
-      { name: "Jumbo Shrimp (10pc)", desc: "Large crispy shrimp with fries and house sauce", price: "$21.99" },
-      { name: "Popcorn Shrimp Basket", desc: "Bite-sized crispy shrimp with fries", price: "$12.99" },
-    ]
-  },
-  {
-    title: "Seafood Combos",
-    items: [
-      { name: "Fish & Shrimp Combo", desc: "2pc Fish (Catfish or Snapper) & 4pc Jumbo Shrimp", price: "$22.99", badge: "Popular" },
-      { name: "The Captain's Platter", desc: "2pc Fish, 4pc Shrimp, 2pc Oysters, and Clam Strips", price: "$28.99", badge: "Best Value" },
-      { name: "Family Feast", desc: "8pc Fish, 12pc Shrimp, Large Fries, Large Slaw", price: "$54.99" },
-    ]
-  },
-  {
-    title: "Sandwiches & More",
-    items: [
-      { name: "Fish Sandwich", desc: "Fried fillet on a toasted bun with lettuce, tomato, and tartar", price: "$10.99" },
-      { name: "Shrimp Po' Boy", desc: "Crispy shrimp on a French roll with remoulade sauce", price: "$13.99" },
-      { name: "Oyster Basket (6pc)", desc: "Freshly shucked and fried oysters with fries", price: "$18.99" },
-    ]
-  },
-  {
-    title: "Sides & Add-ons",
-    items: [
-      { name: "Seasoned Fries", desc: "Crispy and golden", price: "$3.99" },
-      { name: "Coleslaw", desc: "House-made creamy slaw", price: "$2.99" },
-      { name: "Hush Puppies (6pc)", desc: "Sweet and savory cornmeal fritters", price: "$4.99" },
-      { name: "Onion Rings", desc: "Thick-cut and beer-battered", price: "$5.99" },
-      { name: "Extra Fish Piece", desc: "Add to any basket", price: "$4.50" },
-      { name: "Extra Shrimp (1pc)", desc: "Add to any basket", price: "$2.00" },
-    ]
-  },
-  {
-    title: "Drinks",
-    items: [
-      { name: "Soft Drinks", desc: "Coke, Diet Coke, Sprite, Dr. Pepper", price: "$2.50" },
-      { name: "Sweet Tea", desc: "Southern style house-brewed", price: "$2.99" },
-      { name: "Lemonade", desc: "Freshly squeezed", price: "$3.50" },
-      { name: "Bottled Water", desc: "Purified water", price: "$1.50" },
-    ]
-  }
-];
-
-export default function FullMenu({ onBack, orderLink }: { onBack: () => void; orderLink: string }) {
+export default function FullMenu({
+  onBack,
+  orderLink,
+  onAddToCart,
+  menuData = FALLBACK_FULL_MENU,
+}: FullMenuProps) {
   return (
     <motion.div 
       initial={{ opacity: 0, x: 20 }}
@@ -112,7 +54,7 @@ export default function FullMenu({ onBack, orderLink }: { onBack: () => void; or
 
         {/* Menu Sections */}
         <div className="space-y-16">
-          {MENU_DATA.map((category, idx) => (
+          {menuData.map((category, idx) => (
             <section key={idx}>
               <h2 className="font-display text-3xl sm:text-5xl mb-8 border-b border-white/10 pb-4 text-blue-400 uppercase tracking-tight">
                 {category.title}
@@ -134,7 +76,7 @@ export default function FullMenu({ onBack, orderLink }: { onBack: () => void; or
                     <div className="text-right flex flex-col items-end gap-2">
                       <span className="text-xl font-black text-blue-400">{item.price}</span>
                       <button 
-                        onClick={() => window.open(orderLink, '_blank')}
+                        onClick={() => onAddToCart(item)}
                         className="p-2 bg-white/5 hover:bg-blue-600 rounded-lg transition-all active:scale-95"
                       >
                         <ShoppingCart className="w-4 h-4" />

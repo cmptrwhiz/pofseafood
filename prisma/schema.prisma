@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MerchantConnection {
+  id               String      @id @default(cuid())
+  cloverMerchantId String      @unique
+  merchantName     String?
+  accessToken      String
+  refreshToken     String?
+  tokenExpiresAt   DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  lastSyncAt       DateTime?
+  syncStatus       String      @default("pending")
+  menuCategories   MenuCategory[]
+  menuItems        MenuItem[]
+  syncEvents       SyncEvent[]
+}
+
+model MenuCategory {
+  id                   String             @id @default(cuid())
+  merchantConnectionId String
+  cloverCategoryId     String
+  name                 String
+  sortOrder            Int                @default(0)
+  isActive             Boolean            @default(true)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  merchantConnection   MerchantConnection @relation(fields: [merchantConnectionId], references: [id], onDelete: Cascade)
+  menuItems            MenuItem[]
+
+  @@unique([merchantConnectionId, cloverCategoryId])
+}
+
+model MenuItem {
+  id                   String             @id @default(cuid())
+  merchantConnectionId String
+  menuCategoryId       String?
+  cloverItemId         String
+  name                 String
+  description          String?
+  priceCents           Int
+  imageUrl             String?
+  isAvailable          Boolean            @default(true)
+  isHidden             Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  merchantConnection   MerchantConnection @relation(fields: [merchantConnectionId], references: [id], onDelete: Cascade)
+  menuCategory         MenuCategory?      @relation(fields: [menuCategoryId], references: [id], onDelete: SetNull)
+  modifierGroups       ModifierGroup[]
+
+  @@unique([merchantConnectionId, cloverItemId])
+}
+
+model ModifierGroup {
+  id                    String             @id @default(cuid())
+  menuItemId            String
+  cloverModifierGroupId String
+  name                  String
+  minRequired           Int                @default(0)
+  maxAllowed            Int                @default(1)
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  menuItem              MenuItem           @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  modifierOptions       ModifierOption[]
+
+  @@unique([menuItemId, cloverModifierGroupId])
+}
+
+model ModifierOption {
+  id               String        @id @default(cuid())
+  modifierGroupId  String
+  cloverModifierId String
+  name             String
+  priceDeltaCents  Int           @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  modifierGroup    ModifierGroup @relation(fields: [modifierGroupId], references: [id], onDelete: Cascade)
+
+  @@unique([modifierGroupId, cloverModifierId])
+}
+
+model SyncEvent {
+  id                   String             @id @default(cuid())
+  merchantConnectionId String
+  source               String
+  eventType            String
+  payloadJson          Json
+  status               String             @default("received")
+  errorMessage         String?
+  processedAt          DateTime?
+  createdAt            DateTime           @default(now())
+  merchantConnection   MerchantConnection @relation(fields: [merchantConnectionId], references: [id], onDelete: Cascade)
+}
