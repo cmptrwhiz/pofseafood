@@ -23,19 +23,19 @@ export const FALLBACK_FEATURED_MENU_ITEMS: DisplayMenuItem[] = [
     name: "Shrimp Basket",
     desc: "Crispy shrimp, fries, house sauce",
     price: "$15.99",
-    img: "/images/shrimp.png",
+    img: "/Images/shrimp.png",
   },
   {
     name: "Fish & Chips",
     desc: "Golden fried fish, seasoned fries",
     price: "$14.99",
-    img: "/images/fish.png",
+    img: "/Images/fishchips.jpg",
   },
   {
     name: "Seafood Combo",
     desc: "Best value combo (Save $5)",
     price: "$19.99",
-    img: "/images/combo.png",
+    img: "/Images/combo.png",
     badge: "Best Value",
   },
 ];
@@ -105,32 +105,32 @@ export const MONDAY_MADNESS_CATEGORY: DisplayMenuCategory = {
       name: "50% Off All Lunches",
       desc: "Every Monday from 11:00 AM to 2:00 PM at our Lancaster location.",
       price: "Half Off",
-      img: "/images/fish.png",
+      img: "/Images/fishchips.jpg",
       badge: "Mondays 11-2",
     },
     {
       name: "Jumbo Shrimp Deals",
       desc: "Discounted jumbo shrimp plates and lunch combinations while the special is running.",
       price: "Monday Deal",
-      img: "/images/shrimp.png",
+      img: "/Images/shrimp.png",
     },
     {
       name: "Handfilled Nuggets",
       desc: "Often featured as a $10 Monday special with catfish, snapper, or salmon.",
       price: "$10 Special",
-      img: "/images/combo.png",
+      img: "/Images/combo.png",
     },
   ],
 };
 
 const ITEM_IMAGE_RULES: Array<{ match: RegExp; img: string; badge?: string }> = [
-  { match: /shrimp/i, img: "/images/shrimp.png" },
-  { match: /(oyster|lobster|crab)/i, img: "/images/combo.png" },
-  { match: /(taco|nuggets?)/i, img: "/images/shrimp.png" },
-  { match: /(fish|catfish|cod|tilapia|snapper)/i, img: "/images/fish.png" },
-  { match: /(salmon|whiting|basa|filet|fillet)/i, img: "/images/fish.png" },
-  { match: /(combo|platter|family feast)/i, img: "/images/combo.png", badge: "Best Value" },
-  { match: /sandwich|po' boy/i, img: "/sandwich.png" },
+  { match: /shrimp/i, img: "/Images/shrimp.png" },
+  { match: /(oyster|lobster|crab)/i, img: "/Images/combo.png" },
+  { match: /(taco|nuggets?)/i, img: "/Images/shrimp.png" },
+  { match: /(fish|catfish|cod|tilapia|snapper)/i, img: "/Images/fishchips.jpg" },
+  { match: /(salmon|whiting|basa|filet|fillet)/i, img: "/Images/fish.png" },
+  { match: /(combo|platter|family feast)/i, img: "/Images/combo.png", badge: "Best Value" },
+  { match: /sandwich|po' boy/i, img: "/Images/sandwich.png" },
 ];
 
 function inferMenuArt(name: string) {
@@ -209,7 +209,7 @@ export function toDisplayMenuItem(item: {
       ? item.description!.trim()
       : "Fresh seafood made to order.",
     price: centsToPrice(item.priceCents),
-    img: item.imageUrl || inferred?.img || "/images/combo.png",
+    img: item.imageUrl || inferred?.img || "/Images/combo.png",
     badge: inferred?.badge,
   };
 }

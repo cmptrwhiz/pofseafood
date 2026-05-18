@@ -7,7 +7,6 @@ import {
   MONDAY_MADNESS_CATEGORY,
   type DisplayMenuCategory,
   isDisplayableMenuItem,
-  isFeaturedMenuItemCandidate,
   toDisplayMenuItem,
 } from "@/lib/menu";
 
@@ -37,75 +36,6 @@ function dedupeByName<T extends { name: string }>(items: T[]) {
     seen.add(key);
     return true;
   });
-}
-
-const FEATURED_NAME_PRIORITY = [
-  /shrimp basket/i,
-  /fish\s*&\s*chips|fish and chips/i,
-  /seafood combo|fish\s*&\s*shrimp combo|captain'?s platter|family feast/i,
-  /catfish filet|catish filet/i,
-  /tilapia filet/i,
-  /red snapper/i,
-  /salmon/i,
-  /oysters?/i,
-  /jumbo shrimp/i,
-];
-
-function pickFeaturedItems(
-  entries: Array<{
-    categoryTitle: string;
-    item: {
-      name: string;
-      description: string | null;
-      priceCents: number;
-      imageUrl: string | null;
-    };
-  }>
-) {
-  const featured: typeof entries = [];
-  const usedNames = new Set<string>();
-
-  for (const pattern of FEATURED_NAME_PRIORITY) {
-    const match = entries.find(({ item, categoryTitle }) => {
-      const key = item.name.trim().toLowerCase();
-      return (
-        !usedNames.has(key) &&
-        isFeaturedMenuItemCandidate(item, categoryTitle) &&
-        pattern.test(item.name)
-      );
-    });
-
-    if (!match) {
-      continue;
-    }
-
-    usedNames.add(match.item.name.trim().toLowerCase());
-    featured.push(match);
-
-    if (featured.length === 3) {
-      return featured;
-    }
-  }
-
-  for (const entry of entries) {
-    const key = entry.item.name.trim().toLowerCase();
-    if (usedNames.has(key)) {
-      continue;
-    }
-
-    if (!isFeaturedMenuItemCandidate(entry.item, entry.categoryTitle)) {
-      continue;
-    }
-
-    usedNames.add(key);
-    featured.push(entry);
-
-    if (featured.length === 3) {
-      break;
-    }
-  }
-
-  return featured;
 }
 
 export async function GET() {
@@ -176,41 +106,6 @@ export async function GET() {
       )
     );
 
-    const featuredCatalog = [
-      ...categorySections.flatMap((category: {
-        title: string;
-        rawItems: MerchantMenuItem[];
-      }) =>
-        category.rawItems.map((item: MerchantMenuItem) => ({
-          categoryTitle: category.title,
-          item,
-        }))
-      ),
-      ...uncategorizedItems.map((item: MerchantMenuItem) => ({
-        categoryTitle: "Fresh Picks",
-        item,
-      })),
-    ];
-
-    const featuredSourceItems = pickFeaturedItems(featuredCatalog);
-
-    const featuredItems = (
-      featuredSourceItems.length > 0
-        ? featuredSourceItems.map(({ item }) => item)
-        : dedupeByName([
-            ...categorySections.flatMap((category: {
-              rawItems: MerchantMenuItem[];
-            }) => category.rawItems),
-            ...uncategorizedItems,
-          ])
-    ).map(toDisplayMenuItem);
-
-    const paddedFeaturedItems = [
-      ...featuredItems,
-      ...FALLBACK_FEATURED_MENU_ITEMS.filter(
-        (fallback) => !featuredItems.some((item) => item.name === fallback.name)
-      ),
-    ].slice(0, 3);
     const fullMenu: DisplayMenuCategory[] = categorySections.map((category: {
       title: string;
       items: ReturnType<typeof toDisplayMenuItem>[];
@@ -230,7 +125,7 @@ export async function GET() {
 
     return NextResponse.json({
       source: "clover",
-      featuredItems: paddedFeaturedItems,
+      featuredItems: FALLBACK_FEATURED_MENU_ITEMS,
       fullMenu: fullMenu.length > 0 ? fullMenu : FALLBACK_FULL_MENU,
     });
   } catch (error) {
