@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { fetchCloverMenuSnapshot } from "@/lib/clover";
 import { prisma } from "@/lib/db";
 
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
 
     const normalizedCategoryIds = new Map<string, string>();
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       for (const [index, category] of categoryElements.entries()) {
         if (!category.id || !category.name) {
           continue;

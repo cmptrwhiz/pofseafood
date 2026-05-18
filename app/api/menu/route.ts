@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import {
   FALLBACK_FEATURED_MENU_ITEMS,
@@ -9,6 +10,20 @@ import {
   isFeaturedMenuItemCandidate,
   toDisplayMenuItem,
 } from "@/lib/menu";
+
+type MerchantMenuPayload = Prisma.MerchantConnectionGetPayload<{
+  include: {
+    menuCategories: {
+      include: {
+        menuItems: true;
+      };
+    };
+    menuItems: true;
+  };
+}>;
+
+type MerchantMenuCategory = MerchantMenuPayload["menuCategories"][number];
+type MerchantMenuItem = MerchantMenuPayload["menuItems"][number];
 
 function dedupeByName<T extends { name: string }>(items: T[]) {
   const seen = new Set<string>();
@@ -141,7 +156,7 @@ export async function GET() {
     }
 
     const categorySections = merchantConnection.menuCategories
-      .map((category) => {
+      .map((category: MerchantMenuCategory) => {
         const items = dedupeByName(
           category.menuItems.filter(isDisplayableMenuItem)
         );
@@ -152,22 +167,26 @@ export async function GET() {
           items: items.map(toDisplayMenuItem),
         };
       })
-      .filter((category) => category.items.length > 0);
+      .filter((category: { items: unknown[] }) => category.items.length > 0);
 
     const uncategorizedItems = dedupeByName(
       merchantConnection.menuItems.filter(
-        (item) => item.menuCategoryId === null && isDisplayableMenuItem(item)
+        (item: MerchantMenuItem) =>
+          item.menuCategoryId === null && isDisplayableMenuItem(item)
       )
     );
 
     const featuredCatalog = [
-      ...categorySections.flatMap((category) =>
-        category.rawItems.map((item) => ({
+      ...categorySections.flatMap((category: {
+        title: string;
+        rawItems: MerchantMenuItem[];
+      }) =>
+        category.rawItems.map((item: MerchantMenuItem) => ({
           categoryTitle: category.title,
           item,
         }))
       ),
-      ...uncategorizedItems.map((item) => ({
+      ...uncategorizedItems.map((item: MerchantMenuItem) => ({
         categoryTitle: "Fresh Picks",
         item,
       })),
@@ -179,7 +198,9 @@ export async function GET() {
       featuredSourceItems.length > 0
         ? featuredSourceItems.map(({ item }) => item)
         : dedupeByName([
-            ...categorySections.flatMap((category) => category.rawItems),
+            ...categorySections.flatMap((category: {
+              rawItems: MerchantMenuItem[];
+            }) => category.rawItems),
             ...uncategorizedItems,
           ])
     ).map(toDisplayMenuItem);
@@ -190,7 +211,10 @@ export async function GET() {
         (fallback) => !featuredItems.some((item) => item.name === fallback.name)
       ),
     ].slice(0, 3);
-    const fullMenu: DisplayMenuCategory[] = categorySections.map((category) => ({
+    const fullMenu: DisplayMenuCategory[] = categorySections.map((category: {
+      title: string;
+      items: ReturnType<typeof toDisplayMenuItem>[];
+    }) => ({
       title: category.title,
       items: category.items,
     }));
