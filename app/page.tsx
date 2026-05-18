@@ -5,6 +5,7 @@
 
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { ShoppingCart, Phone, MapPin, Mail, Clock, CheckCircle2, DollarSign, Zap, Gift, Menu as MenuIcon, X } from "lucide-react";
 import FullMenu from "./components/FullMenu";
@@ -450,14 +451,18 @@ export default function App() {
 
           {/* DESKTOP NAV */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-blue-100">
-            <button 
-              onClick={() => setView("menu")} 
-              className="hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 font-bold uppercase tracking-widest"
-            >
+            <Link href="/menu" className="hover:text-white transition-colors">
               Menu
-            </button>
-            <a href="#deals" className="hover:text-white transition-colors">Deals</a>
-            <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+            </Link>
+            <Link href="/location" className="hover:text-white transition-colors">
+              Location
+            </Link>
+            <Link href="/about" className="hover:text-white transition-colors">
+              About
+            </Link>
+            <Link href="/contact" className="hover:text-white transition-colors">
+              Contact
+            </Link>
           </nav>
 
           {/* CTA */}
@@ -493,9 +498,18 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             className="absolute top-14 left-0 w-full bg-blue-950 border-b border-white/10 shadow-xl md:hidden py-8 flex flex-col items-center gap-6 text-sm font-bold uppercase tracking-widest text-blue-100"
           >
-            <button onClick={() => { setView("menu"); setIsMenuOpen(false); }} className="hover:text-white transition-colors">Menu</button>
-            <a href="#deals" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors">Deals</a>
-            <a href="#contact" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors">Contact</a>
+            <Link href="/menu" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors">
+              Menu
+            </Link>
+            <Link href="/location" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors">
+              Location
+            </Link>
+            <Link href="/about" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors">
+              About
+            </Link>
+            <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors">
+              Contact
+            </Link>
           </motion.div>
         )}
       </header>
@@ -851,10 +865,10 @@ export default function App() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { local: "/Images/sandwich.png", fallback: "https://images.unsplash.com/photo-1559742811-822873691df8?auto=format&fit=crop&w=800&q=80" },
-              { local: "/Images/fishchips.jpg", fallback: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80" },
-              { local: "/Images/red-snapper.png", fallback: "https://images.unsplash.com/photo-1534604973900-c41ab4c5e636?auto=format&fit=crop&w=800&q=80" },
-              { local: "/Images/combo.png", fallback: "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=800&q=80" }
+              { local: "/Images/Plenty Of Fish-230.jpg", fallback: "https://images.unsplash.com/photo-1559742811-822873691df8?auto=format&fit=crop&w=800&q=80" },
+              { local: "/Images/Plenty Of Fish-231.jpg", fallback: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80" },
+              { local: "/Images/meal.jpg", fallback: "https://images.unsplash.com/photo-1534604973900-c41ab4c5e636?auto=format&fit=crop&w=800&q=80" },
+              { local: "/Images/meal2.jpg", fallback: "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=800&q=80" }
             ].map((img, i) => (
               <motion.div 
                 key={i}
