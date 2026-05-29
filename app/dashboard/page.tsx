@@ -1,15 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Dashboard | Plenty of Fish Seafood",
   description:
     "Internal CRM dashboard for captured leads and direct-order submissions.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
+export const dynamic = "force-dynamic";
+
 function currencyFromCents(value: number) {
-  return `$${(value / 100).toFixed(2)}`;
+  const cents = Number(value);
+  if (!Number.isFinite(cents)) {
+    return "$0.00";
+  }
+
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+function safeCents(value: unknown) {
+  const cents = Number(value);
+  return Number.isFinite(cents) ? cents : 0;
 }
 
 function formatDate(value: Date) {
@@ -22,33 +39,47 @@ function formatDate(value: Date) {
 }
 
 export default async function DashboardPage() {
-  const [orders, leads] = await Promise.all([
-    prisma.orderCapture.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 25,
-      include: {
-        customerLead: true,
-      },
-    }),
-    prisma.customerLead.findMany({
-      orderBy: {
-        lastSeenAt: "desc",
-      },
-      take: 25,
-      include: {
-        _count: {
-          select: {
-            orderCaptures: true,
+  let orders: Prisma.OrderCaptureGetPayload<{
+    include: { customerLead: true };
+  }>[] = [];
+  let leads: Prisma.CustomerLeadGetPayload<{
+    include: { _count: { select: { orderCaptures: true } } };
+  }>[] = [];
+  let loadError: string | null = null;
+
+  try {
+    [orders, leads] = await Promise.all([
+      prisma.orderCapture.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 25,
+        include: {
+          customerLead: true,
+        },
+      }),
+      prisma.customerLead.findMany({
+        orderBy: {
+          lastSeenAt: "desc",
+        },
+        take: 25,
+        include: {
+          _count: {
+            select: {
+              orderCaptures: true,
+            },
           },
         },
-      },
-    }),
-  ]);
+      }),
+    ]);
+  } catch (error) {
+    console.error("dashboard-load-failed", error);
+    loadError =
+      "CRM tables are not available to the running app yet. Regenerate Prisma and redeploy, then reload this dashboard.";
+  }
 
   const totalRevenueCents = orders.reduce(
-    (sum, order) => sum + order.totalCents,
+    (sum, order) => sum + safeCents(order.totalCents),
     0
   );
   const smsOptIns = leads.filter((lead) => lead.smsConsent).length;
@@ -110,6 +141,15 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {loadError ? (
+          <div className="mt-8 rounded-[1.75rem] border border-amber-300/20 bg-amber-300/10 p-6 text-amber-100">
+            <p className="text-sm font-black uppercase tracking-[0.2em] text-amber-200">
+              Setup Needed
+            </p>
+            <p className="mt-3 text-base leading-relaxed">{loadError}</p>
+          </div>
+        ) : null}
+
         <div className="mt-8 grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
           <section className="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
             <div className="mb-6 flex items-center justify-between">
@@ -143,7 +183,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className="text-left sm:text-right">
                         <p className="text-xl font-black text-emerald-300">
-                          {currencyFromCents(order.totalCents)}
+                          {currencyFromCents(safeCents(order.totalCents))}
                         </p>
                         <p className="mt-1 text-xs uppercase tracking-[0.2em] text-blue-200/50">
                           {order.fulfillmentType}
