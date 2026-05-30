@@ -1,6 +1,63 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { z } from "zod";
 import { prisma } from "@/lib/db";
+import {
+  checkRateLimit,
+  getClientIp,
+  hasFilledHoneypot,
+  verifyTurnstileToken,
+} from "@/lib/request-guard";
+
+const orderCaptureSchema = z.object({
+  customer: z.object({
+    name: z.string().trim().min(2).max(80),
+    phone: z.string().trim().min(7).max(30),
+    email: z
+      .string()
+      .trim()
+      .email("Enter a valid email address.")
+      .optional()
+      .nullable()
+      .or(z.literal("")),
+  }),
+  consents: z
+    .object({
+      sms: z.boolean().optional().default(false),
+      email: z.boolean().optional().default(false),
+      textVersion: z.string().trim().max(80).optional().nullable(),
+    })
+    .optional()
+    .default({}),
+  order: z.object({
+    fulfillmentType: z.string().trim().max(40).optional().default("pickup"),
+    pickupTime: z.string().trim().max(80).optional().nullable(),
+    total: z.number().finite().min(0).max(5000),
+    items: z
+      .array(
+        z.object({
+          name: z.string().trim().min(1).max(140),
+          price: z.number().finite().min(0).max(1000),
+          quantity: z.number().int().min(1).max(99),
+        })
+      )
+      .min(1)
+      .max(100),
+  }),
+  session: z
+    .object({
+      referrer: z.string().max(500).optional().nullable(),
+      path: z.string().max(250).optional().nullable(),
+      deviceType: z.string().max(40).optional().nullable(),
+    })
+    .optional()
+    .nullable(),
+  website: z.string().trim().max(200).optional().default(""),
+  company: z.string().trim().max(200).optional().default(""),
+  url: z.string().trim().max(200).optional().default(""),
+  turnstileToken: z.string().trim().max(4096).optional().default(""),
+});
 
 function normalizePhone(phone: string) {
   return phone.replace(/\D/g, "");
@@ -22,31 +79,94 @@ function dollarsToCents(value: unknown) {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const headerStore = await headers();
-    const forwardedFor = headerStore.get("x-forwarded-for");
-    const ip =
-      forwardedFor?.split(",")[0]?.trim() ||
-      headerStore.get("x-real-ip") ||
-      "unknown";
+    const body = await req.json().catch(() => null);
+    const parsed = orderCaptureSchema.safeParse(body);
 
-    const customerName = String(body?.customer?.name || "").trim();
-    const customerPhone = String(body?.customer?.phone || "").trim();
-    const customerEmail = normalizeEmail(body?.customer?.email);
-    const phoneNormalized = normalizePhone(customerPhone);
-
-    if (!customerName || !phoneNormalized) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Name and phone number are required." },
-        { status: 400 }
+        {
+          error: "Invalid order details.",
+          details: parsed.error.flatten().fieldErrors,
+        },
+        { status: 422 }
       );
     }
 
-    const smsConsent = Boolean(body?.consents?.sms);
-    const emailConsent = Boolean(body?.consents?.email);
+    if (
+      hasFilledHoneypot([
+        parsed.data.website,
+        parsed.data.company,
+        parsed.data.url,
+      ])
+    ) {
+      return NextResponse.json({ ok: true });
+    }
+
+    const headerStore = await headers();
+    const ip = getClientIp(headerStore);
+    const turnstile = await verifyTurnstileToken({
+      token: parsed.data.turnstileToken,
+      ip,
+    });
+
+    if (!turnstile.ok) {
+      return NextResponse.json(
+        { error: "Bot verification failed. Please refresh and try again." },
+        { status: 403 }
+      );
+    }
+
+    const rateLimit = checkRateLimit({
+      key: `order:${ip}`,
+      limit: 6,
+      windowMs: 10 * 60 * 1000,
+    });
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many order attempts. Please try again shortly." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfterSeconds),
+          },
+        }
+      );
+    }
+
+    const data = parsed.data;
+
+    const customerName = data.customer.name;
+    const customerPhone = data.customer.phone;
+    const customerEmail = normalizeEmail(data.customer.email);
+    const phoneNormalized = normalizePhone(customerPhone);
+
+    if (phoneNormalized.length < 7) {
+      return NextResponse.json(
+        { error: "Enter a valid phone number." },
+        { status: 422 }
+      );
+    }
+
+    const smsConsent = Boolean(data.consents.sms);
+    const emailConsent = Boolean(data.consents.email);
+    const consentsJson = {
+      sms: smsConsent,
+      email: emailConsent,
+      textVersion: data.consents.textVersion ?? null,
+    };
+    const sessionJson = data.session
+      ? {
+          referrer: data.session.referrer ?? null,
+          path: data.session.path ?? null,
+          deviceType: data.session.deviceType ?? null,
+        }
+      : Prisma.JsonNull;
 
     const payload = {
-      ...body,
+      ...data,
+      consents: consentsJson,
+      session: sessionJson === Prisma.JsonNull ? null : sessionJson,
       compliance: {
         capturedAt: new Date().toISOString(),
         ip,
@@ -65,7 +185,7 @@ export async function POST(req: Request) {
         emailNormalized: customerEmail,
         smsConsent,
         emailConsent,
-        consentTextVersion: body?.consents?.textVersion || null,
+        consentTextVersion: consentsJson.textVersion,
         lastSeenAt: new Date(),
       },
       create: {
@@ -76,7 +196,7 @@ export async function POST(req: Request) {
         emailNormalized: customerEmail,
         smsConsent,
         emailConsent,
-        consentTextVersion: body?.consents?.textVersion || null,
+        consentTextVersion: consentsJson.textVersion,
       },
     });
 
@@ -86,14 +206,12 @@ export async function POST(req: Request) {
         customerName,
         customerPhone,
         customerEmail,
-        fulfillmentType: String(body?.order?.fulfillmentType || "pickup"),
-        pickupTime: body?.order?.pickupTime
-          ? String(body.order.pickupTime)
-          : null,
-        totalCents: dollarsToCents(body?.order?.total),
-        itemsJson: body?.order?.items || [],
-        consentsJson: body?.consents || null,
-        sessionJson: body?.session || null,
+        fulfillmentType: data.order.fulfillmentType,
+        pickupTime: data.order.pickupTime || null,
+        totalCents: dollarsToCents(data.order.total),
+        itemsJson: data.order.items,
+        consentsJson,
+        sessionJson,
         complianceJson: payload.compliance,
       },
     });

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import {
-  FALLBACK_FEATURED_MENU_ITEMS,
+  CURATED_HOMEPAGE_FEATURED_ITEMS,
   FALLBACK_FULL_MENU,
   MONDAY_MADNESS_CATEGORY,
   TACO_TUESDAY_CATEGORY,
@@ -10,9 +10,14 @@ import {
   normalizeCategoryTitle,
   sortDisplayCategories,
   type DisplayMenuCategory,
+  type MenuApiPayload,
   isDisplayableMenuItem,
   toDisplayMenuItem,
 } from "@/lib/menu";
+
+const FEATURED_ITEMS_SOURCE = "curated_marketing" as const;
+const FEATURED_ITEMS_NOTE =
+  "Homepage cards are curated marketing placements. The fullMenu field is the operational menu source of truth.";
 
 type MerchantMenuPayload = Prisma.MerchantConnectionGetPayload<{
   include: {
@@ -84,9 +89,11 @@ export async function GET() {
     if (!hasNormalizedMenu || !merchantConnection) {
       return NextResponse.json({
         source: "fallback",
-        featuredItems: FALLBACK_FEATURED_MENU_ITEMS,
+        featuredItemsSource: FEATURED_ITEMS_SOURCE,
+        featuredItemsNote: FEATURED_ITEMS_NOTE,
+        featuredItems: CURATED_HOMEPAGE_FEATURED_ITEMS,
         fullMenu: FALLBACK_FULL_MENU,
-      });
+      } satisfies MenuApiPayload);
     }
 
     const groupedCategories = new Map<string, MerchantMenuItem[]>();
@@ -156,18 +163,22 @@ export async function GET() {
 
     return NextResponse.json({
       source: "clover",
-      featuredItems: FALLBACK_FEATURED_MENU_ITEMS,
+      featuredItemsSource: FEATURED_ITEMS_SOURCE,
+      featuredItemsNote: FEATURED_ITEMS_NOTE,
+      featuredItems: CURATED_HOMEPAGE_FEATURED_ITEMS,
       fullMenu: orderedMenu.length > 0 ? orderedMenu : FALLBACK_FULL_MENU,
-    });
+    } satisfies MenuApiPayload);
   } catch (error) {
     console.error("menu-route-failed", error);
     return NextResponse.json(
       {
         error: "Menu load failed.",
         source: "fallback",
-        featuredItems: FALLBACK_FEATURED_MENU_ITEMS,
+        featuredItemsSource: FEATURED_ITEMS_SOURCE,
+        featuredItemsNote: FEATURED_ITEMS_NOTE,
+        featuredItems: CURATED_HOMEPAGE_FEATURED_ITEMS,
         fullMenu: FALLBACK_FULL_MENU,
-      },
+      } satisfies MenuApiPayload & { error: string },
       { status: 500 }
     );
   }

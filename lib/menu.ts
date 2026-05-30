@@ -11,6 +11,16 @@ export type DisplayMenuCategory = {
   items: DisplayMenuItem[];
 };
 
+export type FeaturedItemsSource = "curated_marketing" | "live_menu";
+
+export type MenuApiPayload = {
+  source: "fallback" | "clover";
+  featuredItemsSource: FeaturedItemsSource;
+  featuredItemsNote: string;
+  featuredItems: DisplayMenuItem[];
+  fullMenu: DisplayMenuCategory[];
+};
+
 const MENU_UTILITY_NAME_PATTERN =
   /(gift\s*card|delivery\s*fee|service\s*fee|tip\b)/i;
 const FEATURED_CATEGORY_EXCLUDE_PATTERN =
@@ -18,7 +28,7 @@ const FEATURED_CATEGORY_EXCLUDE_PATTERN =
 const FEATURED_NAME_INCLUDE_PATTERN =
   /(shrimp|fish|catfish|snapper|salmon|tilapia|cod|whiting|oyster|combo|platter|rice|taco|lobster|buffalo|filet|fillet|nuggets?)/i;
 
-export const FALLBACK_FEATURED_MENU_ITEMS: DisplayMenuItem[] = [
+export const CURATED_HOMEPAGE_FEATURED_ITEMS: DisplayMenuItem[] = [
   {
     name: "Shrimp Basket",
     desc: "Crispy shrimp, fries, house sauce",
@@ -39,6 +49,8 @@ export const FALLBACK_FEATURED_MENU_ITEMS: DisplayMenuItem[] = [
     badge: "Best Value",
   },
 ];
+
+export const FALLBACK_FEATURED_MENU_ITEMS = CURATED_HOMEPAGE_FEATURED_ITEMS;
 
 export const FALLBACK_FULL_MENU: DisplayMenuCategory[] = [
   {

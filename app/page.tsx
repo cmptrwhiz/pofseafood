@@ -6,14 +6,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import { motion, AnimatePresence } from "motion/react";
 import { ShoppingCart, Phone, MapPin, Mail, Clock, CheckCircle2, DollarSign, Zap, Gift, Menu as MenuIcon, X } from "lucide-react";
 import FullMenu from "./components/FullMenu";
 import {
-  FALLBACK_FEATURED_MENU_ITEMS,
+  CURATED_HOMEPAGE_FEATURED_ITEMS,
   FALLBACK_FULL_MENU,
   type DisplayMenuCategory,
   type DisplayMenuItem,
+  type MenuApiPayload,
 } from "@/lib/menu";
 
 const CONSENT_TEXT_VERSION = "checkout-consent-v1";
@@ -61,10 +63,45 @@ const mondayMadnessItems = [
 
 const HEADER_LOGO_SRC = "/logo.png";
 const RUNNER_MASCOT_SRC = "/old logo-final.png";
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
+
+function TurnstileChallenge({ className = "" }: { className?: string }) {
+  if (!TURNSTILE_SITE_KEY) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`cf-turnstile ${className}`}
+      data-sitekey={TURNSTILE_SITE_KEY}
+      data-theme="dark"
+    />
+  );
+}
+
+function getTurnstileToken(form?: HTMLFormElement | null) {
+  if (!form || !TURNSTILE_SITE_KEY) {
+    return "";
+  }
+
+  return String(new FormData(form).get("cf-turnstile-response") || "");
+}
+
+function resetTurnstile() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const turnstileWindow = window as Window & {
+    turnstile?: { reset: () => void };
+  };
+  turnstileWindow.turnstile?.reset();
+}
 
 export default function App() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -72,7 +109,7 @@ export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [cart, setCart] = useState<{ name: string; price: number; quantity: number }[]>([]);
   const [featuredMenuItems, setFeaturedMenuItems] = useState<DisplayMenuItem[]>(
-    FALLBACK_FEATURED_MENU_ITEMS
+    CURATED_HOMEPAGE_FEATURED_ITEMS
   );
   const [fullMenuData, setFullMenuData] = useState<DisplayMenuCategory[]>([]);
   const [isMenuLoading, setIsMenuLoading] = useState(true);
@@ -144,10 +181,7 @@ export default function App() {
           throw new Error("Menu request failed");
         }
 
-        const data = (await response.json()) as {
-          featuredItems?: DisplayMenuItem[];
-          fullMenu?: DisplayMenuCategory[];
-        };
+        const data = (await response.json()) as Partial<MenuApiPayload>;
 
         if (!isActive) {
           return;
@@ -196,24 +230,32 @@ export default function App() {
     }
   }, [view]);
 
-  const handleJoinList = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  const handleJoinList = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!phone && !email) return;
     try {
-      await fetch("/api/sms", {
+      const turnstileToken = getTurnstileToken(e.currentTarget);
+      const response = await fetch("/api/sms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, email })
+        body: JSON.stringify({ phone, email, website, turnstileToken })
       });
+      if (!response.ok) {
+        throw new Error("VIP signup failed");
+      }
       setSubmitted(true);
       setPhone("");
       setEmail("");
+      setWebsite("");
     } catch (err) {
       console.error("Join list failed", err);
+      resetTurnstile();
     }
   };
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (!orderInfo.name || !orderInfo.phone || !orderInfo.time) {
       alert("Please provide your name, phone number, and pickup time.");
       return;
@@ -222,6 +264,7 @@ export default function App() {
     setIsPlacingOrder(true);
 
     try {
+      const turnstileToken = getTurnstileToken(e.currentTarget);
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -247,6 +290,8 @@ export default function App() {
             path: typeof window !== "undefined" ? window.location.pathname : "/",
             deviceType: typeof window !== "undefined" && window.innerWidth < 768 ? "mobile" : "desktop",
           },
+          website: "",
+          turnstileToken,
         }),
       });
 
@@ -279,6 +324,7 @@ export default function App() {
       });
     } catch (err) {
       console.error("Checkout failed", err);
+      resetTurnstile();
       alert("We couldn't submit the order right now. Please try again.");
     } finally {
       setIsPlacingOrder(false);
@@ -287,6 +333,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900 relative overflow-hidden">
+      {TURNSTILE_SITE_KEY ? (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          strategy="afterInteractive"
+        />
+      ) : null}
       {/* CART DRAWER */}
       <AnimatePresence>
         {isCartOpen && (
@@ -610,6 +662,15 @@ export default function App() {
               >
                 {!submitted ? (
                   <form onSubmit={handleJoinList} className="space-y-4">
+                    <input
+                      aria-hidden="true"
+                      autoComplete="off"
+                      className="hidden"
+                      name="website"
+                      tabIndex={-1}
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                    />
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="w-4 h-4 text-amber-400" />
                       <p className="text-white font-bold uppercase tracking-widest text-xs">Join VIP List for Exclusive Deals</p>
@@ -644,6 +705,7 @@ export default function App() {
                         Join
                       </button>
                     </div>
+                    <TurnstileChallenge className="flex justify-center" />
                     <p className="text-[10px] text-white/40 uppercase tracking-tighter">By joining, you agree to receive marketing updates. No spam, just fish.</p>
                   </form>
                 ) : (
@@ -1028,29 +1090,41 @@ export default function App() {
                   Get exclusive secret menu items, early access to deals, and a special gift on your birthday. 
                   No scrolling required—we'll send the best catches straight to you.
                 </p>
-                <form onSubmit={handleJoinList} className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
-                  <input 
-                    type="email" 
-                    placeholder="Email Address" 
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="flex-grow bg-white/5 border border-white/10 rounded-2xl py-5 px-8 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-all text-lg"
+                <form onSubmit={handleJoinList} className="flex flex-col gap-4 max-w-2xl mx-auto">
+                  <input
+                    aria-hidden="true"
+                    autoComplete="off"
+                    className="hidden"
+                    name="website"
+                    tabIndex={-1}
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
                   />
-                  <input 
-                    type="tel" 
-                    placeholder="Phone Number" 
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="flex-grow bg-white/5 border border-white/10 rounded-2xl py-5 px-8 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-all text-lg"
-                  />
-                  <button 
-                    type="submit"
-                    className="bg-red-600 hover:bg-red-700 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-red-600/20"
-                  >
-                    Join Now
-                  </button>
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <input 
+                      type="email" 
+                      placeholder="Email Address" 
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="flex-grow bg-white/5 border border-white/10 rounded-2xl py-5 px-8 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-all text-lg"
+                    />
+                    <input 
+                      type="tel" 
+                      placeholder="Phone Number" 
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="flex-grow bg-white/5 border border-white/10 rounded-2xl py-5 px-8 text-white placeholder:text-white/30 focus:outline-none focus:border-blue-400 transition-all text-lg"
+                    />
+                    <button 
+                      type="submit"
+                      className="bg-red-600 hover:bg-red-700 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-red-600/20"
+                    >
+                      Join Now
+                    </button>
+                  </div>
+                  <TurnstileChallenge className="flex justify-center" />
                 </form>
                 <p className="text-xs text-white/30 mt-6 uppercase tracking-widest">
                   Secure & Private • Unsubscribe anytime
@@ -1301,7 +1375,7 @@ export default function App() {
               <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl">
                 <h2 className="font-display text-4xl sm:text-6xl text-white mb-8 uppercase">CHECKOUT</h2>
                 
-                <div className="space-y-6">
+                <form onSubmit={handlePlaceOrder} className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-blue-200/50 uppercase tracking-widest">Full Name</label>
                     <input 
@@ -1384,8 +1458,9 @@ export default function App() {
                       <span>Total Due</span>
                       <span>${cartTotal.toFixed(2)}</span>
                     </div>
+                    <TurnstileChallenge className="mb-6 flex justify-center" />
                     <button 
-                      onClick={handlePlaceOrder}
+                      type="submit"
                       disabled={isPlacingOrder}
                       className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-6 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-emerald-600/20 transition-all active:scale-95 flex items-center justify-center gap-3"
                     >
@@ -1396,7 +1471,7 @@ export default function App() {
                       Payment will be collected at pickup.
                     </p>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
           </motion.div>
