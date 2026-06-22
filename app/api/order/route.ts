@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { notifyRestaurantOfOrder } from "@/lib/order-notifications";
 import {
   checkRateLimit,
   getClientIp,
@@ -200,6 +201,8 @@ export async function POST(req: Request) {
       },
     });
 
+    const totalCents = dollarsToCents(data.order.total);
+
     const orderCapture = await prisma.orderCapture.create({
       data: {
         customerLeadId: lead.id,
@@ -208,7 +211,7 @@ export async function POST(req: Request) {
         customerEmail,
         fulfillmentType: data.order.fulfillmentType,
         pickupTime: data.order.pickupTime || null,
-        totalCents: dollarsToCents(data.order.total),
+        totalCents,
         itemsJson: data.order.items,
         consentsJson,
         sessionJson,
@@ -216,13 +219,58 @@ export async function POST(req: Request) {
       },
     });
 
+    const notification = await notifyRestaurantOfOrder({
+      orderId: orderCapture.id,
+      customerName,
+      customerPhone,
+      customerEmail,
+      fulfillmentType: data.order.fulfillmentType,
+      pickupTime: data.order.pickupTime || null,
+      totalCents,
+      items: data.order.items,
+    });
+
+    const orderStatus =
+      notification.status === "restaurant_notified"
+        ? "restaurant_notified"
+        : notification.status === "notification_failed"
+          ? "notification_failed"
+          : "captured";
+
+    if (orderStatus !== orderCapture.status) {
+      await prisma.orderCapture.update({
+        where: {
+          id: orderCapture.id,
+        },
+        data: {
+          status: orderStatus,
+          complianceJson: {
+            ...payload.compliance,
+            notification:
+              notification.status === "notification_failed"
+                ? { status: notification.status, error: notification.error }
+                : { status: notification.status },
+          },
+        },
+      });
+    }
+
+    if (!notification.ok) {
+      console.error("order-notification-failed", {
+        orderId: orderCapture.id,
+        error: notification.error,
+      });
+    }
+
     console.log("order-capture", JSON.stringify(payload));
 
     return NextResponse.json({
       ok: true,
       orderId: orderCapture.id,
       leadId: lead.id,
+      status: orderStatus,
       automation: {
+        restaurantEmailSent: notification.status === "restaurant_notified",
         orderReceivedSmsQueued: smsConsent,
         readySmsEligible: smsConsent,
         promoSmsEligible: smsConsent || emailConsent,

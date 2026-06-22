@@ -38,6 +38,44 @@ function formatDate(value: Date) {
   }).format(value);
 }
 
+function formatDateTime(value?: Date | null) {
+  if (!value) {
+    return "Not synced yet";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(value);
+}
+
+function statusLabel(status: string) {
+  return status.replaceAll("_", " ");
+}
+
+function statusClassName(status: string) {
+  if (status === "restaurant_notified") {
+    return "bg-emerald-500/15 text-emerald-300";
+  }
+
+  if (status === "notification_failed") {
+    return "bg-amber-500/15 text-amber-200";
+  }
+
+  if (status === "completed") {
+    return "bg-blue-500/15 text-blue-200";
+  }
+
+  if (status === "cancelled") {
+    return "bg-red-500/15 text-red-200";
+  }
+
+  return "bg-white/8 text-blue-100/75";
+}
+
 export default async function DashboardPage() {
   let orders: Prisma.OrderCaptureGetPayload<{
     include: { customerLead: true };
@@ -45,10 +83,30 @@ export default async function DashboardPage() {
   let leads: Prisma.CustomerLeadGetPayload<{
     include: { _count: { select: { orderCaptures: true } } };
   }>[] = [];
+  let merchantConnection: Prisma.MerchantConnectionGetPayload<{
+    include: {
+      _count: {
+        select: {
+          menuItems: true;
+          menuCategories: true;
+        };
+      };
+    };
+  }> | null = null;
+  let syncEvents: Prisma.SyncEventGetPayload<{
+    include: {
+      merchantConnection: {
+        select: {
+          merchantName: true;
+          cloverMerchantId: true;
+        };
+      };
+    };
+  }>[] = [];
   let loadError: string | null = null;
 
   try {
-    [orders, leads] = await Promise.all([
+    [orders, leads, merchantConnection, syncEvents] = await Promise.all([
       prisma.orderCapture.findMany({
         orderBy: {
           createdAt: "desc",
@@ -71,6 +129,31 @@ export default async function DashboardPage() {
           },
         },
       }),
+      prisma.merchantConnection.findFirst({
+        orderBy: [{ lastSyncAt: "desc" }, { createdAt: "desc" }],
+        include: {
+          _count: {
+            select: {
+              menuItems: true,
+              menuCategories: true,
+            },
+          },
+        },
+      }),
+      prisma.syncEvent.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 10,
+        include: {
+          merchantConnection: {
+            select: {
+              merchantName: true,
+              cloverMerchantId: true,
+            },
+          },
+        },
+      }),
     ]);
   } catch (error) {
     console.error("dashboard-load-failed", error);
@@ -82,6 +165,27 @@ export default async function DashboardPage() {
     (sum, order) => sum + safeCents(order.totalCents),
     0
   );
+  const notifiedOrders = orders.filter(
+    (order) => order.status === "restaurant_notified"
+  ).length;
+  const estimatedThirdPartyFeesAvoidedCents = orders.reduce((sum, order) => {
+    const itemCount = Array.isArray(order.itemsJson)
+      ? order.itemsJson.reduce<number>((count, item) => {
+          if (
+            typeof item === "object" &&
+            item &&
+            "quantity" in item &&
+            typeof item.quantity === "number"
+          ) {
+            return count + item.quantity;
+          }
+
+          return count + 1;
+        }, 0)
+      : 1;
+
+    return sum + itemCount * 400;
+  }, 0);
   const smsOptIns = leads.filter((lead) => lead.smsConsent).length;
   const emailOptIns = leads.filter((lead) => lead.emailConsent).length;
 
@@ -110,7 +214,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-5">
           <div className="rounded-[1.75rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-200/50">
               Recent Orders
@@ -125,10 +229,18 @@ export default async function DashboardPage() {
           </div>
           <div className="rounded-[1.75rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-200/50">
-              Visible Revenue
+              Direct Revenue
             </p>
             <p className="mt-4 text-4xl font-black text-white">
               {currencyFromCents(totalRevenueCents)}
+            </p>
+          </div>
+          <div className="rounded-[1.75rem] border border-emerald-300/15 bg-emerald-400/8 p-6 backdrop-blur-sm">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200/60">
+              Fees Avoided
+            </p>
+            <p className="mt-4 text-4xl font-black text-emerald-300">
+              {currencyFromCents(estimatedThirdPartyFeesAvoidedCents)}
             </p>
           </div>
           <div className="rounded-[1.75rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
@@ -139,6 +251,94 @@ export default async function DashboardPage() {
               {smsOptIns} SMS / {emailOptIns} Email
             </p>
           </div>
+        </div>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="rounded-[2rem] border border-emerald-300/15 bg-emerald-400/8 p-6 backdrop-blur-sm">
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-200/70">
+              Proof Loop
+            </p>
+            <h2 className="mt-3 text-3xl font-black text-white">
+              Clover menu in. Direct orders out.
+            </h2>
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-[1.5rem] bg-[#071a3a]/80 p-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-200/50">
+                  Last Clover Sync
+                </p>
+                <p className="mt-3 text-lg font-black text-white">
+                  {formatDateTime(merchantConnection?.lastSyncAt)}
+                </p>
+              </div>
+              <div className="rounded-[1.5rem] bg-[#071a3a]/80 p-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-200/50">
+                  Synced Menu
+                </p>
+                <p className="mt-3 text-lg font-black text-white">
+                  {merchantConnection?._count.menuItems ?? 0} items /{" "}
+                  {merchantConnection?._count.menuCategories ?? 0} categories
+                </p>
+              </div>
+              <div className="rounded-[1.5rem] bg-[#071a3a]/80 p-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-200/50">
+                  Notified Orders
+                </p>
+                <p className="mt-3 text-lg font-black text-white">
+                  {notifiedOrders} of {orders.length}
+                </p>
+              </div>
+            </div>
+            <p className="mt-5 text-sm leading-relaxed text-emerald-100/75">
+              Fee savings estimate uses $4 per ordered item as a conservative
+              midpoint of common third-party app markup. It is directional proof,
+              not accounting.
+            </p>
+          </section>
+
+          <section className="rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-sm">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-2xl font-black text-white">Sync History</h2>
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-200/50">
+                Latest 10
+              </span>
+            </div>
+            <div className="space-y-3">
+              {syncEvents.length === 0 ? (
+                <div className="rounded-[1.5rem] border border-dashed border-white/10 bg-[#071a3a] p-5 text-sm text-blue-100/60">
+                  No sync events recorded yet.
+                </div>
+              ) : (
+                syncEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="rounded-[1.25rem] border border-white/10 bg-[#071a3a] p-4"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-black text-white">{event.eventType}</p>
+                        <p className="mt-1 text-xs text-blue-100/55">
+                          {event.source} •{" "}
+                          {event.merchantConnection.merchantName ||
+                            event.merchantConnection.cloverMerchantId}
+                        </p>
+                      </div>
+                      <span className="rounded-full bg-white/8 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-blue-100/75">
+                        {event.status}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-xs text-blue-200/50">
+                      {formatDateTime(event.createdAt)}
+                    </p>
+                    {event.errorMessage ? (
+                      <p className="mt-2 text-xs text-amber-200">
+                        {event.errorMessage}
+                      </p>
+                    ) : null}
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
         </div>
 
         {loadError ? (
@@ -185,6 +385,13 @@ export default async function DashboardPage() {
                         <p className="text-xl font-black text-emerald-300">
                           {currencyFromCents(safeCents(order.totalCents))}
                         </p>
+                        <span
+                          className={`mt-2 inline-flex rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${statusClassName(
+                            order.status
+                          )}`}
+                        >
+                          {statusLabel(order.status)}
+                        </span>
                         <p className="mt-1 text-xs uppercase tracking-[0.2em] text-blue-200/50">
                           {order.fulfillmentType}
                           {order.pickupTime ? ` • ${order.pickupTime}` : ""}
