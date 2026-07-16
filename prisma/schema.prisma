@@ -136,3 +136,20 @@ model OrderCapture {
   updatedAt       DateTime      @updatedAt
   customerLead    CustomerLead? @relation(fields: [customerLeadId], references: [id], onDelete: SetNull)
 }
+
+model SmsSubscriber {
+  id                 String    @id @default(cuid())
+  firstName          String
+  phone              String    @unique
+  email              String?
+  smsMarketingOptIn  Boolean   @default(false)
+  consentTimestamp   DateTime?
+  consentSource      String    @default("vip_landing_page")
+  consentTextVersion String    @default("v1.0")
+  ipAddress          String?
+  userAgent          String?
+  status             String    @default("active")
+  optOutTimestamp    DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
