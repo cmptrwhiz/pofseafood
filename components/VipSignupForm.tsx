@@ -111,7 +111,7 @@ export function VipSignupForm() {
             required
             name="firstName"
             maxLength={60}
-            placeholder="Darryl"
+            placeholder="First name"
             className="rounded-2xl border border-white/20 bg-[#061a36] px-4 py-4 text-base text-white outline-none ring-[#7cf0ba]/50 transition placeholder:text-blue-100/40 focus:ring-4"
           />
         </label>
@@ -123,7 +123,7 @@ export function VipSignupForm() {
             name="phone"
             inputMode="tel"
             autoComplete="tel"
-            placeholder="(661) 555-1234"
+            placeholder="Mobile number"
             className="rounded-2xl border border-white/20 bg-[#061a36] px-4 py-4 text-base text-white outline-none ring-[#7cf0ba]/50 transition placeholder:text-blue-100/40 focus:ring-4"
           />
         </label>
@@ -134,7 +134,7 @@ export function VipSignupForm() {
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder="Email address"
             className="rounded-2xl border border-white/20 bg-[#061a36] px-4 py-4 text-base text-white outline-none ring-[#7cf0ba]/50 transition placeholder:text-blue-100/40 focus:ring-4"
           />
         </label>
