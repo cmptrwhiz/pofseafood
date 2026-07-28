@@ -1,0 +1,58 @@
+{
+  "updatedLabel": "POF display playlist v1",
+  "items": [
+    {
+      "id": "menu-board",
+      "title": "Market Board",
+      "type": "menu-board-one",
+      "durationSeconds": 45
+    },
+    {
+      "id": "menu-board-2",
+      "title": "Feature Board",
+      "type": "menu-board-two",
+      "durationSeconds": 45
+    },
+    {
+      "id": "sides",
+      "title": "Additional Side Orders",
+      "type": "spotlight",
+      "durationSeconds": 20,
+      "kicker": "Add To Any Order",
+      "headline": "Additional Side Orders",
+      "subheadline": "Round out your seafood basket with hot sides and comfort picks.",
+      "image": "/Images/combo.png",
+      "items": [
+        { "name": "Hush Puppies", "price": "$3.08+" },
+        { "name": "Garlic Bread", "price": "$3.59+" },
+        { "name": "Candy Yams", "price": "$0.00+" },
+        { "name": "Fried Okra", "price": "$3.09+" }
+      ]
+    },
+    {
+      "id": "drinks-desserts",
+      "title": "Drinks & Desserts",
+      "type": "spotlight",
+      "durationSeconds": 20,
+      "kicker": "Cold Drinks. Sweet Finish.",
+      "headline": "Drinks & Desserts",
+      "subheadline": "Add drinks, cobbler, and pie before pickup.",
+      "image": "/Images/Plenty Of Fish-240.jpg",
+      "items": [
+        { "name": "Bottled Water", "price": "$2.35" },
+        { "name": "Peach Cobbler", "price": "$5.68" },
+        { "name": "Pecan Pie", "price": "$5.16" },
+        { "name": "Dr Pepper", "price": "$3.09" },
+        { "name": "Orange Crush", "price": "$3.09" },
+        { "name": "Pepsi", "price": "$3.09" },
+        { "name": "Diet Coke", "price": "$3.09" },
+        { "name": "Coca-Cola", "price": "$3.09" },
+        { "name": "Sprite", "price": "$3.09" },
+        { "name": "Powerade - Orange", "price": "$3.09" },
+        { "name": "Powerade - Blue", "price": "$3.09" },
+        { "name": "Powerade - Red", "price": "$3.09" },
+        { "name": "Arizona", "price": "$3.09" }
+      ]
+    }
+  ]
+}
