@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import fallbackMenuBoardOne from "@/data/menu-board-one.json";
 import { formatBoardSyncTime } from "@/lib/menu-board/format";
 import type {
@@ -46,6 +46,8 @@ const heroSlides = [
   },
 ];
 
+const BOARD_VIDEO_SRC = "/menu-board/PlentyOfFishVideo.mp4";
+
 function useRotatingIndex(length: number, duration: number) {
   const [index, setIndex] = useState(0);
 
@@ -79,6 +81,62 @@ function MenuItemRow({ item }: { item: MenuBoardItem }) {
       <span className="item-name">{item.name}</span>
       <span className="price">{item.price}</span>
     </div>
+  );
+}
+
+function BoardVideo({
+  className,
+  fallbackClassName,
+}: {
+  className: string;
+  fallbackClassName: string;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasPlaybackError, setHasPlaybackError] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    video.muted = true;
+    const playVideo = async () => {
+      try {
+        await video.play();
+        setHasPlaybackError(false);
+      } catch {
+        setHasPlaybackError(true);
+      }
+    };
+
+    void playVideo();
+  }, []);
+
+  if (hasPlaybackError) {
+    return (
+      <div className={fallbackClassName} aria-hidden="true">
+        <span>Fresh seafood made to order</span>
+      </div>
+    );
+  }
+
+  return (
+    <video
+      ref={videoRef}
+      className={className}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      src={BOARD_VIDEO_SRC}
+      onCanPlay={() => {
+        void videoRef.current?.play().catch(() => setHasPlaybackError(true));
+      }}
+      onError={() => setHasPlaybackError(true)}
+    />
   );
 }
 
@@ -130,9 +188,10 @@ export function MenuBoardOne() {
   return (
     <div className="menu-board-one-root">
       <main className="board-shell">
-        <video className="board-video" autoPlay muted loop playsInline>
-          <source src="/menu-board/PlentyOfFishVideo.mp4" type="video/mp4" />
-        </video>
+        <BoardVideo
+          className="board-video"
+          fallbackClassName="board-video board-video-fallback"
+        />
         <div className="board-overlay" />
 
         <section className="board-frame">
@@ -224,9 +283,10 @@ export function MenuBoardOne() {
 
             <div className="hero-card">
               <div className="hero-video-shell">
-                <video className="hero-video" autoPlay muted loop playsInline>
-                  <source src="/menu-board/PlentyOfFishVideo.mp4" type="video/mp4" />
-                </video>
+                <BoardVideo
+                  className="hero-video"
+                  fallbackClassName="hero-video hero-video-fallback"
+                />
                 <div className="hero-video-caption">
                   <span className="hero-video-tag">Plenty of Fish</span>
                   <span className="hero-video-copy">
