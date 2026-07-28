@@ -1,7 +1,7 @@
 :root {
-  --bg-deep: #123964;
-  --bg-ocean: #2379bf;
-  --bg-soft: #a8e7ff;
+  --bg-deep: #02172d;
+  --bg-ocean: #06345d;
+  --bg-soft: #0b507d;
   --cream: #fffaf1;
   --gold: #ffd44d;
   --green: #4ecf84;
@@ -9,9 +9,9 @@
   --red-deep: #cf2f27;
   --yellow-soft: #fff0a6;
   --ink: #07213d;
-  --line: rgba(255, 255, 255, 0.14);
-  --glass: rgba(15, 56, 94, 0.82);
-  --shadow: 0 28px 90px rgba(4, 24, 43, 0.24);
+  --line: rgba(115, 190, 245, 0.34);
+  --glass: rgba(4, 43, 79, 0.88);
+  --shadow: 0 30px 90px rgba(0, 0, 0, 0.56);
 }
 
 * {
@@ -23,7 +23,7 @@
   height: 100vh;
   margin: 0;
   overflow: hidden;
-  background: linear-gradient(180deg, #c9f5ff 0%, #2a73b3 42%, #0f3861 100%);
+  background: #010e1d;
   color: #fff;
   font-family: "Avenir Next", Avenir, "Trebuchet MS", "Segoe UI", sans-serif;
 }
@@ -36,10 +36,10 @@
   place-items: center;
   padding: 1.25dvh 1.25vw;
   background:
-    radial-gradient(circle at 16% 10%, rgba(255, 214, 96, 0.34), transparent 20%),
-    radial-gradient(circle at 84% 12%, rgba(240, 79, 69, 0.18), transparent 24%),
-    radial-gradient(circle at top right, rgba(168, 231, 255, 0.24), transparent 28%),
-    linear-gradient(180deg, #a6ebff 0%, #2c84c9 42%, #103b65 82%);
+    radial-gradient(circle at 14% 2%, rgba(35, 116, 184, 0.46), transparent 27%),
+    radial-gradient(circle at 88% 4%, rgba(16, 98, 166, 0.4), transparent 20%),
+    radial-gradient(circle at 52% 100%, rgba(0, 121, 199, 0.32), transparent 36%),
+    linear-gradient(145deg, #06345d, #031b35 78%);
 }
 
 .board-video,
@@ -52,7 +52,7 @@
 
 .board-video {
   object-fit: cover;
-  filter: saturate(0.9) contrast(1.02) brightness(0.16);
+  filter: saturate(1.04) contrast(1.08) brightness(0.12);
 }
 
 .board-video-fallback {
@@ -73,7 +73,9 @@
 
 .board-overlay {
   background:
-    linear-gradient(180deg, rgba(13, 49, 86, 0.14) 0%, rgba(10, 35, 60, 0.74) 88%);
+    radial-gradient(circle at 20% 16%, rgba(58, 145, 211, 0.18), transparent 30%),
+    radial-gradient(circle at 88% 12%, rgba(19, 110, 183, 0.16), transparent 26%),
+    linear-gradient(180deg, rgba(1, 17, 34, 0.28) 0%, rgba(2, 15, 29, 0.88) 88%);
 }
 
 .board-frame {
@@ -89,9 +91,10 @@
   gap: 10px;
   border-radius: 24px;
   background:
-    linear-gradient(180deg, rgba(24, 81, 129, 0.88), rgba(12, 46, 79, 0.94)),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 40%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+    radial-gradient(circle at 12% 0%, rgba(42, 130, 199, 0.24), transparent 30%),
+    linear-gradient(180deg, rgba(6, 54, 95, 0.92), rgba(3, 24, 48, 0.98)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.07), transparent 42%);
+  border: 1px solid rgba(72, 156, 218, 0.5);
   box-shadow: var(--shadow);
   backdrop-filter: blur(16px);
   overflow: hidden;
@@ -103,7 +106,8 @@
 .board-footer {
   border-radius: 12px;
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(180deg, rgba(7, 54, 95, 0.72), rgba(3, 24, 48, 0.78));
+  box-shadow: inset 0 0 22px rgba(52, 138, 205, 0.16);
 }
 
 .board-header {
@@ -209,8 +213,8 @@ h1 {
   gap: 10px;
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(12, 54, 92, 0.74);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(4, 32, 60, 0.78);
+  border: 1px solid rgba(115, 190, 245, 0.22);
   color: rgba(255, 255, 255, 0.88);
   font-size: 0.7rem;
   font-weight: 800;
@@ -395,11 +399,12 @@ h1 {
   padding: 4px;
   border-radius: 14px;
   background:
-    linear-gradient(180deg, rgba(255, 229, 146, 0.3), rgba(255, 255, 255, 0.06));
+    radial-gradient(circle at 24% 10%, rgba(255, 181, 45, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(8, 59, 103, 0.82), rgba(3, 24, 48, 0.64));
   display: grid;
   place-items: center;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(115, 190, 245, 0.28);
 }
 
 .hero-video-shell {
@@ -409,7 +414,7 @@ h1 {
   min-height: 86px;
   border-radius: 10px;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(5, 26, 46, 0.18), rgba(4, 21, 38, 0.4));
+  background: linear-gradient(180deg, rgba(5, 26, 46, 0.68), rgba(4, 21, 38, 0.88));
 }
 
 .hero-video {
@@ -585,9 +590,11 @@ h1 {
   grid-template-rows: auto 1fr auto;
   min-height: 100%;
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(14, 55, 94, 0.94), rgba(9, 39, 67, 0.97));
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: linear-gradient(180deg, rgba(5, 46, 83, 0.96), rgba(2, 21, 42, 0.98));
+  border: 1px solid rgba(72, 156, 218, 0.36);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 0 28px rgba(16, 111, 181, 0.14);
   overflow: hidden;
 }
 
