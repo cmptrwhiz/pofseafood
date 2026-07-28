@@ -1,0 +1,127 @@
+{
+  "business": {
+    "name": "Plenty of Fish Seafood",
+    "city": "Lancaster, California",
+    "address": "43937 15th Street West, Lancaster, CA",
+    "phone": "661.471.9620",
+    "cta": "ORDER DIRECT ONLINE"
+  },
+  "promo": {
+    "text": "FREE SIDE WITH ANY COMBO",
+    "active": true
+  },
+  "featured": [
+    {
+      "label": "House Favorite",
+      "name": "Salmon & Shrimp Combo",
+      "price": "$33.75",
+      "description": "Premium salmon and shrimp served hot with two sides.",
+      "note": "A full dinner plate with big seafood flavor."
+    },
+    {
+      "label": "Best Seller",
+      "name": "Fish & Shrimp Combo",
+      "price": "$24.91",
+      "description": "Crispy fish and jumbo shrimp served hot with sides.",
+      "note": "A guest favorite for fast pickup."
+    },
+    {
+      "label": "Direct Order Pick",
+      "name": "Shrimp Over Rice",
+      "price": "$14.75",
+      "description": "Seasoned shrimp piled over a warm bed of rice.",
+      "note": "Fast, filling, and ready for lunch."
+    }
+  ],
+  "ticker": [
+    "Fish & Shrimp $24.91",
+    "Oysters & Shrimp $22.47",
+    "Fish, Shrimp & Oysters $27.95",
+    "Peach Cobbler $5.18",
+    "Red Velvet $6.21",
+    "Plenty of Pudding $5.18",
+    "Basa $12.42",
+    "Shrimp Over Rice $14.75"
+  ],
+  "sections": [
+    {
+      "title": "Seafood Combos",
+      "subtitle": "Big flavor. Better together.",
+      "items": [
+        { "name": "Fish & Shrimp", "price": "$27.95" },
+        { "name": "Oysters & Shrimp", "price": "$22.47" },
+        { "name": "Fish & Oysters", "price": "$25.95" },
+        { "name": "Fish, Shrimp & Oysters", "price": "$27.95" },
+        { "name": "Salmon Shrimp (2 Sides)", "price": "$28.95" },
+        { "name": "Lobster & Fries", "price": "$32.95" },
+        { "name": "Shrimp Over Rice", "price": "$14.75" },
+        { "name": "15pc Shrimp (1 Side)", "price": "$24.95" }
+      ]
+    },
+    {
+      "title": "Family Meals",
+      "subtitle": "Feeds the whole crew.",
+      "items": [
+        { "name": "16pc Fish (2 Choices)", "price": "$59.99" },
+        { "name": "16pc Fish + Shrimp & Oysters", "price": "$79.99" },
+        { "name": "Mini Family Meal", "price": "$49.99" }
+      ]
+    },
+    {
+      "title": "Taco Tuesday",
+      "subtitle": "Every Tuesday.",
+      "items": [
+        { "name": "Fish Taco", "price": "$4.49" },
+        { "name": "Shrimp Taco", "price": "$4.49" },
+        { "name": "Salmon Taco", "price": "$5.49" }
+      ]
+    },
+    {
+      "title": "Specials",
+      "items": [
+        { "name": "Po' Boy Sandwich", "price": "$19.25" },
+        { "name": "Salmon & Shrimp Fried Rice", "price": "$16.95" },
+        { "name": "Shrimp Fried Rice", "price": "$14.25" },
+        { "name": "Okra", "price": "$4.25" }
+      ]
+    },
+    {
+      "title": "Sides",
+      "items": [
+        { "name": "Coleslaw", "price": "$3.49" },
+        { "name": "Potato Salad", "price": "$3.49" },
+        { "name": "Macaroni Salad", "price": "$3.49" },
+        { "name": "Collard Greens", "price": "$3.49" },
+        { "name": "Red Beans & Rice", "price": "$3.49" },
+        { "name": "Mac N Cheese", "price": "$3.49" },
+        { "name": "French Fries", "price": "$3.49" }
+      ]
+    },
+    {
+      "title": "Drinks & Desserts",
+      "columns": [
+        {
+          "title": "Drinks",
+          "items": [
+            { "name": "Bottled Water", "price": "$1.79" },
+            { "name": "Dr Pepper", "price": "$2.25" },
+            { "name": "Orange Crush", "price": "$2.25" },
+            { "name": "Pepsi", "price": "$2.25" },
+            { "name": "Sprite", "price": "$2.25" }
+          ]
+        },
+        {
+          "title": "Desserts",
+          "items": [
+            { "name": "Peach Cobbler", "price": "$5.18" },
+            { "name": "Banana Pudding Cake", "price": "$5.18" },
+            { "name": "Lemon Cake", "price": "$5.18" },
+            { "name": "Red Velvet Cake", "price": "$6.21" },
+            { "name": "Plenty of Pudding", "price": "$5.18" }
+          ]
+        }
+      ]
+    }
+  ],
+  "lastSync": "NETLIFY MENU"
+}
