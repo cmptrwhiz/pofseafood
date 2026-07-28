@@ -2,12 +2,6 @@
   "updatedLabel": "POF display playlist v1",
   "items": [
     {
-      "id": "menu-board",
-      "title": "Market Board",
-      "type": "menu-board-one",
-      "durationSeconds": 45
-    },
-    {
       "id": "menu-board-2",
       "title": "Feature Board",
       "type": "menu-board-two",
