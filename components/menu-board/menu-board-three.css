@@ -2,10 +2,10 @@
   min-height: 100vh;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 4%, rgba(238, 28, 37, 0.34), transparent 24%),
+    radial-gradient(circle at 50% 4%, rgba(238, 28, 37, 0.12), transparent 24%),
     radial-gradient(circle at 8% 14%, rgba(16, 96, 166, 0.72), transparent 28%),
-    radial-gradient(circle at 92% 92%, rgba(238, 28, 37, 0.34), transparent 25%),
-    linear-gradient(145deg, #063f70 0%, #041a35 54%, #010b18 100%);
+    radial-gradient(circle at 92% 92%, rgba(238, 28, 37, 0.12), transparent 25%),
+    linear-gradient(145deg, #074a7c 0%, #052a52 42%, #02172f 74%, #010b18 100%);
   color: #fff;
   font-family: "Arial Rounded MT Bold", "Trebuchet MS", "Avenir Next", sans-serif;
 }
@@ -18,7 +18,7 @@
   position: relative;
   width: 100vw;
   height: 100vh;
-  padding: clamp(14px, 1.2vw, 24px);
+  padding: clamp(10px, 0.9vw, 18px);
 }
 
 .board-three-bubbles {
@@ -46,39 +46,38 @@
   z-index: 1;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: clamp(12px, 1vw, 22px);
+  gap: clamp(8px, 0.7vw, 14px);
   height: 100%;
-  padding: clamp(16px, 1.35vw, 28px);
+  padding: clamp(12px, 0.9vw, 18px);
   overflow: hidden;
-  border: 2px solid rgba(255, 58, 58, 0.62);
-  border-radius: 30px;
+  border: 2px solid rgba(89, 164, 231, 0.56);
+  border-radius: 24px;
   background:
-    linear-gradient(90deg, rgba(238, 28, 37, 0.22), transparent 33%, rgba(238, 28, 37, 0.14)),
-    radial-gradient(circle at 52% 18%, rgba(255, 191, 46, 0.14), transparent 24%),
+    linear-gradient(90deg, rgba(238, 28, 37, 0.08), transparent 33%, rgba(238, 28, 37, 0.06)),
+    radial-gradient(circle at 52% 18%, rgba(89, 164, 231, 0.16), transparent 24%),
     rgba(1, 15, 33, 0.78);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 191, 46, 0.18),
-    0 30px 90px rgba(0, 0, 0, 0.55),
-    0 0 80px rgba(238, 28, 37, 0.22);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 30px 90px rgba(0, 0, 0, 0.55);
 }
 
 .board-three-header {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: clamp(16px, 1.4vw, 28px);
+  gap: clamp(12px, 1vw, 20px);
   align-items: center;
-  min-height: 15vh;
+  min-height: 12vh;
 }
 
 .board-three-logo {
-  width: clamp(95px, 8.5vw, 160px);
+  width: clamp(72px, 6vw, 115px);
   filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.35));
 }
 
 .board-three-city {
   margin: 0 0 0.35vw;
   color: #ffbf2e;
-  font-size: clamp(1rem, 1.3vw, 1.9rem);
+  font-size: clamp(0.78rem, 0.95vw, 1.35rem);
   font-weight: 950;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -86,23 +85,23 @@
 
 .board-three-header h1 {
   margin: 0;
-  max-width: 12ch;
+  max-width: 18ch;
   color: #fff;
-  font-size: clamp(4rem, 7.5vw, 10.5rem);
+  font-size: clamp(2.7rem, 4.6vw, 7rem);
   font-weight: 950;
   letter-spacing: -0.06em;
-  line-height: 0.84;
+  line-height: 0.86;
   text-transform: uppercase;
-  text-shadow: 0 8px 0 rgba(238, 28, 37, 0.2);
+  text-shadow: 0 5px 0 rgba(238, 28, 37, 0.14);
 }
 
 .board-three-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8vw;
-  margin-top: 0.9vw;
+  margin-top: 0.55vw;
   color: rgba(225, 240, 255, 0.82);
-  font-size: clamp(0.85rem, 0.9vw, 1.25rem);
+  font-size: clamp(0.68rem, 0.72vw, 1rem);
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -124,38 +123,38 @@
 .board-three-sync {
   align-self: start;
   justify-self: end;
-  padding: 0.8vw 1.15vw;
-  border: 2px solid rgba(255, 191, 46, 0.52);
+  padding: 0.55vw 0.85vw;
+  border: 1px solid rgba(255, 191, 46, 0.46);
   border-radius: 999px;
   background: linear-gradient(135deg, #ee1c25, #ff6a35);
   color: #fff;
-  font-size: clamp(0.8rem, 1vw, 1.4rem);
+  font-size: clamp(0.64rem, 0.8vw, 1rem);
   font-weight: 950;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  box-shadow: 0 18px 40px rgba(238, 28, 37, 0.34);
+  box-shadow: 0 12px 28px rgba(238, 28, 37, 0.24);
 }
 
 .board-three-grid {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(120px, 0.27fr) minmax(0, 1fr);
-  gap: clamp(14px, 1.3vw, 26px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 0.9vw, 18px);
   min-height: 0;
 }
 
 .board-three-panel {
   display: grid;
-  grid-template-rows: 38% 1fr;
+  grid-template-rows: 26% 1fr;
   min-height: 0;
   overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  border-radius: 28px;
+  border: 2px solid rgba(89, 164, 231, 0.34);
+  border-radius: 22px;
   background:
-    linear-gradient(180deg, rgba(238, 28, 37, 0.2), rgba(4, 33, 65, 0.9)),
+    linear-gradient(180deg, rgba(18, 71, 119, 0.7), rgba(4, 33, 65, 0.94)),
     rgba(255, 255, 255, 0.05);
   box-shadow:
-    inset 8px 0 0 rgba(238, 28, 37, 0.95),
+    inset 5px 0 0 rgba(238, 28, 37, 0.72),
     0 24px 65px rgba(0, 0, 0, 0.36);
 }
 
@@ -178,21 +177,21 @@
   inset: 0;
   content: "";
   background:
-    linear-gradient(180deg, rgba(238, 28, 37, 0.18), transparent 42%),
+    linear-gradient(180deg, rgba(238, 28, 37, 0.08), transparent 42%),
     linear-gradient(0deg, rgba(2, 15, 32, 0.54), transparent 45%);
 }
 
 .board-three-image-tag {
   position: absolute;
-  left: 1.1vw;
-  bottom: 1vw;
+  left: 0.8vw;
+  bottom: 0.75vw;
   z-index: 1;
   max-width: 82%;
-  padding: 0.55vw 0.8vw;
+  padding: 0.38vw 0.65vw;
   border-radius: 999px;
   background: linear-gradient(135deg, #ee1c25, #ff4a2f);
   color: #fff;
-  font-size: clamp(0.78rem, 0.9vw, 1.25rem);
+  font-size: clamp(0.62rem, 0.7vw, 0.95rem);
   font-weight: 950;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -200,22 +199,22 @@
 
 .board-three-panel-copy {
   min-height: 0;
-  padding: clamp(14px, 1.25vw, 26px);
+  padding: clamp(10px, 0.85vw, 17px);
 }
 
 .board-three-panel-copy p {
-  margin: 0 0 0.55vw;
+  margin: 0 0 0.35vw;
   color: #ffbf2e;
-  font-size: clamp(0.82rem, 0.95vw, 1.3rem);
+  font-size: clamp(0.62rem, 0.72vw, 0.98rem);
   font-weight: 950;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .board-three-panel-copy h2 {
-  margin: 0 0 1vw;
+  margin: 0 0 0.62vw;
   color: #fff;
-  font-size: clamp(2rem, 3.2vw, 4.9rem);
+  font-size: clamp(1.55rem, 2.3vw, 3.45rem);
   font-weight: 950;
   letter-spacing: -0.04em;
   line-height: 0.9;
@@ -225,7 +224,7 @@
 .board-three-rows {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(8px, 0.65vw, 14px);
+  gap: clamp(6px, 0.46vw, 10px);
 }
 
 .board-three-row {
@@ -233,20 +232,20 @@
   align-items: center;
   justify-content: space-between;
   gap: 1vw;
-  min-height: clamp(40px, 4vw, 74px);
-  padding: 0.72vw 0.9vw;
+  min-height: clamp(30px, 2.55vw, 49px);
+  padding: 0.44vw 0.6vw;
   animation: boardThreeRowIn 520ms ease both;
   animation-delay: var(--row-delay);
   border: 1px solid rgba(255, 255, 255, 0.17);
-  border-radius: 17px;
+  border-radius: 13px;
   background:
-    linear-gradient(90deg, rgba(238, 28, 37, 0.3), rgba(255, 255, 255, 0.07) 48%),
+    linear-gradient(90deg, rgba(238, 28, 37, 0.15), rgba(255, 255, 255, 0.07) 42%),
     rgba(255, 255, 255, 0.06);
 }
 
 .board-three-row span,
 .board-three-row b {
-  font-size: clamp(1rem, 1.45vw, 2.25rem);
+  font-size: clamp(0.85rem, 1.05vw, 1.55rem);
   font-weight: 950;
   line-height: 1;
 }
@@ -254,7 +253,7 @@
 .board-three-row b {
   color: #ffbf2e;
   white-space: nowrap;
-  text-shadow: 0 0 20px rgba(238, 28, 37, 0.48);
+  text-shadow: 0 0 14px rgba(238, 28, 37, 0.32);
 }
 
 .board-three-panel--sides .board-three-rows {
@@ -263,19 +262,24 @@
 
 .board-three-panel--sides .board-three-row span,
 .board-three-panel--sides .board-three-row b {
-  font-size: clamp(1.5rem, 2.25vw, 3.55rem);
+  font-size: clamp(1.15rem, 1.65vw, 2.45rem);
 }
 
 .board-three-mascot-card {
-  align-self: stretch;
+  position: absolute;
+  left: 50%;
+  top: 1.2vw;
+  z-index: 4;
+  width: clamp(82px, 8vw, 145px);
+  min-height: clamp(82px, 8vw, 145px);
+  transform: translateX(-50%) rotate(-4deg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 0;
-  padding: 1vw;
-  border: 2px solid rgba(255, 191, 46, 0.4);
-  border-radius: 28px;
+  padding: 0.55vw;
+  border: 1px solid rgba(255, 191, 46, 0.36);
+  border-radius: 22px;
   background:
     radial-gradient(circle at center, rgba(238, 28, 37, 0.32), transparent 54%),
     rgba(1, 15, 33, 0.58);
@@ -283,16 +287,16 @@
 }
 
 .board-three-mascot-card img {
-  width: min(15vw, 230px);
+  width: min(6.6vw, 115px);
   max-width: 100%;
   filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.48));
   transform: rotate(-8deg);
 }
 
 .board-three-mascot-card strong {
-  margin-top: 1vw;
+  margin-top: 0.25vw;
   color: #ffbf2e;
-  font-size: clamp(1.1rem, 1.45vw, 2.2rem);
+  font-size: clamp(0.55rem, 0.72vw, 0.95rem);
   font-weight: 950;
   letter-spacing: 0.16em;
   line-height: 1;
@@ -300,9 +304,9 @@
 }
 
 .board-three-mascot-card span {
-  margin-top: 0.45vw;
+  margin-top: 0.18vw;
   color: #fff;
-  font-size: clamp(0.9rem, 1vw, 1.4rem);
+  font-size: clamp(0.48rem, 0.58vw, 0.78rem);
   font-weight: 950;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -313,14 +317,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 1vw;
-  padding: 0.85vw 1.2vw;
+  padding: 0.5vw 0.9vw;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
   background:
-    linear-gradient(90deg, rgba(238, 28, 37, 0.92), rgba(138, 17, 24, 0.72)),
+    linear-gradient(90deg, rgba(238, 28, 37, 0.36), rgba(5, 42, 82, 0.82)),
     rgba(1, 15, 33, 0.7);
   color: #fff;
-  font-size: clamp(0.9rem, 1.05vw, 1.5rem);
+  font-size: clamp(0.68rem, 0.82vw, 1.05rem);
   font-weight: 950;
   letter-spacing: 0.14em;
   text-transform: uppercase;
