@@ -1,0 +1,221 @@
+{
+  "updatedLabel": "Seeded on April 18, 2026 from the official Plenty Of Fish Seafood site plus a recent Restaurant Guru menu index.",
+  "heroPrice": "$25.88",
+  "promos": [
+    "Red Snapper  $14.70",
+    "Catfish Filet  $10.09",
+    "Salmon  $18.63",
+    "Tilapia Filet  $12.42",
+    "Oysters  $14.49",
+    "Jumbo Shrimp  $14.96",
+    "Red Snapper  $20.80",
+    "Fillet of Sole  $14.70",
+    "Catfish Filet  $19.77",
+    "Salmon  $23.81",
+    "Tilapia Filet  $15.83",
+    "Oysters  $16.56",
+    "Jumbo Shrimp  $16.56",
+    "Red Snapper  $14.49",
+    "Fillet of Sole  $13.46",
+    "Catfish Filet  $14.49",
+    "Cajun Catfish  $14.49",
+    "Salmon  $17.60",
+    "Tilapia Filet  $10.35",
+    "Oysters / Jar  $10.35",
+    "Jumbo Shrimp  $23.81",
+    "10 Piece Shrimp / 1 Side  $14.77",
+    "20 Piece Shrimp / 1 Side  $20.70",
+    "30 Piece Shrimp / 2 Sides  $31.05",
+    "Bottled Water  $1.85",
+    "Tartar Sauce  $0.52",
+    "Hot Sauce  $0.52",
+    "Fillet of Sole  $17.60",
+    "Catfish Filet  $14.70",
+    "16 PCS Fish (2 Fish Choices)  $66.13",
+    "16 PCS Fish + Shrimp & Oysters  $74.41",
+    "Fish & Oysters  $23.91",
+    "Pecan Pie  $4.66",
+    "Fish & Shrimp  $23.91",
+    "Oysters & Shrimp  $22.47",
+    "Fish, Shrimp & Oysters  $27.95",
+    "Peach Cobbler  $5.18",
+    "Red Velvet  $6.21",
+    "Plenty of Pudding  $5.18",
+    "Basa  $12.42",
+    "Basa  $16.56",
+    "Basa  $10.35",
+    "Peach Cobbler Cheesecake  $6.21",
+    "Cheddar Sauce  $1.04",
+    "Banana Peppers  $1.04",
+    "Extra Dinner Rolls  $0.52",
+    "Rolls  $0.52",
+    "Cheddar Cheesecake  $5.18",
+    "Frog Legs (2 Pcs)  $10.35",
+    "Sour Cream Pound Cake  $6.21",
+    "White Rice  $1.55",
+    "Ranch  $0.52",
+    "Lemon Pound Cake  $6.21",
+    "Side of Lemons  $1.04",
+    "Salmon and Shrimp Fried Rice  $25.88",
+    "Side of Pickles  $1.04",
+    "Shrimp Taco  $2.59",
+    "Salmon Taco  $2.99",
+    "Regular Fish Taco  $1.85",
+    "Shrimp Fried Rice  $15.27",
+    "Chocolate Cake  $6.21",
+    "Salmon & Shrimp / 2 Sides  $34.31",
+    "Banana Pudding Cheesecake  $7.25",
+    "Dr Pepper  $2.59",
+    "Orange Crush Soda  $2.59",
+    "Pepsi  $2.59",
+    "Diet Coke  $2.59",
+    "Coca Cola  $2.59",
+    "Sprite  $2.59",
+    "Powerade Orange  $2.59",
+    "Powerade Blue  $2.59",
+    "Powerade Red  $2.59",
+    "Brownies  $4.14",
+    "Whiting Filet  $13.46",
+    "Whiting Filet  $15.53",
+    "Buffalo  $14.61",
+    "Buffalo  $12.68",
+    "Arizona  $2.59",
+    "Candy Yams  $2.88",
+    "Pumpkin Spice Cake  $4.14",
+    "Mac & Cheese  $0.55",
+    "Shrimp Over Rice  $15.27",
+    "4pc Salmon 6pc Shrimp Grilled Over Rice or Veggies  $36.23",
+    "Lobster & Fries  $31.83",
+    "Fish Taco  $1.85",
+    "Banana Pud Chs Cake Cob  $7.25",
+    "Lemon Cake  $4.14",
+    "Candy Yams  $5.09",
+    "Candy Yams  $5.89",
+    "Sweet Potato Cheesecake  $5.69",
+    "Mini Family Meal 10 PC Fish 6\" Shrimp + Large Fries  $36.33",
+    "Mac N Cheese  $9.32",
+    "Fried Rice No Meats  $9.32",
+    "Catfish Nuggets & Sm Fry  $10.09",
+    "Green Salad  $4.14",
+    "Buffalo Lunch  $14.75",
+    "Snapper Nuggets  $4.14",
+    "Salmon Nuggets  $4.14",
+    "Salmon Shrimp & Oysters  $33.64",
+    "15 PC Shrimp / 1 Side  $18.17"
+  ],
+  "slides": [
+    {
+      "title": "Combos, Family Meals & Sides",
+      "columns": [
+        {
+          "heading": "Combo Meals",
+          "accent": "gold",
+          "items": [
+            { "name": "Fish & Shrimp Combo", "price": "$25.88" },
+            { "name": "Fish & Oysters Combo", "price": "$25.88" },
+            { "name": "Oysters & Shrimp Combo", "price": "$23.62" },
+            { "name": "Fish, Shrimp & Oysters Combo", "price": "$30.38" },
+            { "name": "Salmon & Shrimp Combo", "price": "$33.75" },
+            { "name": "Salmon & Oysters Combo", "price": "$33.75" },
+            { "name": "10 Piece Shrimp / 1 Side", "price": "$16.88" },
+            { "name": "20 Piece Shrimp / 2 Sides", "price": "$28.12" },
+            { "name": "30 Piece Shrimp / 2 Sides", "price": "$35.71" },
+            { "name": "Shrimp Fried Rice Combo", "price": "$21.60" }
+          ]
+        },
+        {
+          "heading": "Family Meals",
+          "accent": "red",
+          "items": [
+            { "name": "16 Piece Fish", "price": "$71.87" },
+            { "name": "16 Piece Fish, Shrimp & Oysters", "price": "$80.87" },
+            { "name": "20 Fish + 25 Shrimp + 10 Oysters", "price": "$103.16" }
+          ],
+          "callout": "Family meals are ideal for group orders and quick in-store pickup."
+        },
+        {
+          "heading": "Sides",
+          "accent": "blue",
+          "items": [
+            { "name": "Coleslaw", "price": "$4.60" },
+            { "name": "Potato Salad", "price": "$4.60" },
+            { "name": "Macaroni Salad", "price": "$4.60" },
+            { "name": "Red Beans & Rice", "price": "$4.60" },
+            { "name": "Collard Greens", "price": "$4.60" },
+            { "name": "French Fries Small", "price": "$4.70" },
+            { "name": "French Fries Large", "price": "$8.73" }
+          ]
+        },
+        {
+          "heading": "Drinks & Extras",
+          "accent": "gold",
+          "items": [
+            { "name": "Garlic Bread", "price": "$3.98" },
+            { "name": "Soft Drinks", "price": "$2.91" },
+            { "name": "Bottled Water", "price": "$2.13" },
+            { "name": "Powerade", "price": "$2.98" },
+            { "name": "Peach Cobbler", "price": "$5.96" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Lunch, Dinner & Fish by the Pound",
+      "columns": [
+        {
+          "heading": "Lunch",
+          "accent": "gold",
+          "items": [
+            { "name": "Tilapia Filet Lunch", "price": "$13.50" },
+            { "name": "Basa Lunch", "price": "$13.50" },
+            { "name": "Oysters Lunch", "price": "$15.75" },
+            { "name": "Jumbo Shrimp Lunch", "price": "$15.75" },
+            { "name": "Catfish Filet Lunch", "price": "$15.98" },
+            { "name": "Whiting Filet Lunch", "price": "$15.19" },
+            { "name": "Cajun Catfish Lunch", "price": "$17.10" },
+            { "name": "Salmon Lunch", "price": "$20.25" }
+          ]
+        },
+        {
+          "heading": "Dinner",
+          "accent": "red",
+          "items": [
+            { "name": "Basa Dinner", "price": "$11.80" },
+            { "name": "Whiting Filet Dinner", "price": "$16.88" },
+            { "name": "Tilapia Filet Dinner", "price": "$17.20" },
+            { "name": "Jumbo Shrimp Dinner", "price": "$18.00" },
+            { "name": "Oysters Dinner", "price": "$18.00" },
+            { "name": "Catfish Filet Dinner", "price": "$21.49" },
+            { "name": "Cajun Catfish Dinner", "price": "$22.61" },
+            { "name": "Salmon Dinner", "price": "$25.88" }
+          ],
+          "callout": "Ask for fried, grilled, low-salt grilled, or extra crispy where available."
+        },
+        {
+          "heading": "Fish / Lb.",
+          "accent": "blue",
+          "items": [
+            { "name": "Tilapia Filet / Lb.", "price": "$11.25" },
+            { "name": "Basa / Lb.", "price": "$11.25" },
+            { "name": "Oysters / Lb.", "price": "$11.64" },
+            { "name": "Oysters / Jar Lb.", "price": "$12.10" },
+            { "name": "Buffalo Fish / Lb.", "price": "$13.47" },
+            { "name": "Whiting Filet / Lb.", "price": "$14.62" },
+            { "name": "Catfish Filet / Lb.", "price": "$15.75" },
+            { "name": "Cajun Catfish / Lb.", "price": "$16.31" },
+            { "name": "Salmon / Lb.", "price": "$19.12" },
+            { "name": "Jumbo Shrimp / Lb.", "price": "$25.87" }
+          ]
+        },
+        {
+          "heading": "Specials",
+          "accent": "gold",
+          "items": [
+            { "name": "Po' Boy Sandwich", "price": "$19.25" },
+            { "name": "Frog Legs", "price": "$11.90" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,304 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import fallbackMenuBoardOne from "@/data/menu-board-one.json";
+import { formatBoardSyncTime } from "@/lib/menu-board/format";
+import type {
+  MenuBoardItem,
+  MenuBoardOneColumn,
+  MenuBoardOneData,
+} from "@/lib/menu-board/types";
+import { useMenuBoardRefresh } from "./useMenuBoardRefresh";
+
+const SLIDE_DURATION = 10000;
+const HERO_DURATION = 5200;
+
+const fallbackData = fallbackMenuBoardOne as MenuBoardOneData;
+
+const heroSlides = [
+  {
+    kicker: "Best Seller",
+    title: "Fish & Shrimp Combo",
+    price: "$25.88",
+    text: "Crispy fish, seasoned shrimp, and strong direct-order value without delivery app markups.",
+    note: "Fresh fried or grilled and made to order.",
+  },
+  {
+    kicker: "Top Lunch Pick",
+    title: "Catfish Filet Lunch",
+    price: "$15.98",
+    text: "A customer favorite with classic seasoning, fast service, and a satisfying lunch portion.",
+    note: "Great with fries, slaw, or your favorite side.",
+  },
+  {
+    kicker: "House Favorite",
+    title: "Salmon & Shrimp Combo",
+    price: "$33.75",
+    text: "Big seafood flavor with premium salmon and shrimp for guests who want a fuller plate.",
+    note: "A strong dinner choice and one of the most craveable combos.",
+  },
+  {
+    kicker: "Side Spotlight",
+    title: "Collard Greens + Red Beans & Rice",
+    price: "$4.60",
+    text: "Make the sides visible too with hearty, soulful add-ons that round out any seafood plate.",
+    note: "Add sides to combos, lunches, and family meals.",
+  },
+];
+
+function useRotatingIndex(length: number, duration: number) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (length <= 1) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % length);
+    }, duration);
+
+    return () => window.clearInterval(timer);
+  }, [duration, length]);
+
+  return index;
+}
+
+function dealIsActive(dealDay: string) {
+  const today = new Date().getDay();
+  return dealDay
+    .split(",")
+    .map((value) => Number(value.trim()))
+    .filter((value) => !Number.isNaN(value))
+    .includes(today);
+}
+
+function MenuItemRow({ item }: { item: MenuBoardItem }) {
+  return (
+    <div className="menu-item">
+      <span className="item-name">{item.name}</span>
+      <span className="price">{item.price}</span>
+    </div>
+  );
+}
+
+function MenuColumn({ column }: { column: MenuBoardOneColumn }) {
+  const shouldScroll = column.items.length > 7;
+  const items = column.items.map((item) => (
+    <MenuItemRow item={item} key={`${column.heading}-${item.name}`} />
+  ));
+
+  return (
+    <article className={`menu-column accent-${column.accent}`}>
+      <div className="column-header">
+        <h4>{column.heading}</h4>
+      </div>
+
+      {shouldScroll ? (
+        <div className="column-scroll">
+          <div className="column-track is-scrolling">
+            <div className="column-list">{items}</div>
+            <div className="column-list" aria-hidden="true">
+              {items}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="column-items">{items}</div>
+      )}
+
+      {column.callout ? (
+        <p className="column-callout">{column.callout}</p>
+      ) : null}
+    </article>
+  );
+}
+
+export function MenuBoardOne() {
+  const { data, error, lastUpdatedLabel } = useMenuBoardRefresh({
+    fallbackData,
+    publicJsonPath: "/menu-board/menu-board-one.json",
+    formatTimestamp: formatBoardSyncTime,
+  });
+  const slideIndex = useRotatingIndex(data.slides.length, SLIDE_DURATION);
+  const heroIndex = useRotatingIndex(heroSlides.length, HERO_DURATION);
+  const slide = data.slides[slideIndex] ?? data.slides[0];
+  const hero = heroSlides[heroIndex];
+  const tickerItems = useMemo(() => [...data.promos, ...data.promos], [data.promos]);
+  const tickerDuration = Math.max(80, Math.min(data.promos.length * 1.8, 220));
+
+  return (
+    <div className="menu-board-one-root">
+      <main className="board-shell">
+        <video className="board-video" autoPlay muted loop playsInline>
+          <source src="/menu-board/PlentyOfFishVideo.mp4" type="video/mp4" />
+        </video>
+        <div className="board-overlay" />
+
+        <section className="board-frame">
+          <header className="board-header">
+            <div className="brand-lockup">
+              <img
+                className="brand-logo"
+                src="/menu-board/newlogo.png"
+                alt="Plenty of Fish Seafood logo"
+              />
+              <div>
+                <p className="eyebrow">Lancaster, California</p>
+                <h1>Plenty Of Fish Market Board</h1>
+                <p className="headline-note">
+                  Live seafood pricing board with rotating menu sectors and
+                  direct order visibility.
+                </p>
+              </div>
+            </div>
+
+            <div className="header-stack">
+              <div className="promo-ribbon">Free Side With Any Combo</div>
+              <div className="store-details">
+                <span>43937 15th Street West, Lancaster, CA</span>
+                <span>661.471.9620</span>
+                <span>order direct</span>
+              </div>
+              <div className="sync-pill">
+                <span className="sync-dot" />
+                <span>
+                  {error ? "Using built-in menu" : `Synced ${formatBoardSyncTime()}`}
+                </span>
+              </div>
+            </div>
+          </header>
+
+          <section className="hero-strip">
+            <div className="hero-content">
+              <div className="hero-copy is-rotating" key={hero.title}>
+                <p className="kicker">{hero.kicker}</p>
+                <h2>{hero.title}</h2>
+                <p className="hero-price">{hero.price}</p>
+                <p className="hero-text">{hero.text}</p>
+                <p className="hero-note">{hero.note}</p>
+              </div>
+
+              <aside className="weekly-deals" aria-label="Weekly deals">
+                <div className="weekly-deals-header">
+                  <p className="eyebrow">This Week</p>
+                  <h3>Weekly Deals</h3>
+                </div>
+                <div className="weekly-deals-list">
+                  {[
+                    {
+                      day: "1",
+                      title: "Monday Madness",
+                      copy: "$3 off shrimp baskets today only.",
+                    },
+                    {
+                      day: "2",
+                      title: "Taco Tuesday",
+                      copy: "Fish or shrimp tacos on special. Skip the apps.",
+                    },
+                    {
+                      day: "0,6",
+                      title: "Saturday - Sunday (TBD)",
+                      copy: "Gumbo is ready. Limited batch, and when it is gone, it is gone.",
+                    },
+                  ].map((deal) => {
+                    const active = dealIsActive(deal.day);
+                    return (
+                      <article
+                        className={active ? "deal-card is-active" : "deal-card"}
+                        key={deal.title}
+                      >
+                        <div className="deal-day-row">
+                          <span className="deal-day">{deal.title}</span>
+                          <span className="deal-status">
+                            {active ? "Today" : "Weekly"}
+                          </span>
+                        </div>
+                        <p className="deal-copy">{deal.copy}</p>
+                      </article>
+                    );
+                  })}
+                </div>
+              </aside>
+            </div>
+
+            <div className="hero-card">
+              <div className="hero-video-shell">
+                <video className="hero-video" autoPlay muted loop playsInline>
+                  <source src="/menu-board/PlentyOfFishVideo.mp4" type="video/mp4" />
+                </video>
+                <div className="hero-video-caption">
+                  <span className="hero-video-tag">Plenty of Fish</span>
+                  <span className="hero-video-copy">
+                    Fresh seafood. Fast pickup. Order direct.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="promo-ticker" aria-label="Rotating menu ticker">
+            <div
+              className="ticker-track"
+              style={{ "--ticker-duration": `${tickerDuration}s` } as React.CSSProperties}
+            >
+              {tickerItems.map((promo, index) => (
+                <span className="ticker-pill" key={`${promo}-${index}`}>
+                  {promo}
+                </span>
+              ))}
+            </div>
+          </section>
+
+          <section className="slides-panel">
+            <div className="slides-topbar">
+              <div>
+                <p className="eyebrow">Menu Board</p>
+                <h3>{slide.title}</h3>
+              </div>
+              <div className="slide-controls">
+                <span>{lastUpdatedLabel}</span>
+                <span>
+                  {slideIndex + 1} / {data.slides.length}
+                </span>
+              </div>
+            </div>
+
+            <div className="slide-content">
+              <div className="menu-grid is-visible" key={slide.title}>
+                {slide.columns.map((column) => (
+                  <MenuColumn column={column} key={column.heading} />
+                ))}
+              </div>
+              <p className="data-note">
+                {data.updatedLabel} Prices may change, so this board is
+                designed to be easy to update in <code>menu-board-one.json</code>.
+              </p>
+            </div>
+            <div className="slide-progress" aria-hidden="true">
+              <div className="slide-progress-bar is-animating" key={slideIndex} />
+            </div>
+          </section>
+
+          <footer className="board-footer">
+            <div className="footer-note">
+              <strong>Hours:</strong>
+              <span>Mon-Thu 11:00 AM-7:30 PM</span>
+              <span>Fri-Sat 11:00 AM-8:30 PM</span>
+              <span>Sun Closed</span>
+            </div>
+            <div className="footer-note">
+              <strong>Sides:</strong>
+              <span>coleslaw</span>
+              <span>potato salad</span>
+              <span>macaroni salad</span>
+              <span>red beans &amp; rice</span>
+              <span>collard greens</span>
+              <span>fries</span>
+            </div>
+          </footer>
+        </section>
+      </main>
+    </div>
+  );
+}
