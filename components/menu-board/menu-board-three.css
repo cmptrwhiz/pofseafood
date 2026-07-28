@@ -2,12 +2,11 @@
   min-height: 100vh;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 4%, rgba(238, 28, 37, 0.12), transparent 24%),
-    radial-gradient(circle at 8% 14%, rgba(16, 96, 166, 0.72), transparent 28%),
-    radial-gradient(circle at 92% 92%, rgba(238, 28, 37, 0.12), transparent 25%),
-    linear-gradient(145deg, #074a7c 0%, #052a52 42%, #02172f 74%, #010b18 100%);
+    radial-gradient(circle at 14% 2%, rgba(35, 116, 184, 0.46), transparent 27%),
+    radial-gradient(circle at 88% 4%, rgba(16, 98, 166, 0.4), transparent 20%),
+    linear-gradient(145deg, #06345d, #031b35 78%);
   color: #fff;
-  font-family: "Arial Rounded MT Bold", "Trebuchet MS", "Avenir Next", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .menu-board-three-root * {
@@ -18,7 +17,7 @@
   position: relative;
   width: 100vw;
   height: 100vh;
-  padding: clamp(10px, 0.9vw, 18px);
+  padding: 6px;
 }
 
 .board-three-bubbles {
@@ -50,15 +49,15 @@
   height: 100%;
   padding: clamp(12px, 0.9vw, 18px);
   overflow: hidden;
-  border: 2px solid rgba(89, 164, 231, 0.56);
-  border-radius: 24px;
+  border: 1px solid rgba(72, 156, 218, 0.55);
+  border-radius: 18px;
   background:
-    linear-gradient(90deg, rgba(238, 28, 37, 0.08), transparent 33%, rgba(238, 28, 37, 0.06)),
-    radial-gradient(circle at 52% 18%, rgba(89, 164, 231, 0.16), transparent 24%),
-    rgba(1, 15, 33, 0.78);
+    radial-gradient(circle at 14% 2%, rgba(35, 116, 184, 0.25), transparent 27%),
+    radial-gradient(circle at 88% 4%, rgba(16, 98, 166, 0.24), transparent 20%),
+    linear-gradient(145deg, rgba(6, 52, 93, 0.96), rgba(3, 27, 53, 0.99) 78%);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 30px 90px rgba(0, 0, 0, 0.55);
+    inset 0 0 42px rgba(16, 111, 181, 0.24),
+    0 12px 40px rgba(0, 0, 0, 0.62);
 }
 
 .board-three-header {
@@ -76,7 +75,7 @@
 
 .board-three-city {
   margin: 0 0 0.35vw;
-  color: #ffbf2e;
+  color: #ffb52d;
   font-size: clamp(0.78rem, 0.95vw, 1.35rem);
   font-weight: 950;
   letter-spacing: 0.22em;
@@ -92,7 +91,7 @@
   letter-spacing: -0.06em;
   line-height: 0.86;
   text-transform: uppercase;
-  text-shadow: 0 5px 0 rgba(238, 28, 37, 0.14);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
 }
 
 .board-three-meta {
@@ -105,6 +104,10 @@
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.board-three-meta svg {
+  color: #75c84c;
 }
 
 .board-three-meta span,
@@ -124,15 +127,19 @@
   align-self: start;
   justify-self: end;
   padding: 0.55vw 0.85vw;
-  border: 1px solid rgba(255, 191, 46, 0.46);
+  border: 1px solid rgba(115, 190, 245, 0.38);
   border-radius: 999px;
-  background: linear-gradient(135deg, #ee1c25, #ff6a35);
-  color: #fff;
+  background: rgba(2, 17, 35, 0.78);
+  color: #e7f3ff;
   font-size: clamp(0.64rem, 0.8vw, 1rem);
   font-weight: 950;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  box-shadow: 0 12px 28px rgba(238, 28, 37, 0.24);
+  box-shadow: inset 0 0 18px rgba(68, 151, 213, 0.15);
+}
+
+.board-three-sync svg {
+  color: #75c84c;
 }
 
 .board-three-grid {
@@ -148,14 +155,13 @@
   grid-template-rows: 26% 1fr;
   min-height: 0;
   overflow: hidden;
-  border: 2px solid rgba(89, 164, 231, 0.34);
-  border-radius: 22px;
+  border: 1px solid rgba(115, 190, 245, 0.38);
+  border-radius: 14px;
   background:
-    linear-gradient(180deg, rgba(18, 71, 119, 0.7), rgba(4, 33, 65, 0.94)),
-    rgba(255, 255, 255, 0.05);
+    linear-gradient(145deg, rgba(5, 50, 91, 0.97), rgba(2, 27, 54, 0.98));
   box-shadow:
-    inset 5px 0 0 rgba(238, 28, 37, 0.72),
-    0 24px 65px rgba(0, 0, 0, 0.36);
+    inset 0 0 20px rgba(68, 151, 213, 0.12),
+    0 20px 48px rgba(0, 0, 0, 0.34);
 }
 
 .board-three-image {
@@ -177,7 +183,7 @@
   inset: 0;
   content: "";
   background:
-    linear-gradient(180deg, rgba(238, 28, 37, 0.08), transparent 42%),
+    linear-gradient(180deg, rgba(35, 116, 184, 0.1), transparent 42%),
     linear-gradient(0deg, rgba(2, 15, 32, 0.54), transparent 45%);
 }
 
@@ -188,9 +194,10 @@
   z-index: 1;
   max-width: 82%;
   padding: 0.38vw 0.65vw;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #ee1c25, #ff4a2f);
-  color: #fff;
+  border: 1px solid rgba(255, 181, 45, 0.48);
+  border-radius: 7px;
+  background: rgba(255, 181, 45, 0.14);
+  color: #fff3bf;
   font-size: clamp(0.62rem, 0.7vw, 0.95rem);
   font-weight: 950;
   letter-spacing: 0.14em;
@@ -204,7 +211,7 @@
 
 .board-three-panel-copy p {
   margin: 0 0 0.35vw;
-  color: #ffbf2e;
+  color: #e4efff;
   font-size: clamp(0.62rem, 0.72vw, 0.98rem);
   font-weight: 950;
   letter-spacing: 0.18em;
@@ -213,7 +220,7 @@
 
 .board-three-panel-copy h2 {
   margin: 0 0 0.62vw;
-  color: #fff;
+  color: #ffb52d;
   font-size: clamp(1.55rem, 2.3vw, 3.45rem);
   font-weight: 950;
   letter-spacing: -0.04em;
@@ -238,9 +245,8 @@
   animation-delay: var(--row-delay);
   border: 1px solid rgba(255, 255, 255, 0.17);
   border-radius: 13px;
-  background:
-    linear-gradient(90deg, rgba(238, 28, 37, 0.15), rgba(255, 255, 255, 0.07) 42%),
-    rgba(255, 255, 255, 0.06);
+  background: rgba(4, 39, 73, 0.36);
+  border-bottom: 1px dotted rgba(171, 211, 239, 0.22);
 }
 
 .board-three-row span,
@@ -251,9 +257,9 @@
 }
 
 .board-three-row b {
-  color: #ffbf2e;
+  color: #ffb52d;
   white-space: nowrap;
-  text-shadow: 0 0 14px rgba(238, 28, 37, 0.32);
+  text-shadow: 0 0 14px rgba(255, 181, 45, 0.18);
 }
 
 .board-three-panel--sides .board-three-rows {
@@ -278,11 +284,11 @@
   align-items: center;
   justify-content: center;
   padding: 0.55vw;
-  border: 1px solid rgba(255, 191, 46, 0.36);
-  border-radius: 22px;
+  border: 1px solid rgba(115, 190, 245, 0.38);
+  border-radius: 14px;
   background:
-    radial-gradient(circle at center, rgba(238, 28, 37, 0.32), transparent 54%),
-    rgba(1, 15, 33, 0.58);
+    radial-gradient(circle at center, rgba(255, 181, 45, 0.13), transparent 54%),
+    rgba(2, 17, 35, 0.72);
   text-align: center;
 }
 
@@ -295,7 +301,7 @@
 
 .board-three-mascot-card strong {
   margin-top: 0.25vw;
-  color: #ffbf2e;
+  color: #ffb52d;
   font-size: clamp(0.55rem, 0.72vw, 0.95rem);
   font-weight: 950;
   letter-spacing: 0.16em;
@@ -318,11 +324,9 @@
   justify-content: space-between;
   gap: 1vw;
   padding: 0.5vw 0.9vw;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-  background:
-    linear-gradient(90deg, rgba(238, 28, 37, 0.36), rgba(5, 42, 82, 0.82)),
-    rgba(1, 15, 33, 0.7);
+  border: 1px solid rgba(115, 190, 245, 0.38);
+  border-radius: 12px;
+  background: rgba(3, 30, 56, 0.94);
   color: #fff;
   font-size: clamp(0.68rem, 0.82vw, 1.05rem);
   font-weight: 950;
@@ -331,7 +335,7 @@
 }
 
 .board-three-footer b {
-  color: #ffbf2e;
+  color: #ffb52d;
 }
 
 @keyframes boardThreeRowIn {
