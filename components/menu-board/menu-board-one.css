@@ -52,7 +52,13 @@
 
 .board-video {
   object-fit: cover;
-  filter: saturate(1.04) contrast(1.08) brightness(0.12);
+  filter: saturate(1.08) contrast(1.06) brightness(0.24);
+}
+
+.board-video-still {
+  background:
+    linear-gradient(180deg, rgba(1, 14, 29, 0.44), rgba(1, 14, 29, 0.74)),
+    url("/menu-board/PlentyOfFishVideo-poster.jpg") center / cover no-repeat;
 }
 
 .board-video-fallback {
@@ -436,8 +442,14 @@ h1 {
   text-align: center;
   text-transform: uppercase;
   background:
-    radial-gradient(circle at 30% 20%, rgba(255, 212, 77, 0.28), transparent 30%),
-    linear-gradient(135deg, rgba(7, 33, 61, 0.95), rgba(27, 97, 155, 0.72));
+    linear-gradient(180deg, rgba(3, 24, 48, 0.16), rgba(3, 24, 48, 0.56)),
+    url("/menu-board/PlentyOfFishVideo-poster.jpg") center / cover no-repeat;
+}
+
+.hero-video-fallback span {
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(3, 24, 48, 0.76);
 }
 
 .hero-video-caption {

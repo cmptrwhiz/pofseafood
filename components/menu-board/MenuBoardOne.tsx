@@ -47,6 +47,7 @@ const heroSlides = [
 ];
 
 const BOARD_VIDEO_SRC = "/menu-board/PlentyOfFishVideo.mp4";
+const BOARD_VIDEO_POSTER_SRC = "/menu-board/PlentyOfFishVideo-poster.jpg";
 
 function useRotatingIndex(length: number, duration: number) {
   const [index, setIndex] = useState(0);
@@ -131,6 +132,7 @@ function BoardVideo({
       loop
       playsInline
       preload="auto"
+      poster={BOARD_VIDEO_POSTER_SRC}
       src={BOARD_VIDEO_SRC}
       onCanPlay={() => {
         void videoRef.current?.play().catch(() => setHasPlaybackError(true));
@@ -188,10 +190,7 @@ export function MenuBoardOne() {
   return (
     <div className="menu-board-one-root">
       <main className="board-shell">
-        <BoardVideo
-          className="board-video"
-          fallbackClassName="board-video board-video-fallback"
-        />
+        <div className="board-video board-video-still" aria-hidden="true" />
         <div className="board-overlay" />
 
         <section className="board-frame">
