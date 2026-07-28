@@ -39,11 +39,14 @@ function getSafeDurationMs(item: PlaylistItem) {
 
 function SpotlightSlide({ item }: { item: PlaylistSpotlightItem }) {
   return (
-    <main className="display-spotlight">
+    <main className={`display-spotlight display-spotlight--${item.id}`}>
       <div className="display-ocean-texture" />
       <section className="display-spotlight-card">
         <div className="display-spotlight-copy">
-          <p className="display-kicker">{item.kicker}</p>
+          <div className="display-brand-row">
+            <p className="display-kicker">{item.kicker}</p>
+            <span className="display-red-pill">Order Direct</span>
+          </div>
           <h1>{item.headline}</h1>
           <p className="display-subheadline">{item.subheadline}</p>
 
@@ -70,6 +73,15 @@ function SpotlightSlide({ item }: { item: PlaylistSpotlightItem }) {
             className="display-image"
             priority
           />
+          <div className="display-mascot-badge" aria-hidden="true">
+            <Image
+              src="/menu-board/mascot-float-trimmed.png"
+              alt=""
+              fill
+              sizes="16vw"
+              className="display-mascot"
+            />
+          </div>
         </div>
       </section>
     </main>
