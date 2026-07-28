@@ -4,13 +4,14 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import playlistJson from "@/data/display/playlist.json";
 import { MenuBoardOne } from "@/components/menu-board/MenuBoardOne";
+import { MenuBoardThree } from "@/components/menu-board/MenuBoardThree";
 import { MenuBoardTwo } from "@/components/menu-board/MenuBoardTwo";
 import type { CSSProperties } from "react";
 
 type PlaylistMenuBoardItem = {
   id: string;
   title: string;
-  type: "menu-board-one" | "menu-board-two";
+  type: "menu-board-one" | "menu-board-two" | "menu-board-three";
   durationSeconds: number;
 };
 
@@ -45,7 +46,6 @@ function SpotlightSlide({ item }: { item: PlaylistSpotlightItem }) {
         <div className="display-spotlight-copy">
           <div className="display-brand-row">
             <p className="display-kicker">{item.kicker}</p>
-            <span className="display-red-pill">Order Direct</span>
           </div>
           <h1>{item.headline}</h1>
           <p className="display-subheadline">{item.subheadline}</p>
@@ -95,6 +95,10 @@ function DisplaySlide({ item }: { item: PlaylistItem }) {
 
   if (item.type === "menu-board-two") {
     return <MenuBoardTwo />;
+  }
+
+  if (item.type === "menu-board-three") {
+    return <MenuBoardThree />;
   }
 
   if (item.type === "spotlight") {

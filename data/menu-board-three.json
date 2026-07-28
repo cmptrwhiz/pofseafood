@@ -1,0 +1,41 @@
+{
+  "lastSync": "LOCAL MENU",
+  "business": {
+    "city": "Lancaster, California",
+    "address": "43937 15th Street West, Lancaster, CA",
+    "phone": "661.471.9620"
+  },
+  "sections": [
+    {
+      "title": "Additional Side Orders",
+      "kicker": "Hot sides for every basket",
+      "image": "/Images/combo.png",
+      "items": [
+        { "name": "Hush Puppies", "price": "$3.08+" },
+        { "name": "Garlic Bread", "price": "$3.59+" },
+        { "name": "Candy Yams", "price": "$0.00+" },
+        { "name": "Fried Okra", "price": "$3.09+" }
+      ]
+    },
+    {
+      "title": "Drinks & Desserts",
+      "kicker": "Cold drinks. Sweet finish.",
+      "image": "/Images/Plenty Of Fish-240.jpg",
+      "items": [
+        { "name": "Bottled Water", "price": "$2.35" },
+        { "name": "Peach Cobbler", "price": "$5.68" },
+        { "name": "Pecan Pie", "price": "$5.16" },
+        { "name": "Dr Pepper", "price": "$3.09" },
+        { "name": "Orange Crush", "price": "$3.09" },
+        { "name": "Pepsi", "price": "$3.09" },
+        { "name": "Diet Coke", "price": "$3.09" },
+        { "name": "Coca-Cola", "price": "$3.09" },
+        { "name": "Sprite", "price": "$3.09" },
+        { "name": "Powerade - Orange", "price": "$3.09" },
+        { "name": "Powerade - Blue", "price": "$3.09" },
+        { "name": "Powerade - Red", "price": "$3.09" },
+        { "name": "Arizona", "price": "$3.09" }
+      ]
+    }
+  ]
+}

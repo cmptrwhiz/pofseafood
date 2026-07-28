@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/components/display/display.css";
 import "@/components/menu-board/menu-board-one.css";
 import "@/components/menu-board/menu-board-two.css";
+import "@/components/menu-board/menu-board-three.css";
 
 export const metadata: Metadata = {
   title: "Display Manager | Plenty of Fish Seafood",
