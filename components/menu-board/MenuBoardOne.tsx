@@ -48,6 +48,7 @@ const heroSlides = [
 
 const BOARD_VIDEO_SRC = "/menu-board/PlentyOfFishVideo.mp4";
 const BOARD_VIDEO_POSTER_SRC = "/menu-board/PlentyOfFishVideo-poster.jpg";
+const FAMILY_MEALS_HEADING = "Family Meals";
 
 function useRotatingIndex(length: number, duration: number) {
   const [index, setIndex] = useState(0);
@@ -67,15 +68,6 @@ function useRotatingIndex(length: number, duration: number) {
   return index;
 }
 
-function dealIsActive(dealDay: string) {
-  const today = new Date().getDay();
-  return dealDay
-    .split(",")
-    .map((value) => Number(value.trim()))
-    .filter((value) => !Number.isNaN(value))
-    .includes(today);
-}
-
 function MenuItemRow({ item }: { item: MenuBoardItem }) {
   return (
     <div className="menu-item">
@@ -87,13 +79,10 @@ function MenuItemRow({ item }: { item: MenuBoardItem }) {
 
 function BoardVideo({
   className,
-  fallbackClassName,
 }: {
   className: string;
-  fallbackClassName: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasPlaybackError, setHasPlaybackError] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -103,25 +92,28 @@ function BoardVideo({
     }
 
     video.muted = true;
-    const playVideo = async () => {
+    video.defaultMuted = true;
+
+    const playVideo = () => {
       try {
-        await video.play();
-        setHasPlaybackError(false);
+        const promise = video.play();
+
+        if (promise) {
+          void promise.catch(() => {
+            // Fire TV/Silk can delay autoplay. Keep the poster visible and retry.
+          });
+        }
       } catch {
-        setHasPlaybackError(true);
+        // Keep the video element mounted so browser-specific autoplay retries can work.
       }
     };
 
-    void playVideo();
-  }, []);
+    video.load();
+    playVideo();
+    const retryTimer = window.setInterval(playVideo, 2500);
 
-  if (hasPlaybackError) {
-    return (
-      <div className={fallbackClassName} aria-hidden="true">
-        <span>Fresh seafood made to order</span>
-      </div>
-    );
-  }
+    return () => window.clearInterval(retryTimer);
+  }, []);
 
   return (
     <video
@@ -133,12 +125,42 @@ function BoardVideo({
       playsInline
       preload="auto"
       poster={BOARD_VIDEO_POSTER_SRC}
-      src={BOARD_VIDEO_SRC}
+      disablePictureInPicture
       onCanPlay={() => {
-        void videoRef.current?.play().catch(() => setHasPlaybackError(true));
+        void videoRef.current?.play().catch(() => {
+          // Poster remains visible if autoplay is paused by the TV browser.
+        });
       }}
-      onError={() => setHasPlaybackError(true)}
-    />
+    >
+      <source src={BOARD_VIDEO_SRC} type="video/mp4" />
+    </video>
+  );
+}
+
+function FamilyMealsSpotlight({ slides }: { slides: MenuBoardOneData["slides"] }) {
+  const familyColumn = slides
+    .flatMap((menuSlide) => menuSlide.columns)
+    .find((column) => column.heading === FAMILY_MEALS_HEADING);
+
+  if (!familyColumn) {
+    return null;
+  }
+
+  return (
+    <aside className="family-spotlight" aria-label="Family meals">
+      <div className="family-spotlight-header">
+        <p className="eyebrow">Feeds The Crew</p>
+        <h3>Family Meals</h3>
+      </div>
+      <div className="family-spotlight-list">
+        {familyColumn.items.slice(0, 3).map((item) => (
+          <MenuItemRow item={item} key={`family-${item.name}`} />
+        ))}
+      </div>
+      {familyColumn.callout ? (
+        <p className="family-spotlight-note">{familyColumn.callout}</p>
+      ) : null}
+    </aside>
   );
 }
 
@@ -237,54 +259,13 @@ export function MenuBoardOne() {
                 <p className="hero-note">{hero.note}</p>
               </div>
 
-              <aside className="weekly-deals" aria-label="Weekly deals">
-                <div className="weekly-deals-header">
-                  <p className="eyebrow">This Week</p>
-                  <h3>Weekly Deals</h3>
-                </div>
-                <div className="weekly-deals-list">
-                  {[
-                    {
-                      day: "1",
-                      title: "Monday Madness",
-                      copy: "$3 off shrimp baskets today only.",
-                    },
-                    {
-                      day: "2",
-                      title: "Taco Tuesday",
-                      copy: "Fish or shrimp tacos on special. Skip the apps.",
-                    },
-                    {
-                      day: "0,6",
-                      title: "Saturday - Sunday (TBD)",
-                      copy: "Gumbo is ready. Limited batch, and when it is gone, it is gone.",
-                    },
-                  ].map((deal) => {
-                    const active = dealIsActive(deal.day);
-                    return (
-                      <article
-                        className={active ? "deal-card is-active" : "deal-card"}
-                        key={deal.title}
-                      >
-                        <div className="deal-day-row">
-                          <span className="deal-day">{deal.title}</span>
-                          <span className="deal-status">
-                            {active ? "Today" : "Weekly"}
-                          </span>
-                        </div>
-                        <p className="deal-copy">{deal.copy}</p>
-                      </article>
-                    );
-                  })}
-                </div>
-              </aside>
+              <FamilyMealsSpotlight slides={data.slides} />
             </div>
 
             <div className="hero-card">
               <div className="hero-video-shell">
                 <BoardVideo
                   className="hero-video"
-                  fallbackClassName="hero-video hero-video-fallback"
                 />
                 <div className="hero-video-caption">
                   <span className="hero-video-tag">Plenty of Fish</span>

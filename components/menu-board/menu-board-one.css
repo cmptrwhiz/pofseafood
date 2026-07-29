@@ -307,95 +307,64 @@ h1 {
   text-transform: uppercase;
 }
 
-.weekly-deals {
+.family-spotlight {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 8px;
   min-height: 100%;
   padding: 10px 12px;
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(17, 62, 101, 0.88), rgba(10, 41, 71, 0.97));
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(240, 79, 69, 0.18), transparent 36%),
+    linear-gradient(180deg, rgba(17, 62, 101, 0.9), rgba(10, 41, 71, 0.97));
+  border: 1px solid rgba(255, 214, 77, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 4px 0 0 rgba(240, 79, 69, 0.64);
 }
 
-.weekly-deals-header {
+.family-spotlight-header {
   display: grid;
   gap: 2px;
 }
 
-.weekly-deals-header .eyebrow {
+.family-spotlight-header .eyebrow {
   margin-bottom: 0;
   font-size: 0.56rem;
-  color: rgba(224, 242, 255, 0.78);
+  color: var(--gold);
 }
 
-.weekly-deals-header h3 {
-  font-size: 0.98rem;
+.family-spotlight-header h3 {
+  font-size: 1.04rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #fff5df;
 }
 
-.weekly-deals-list {
+.family-spotlight-list {
   display: grid;
-  gap: 8px;
+  gap: 7px;
 }
 
-.deal-card {
-  display: grid;
-  gap: 5px;
-  padding: 8px 9px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.family-spotlight .menu-item {
+  padding: 7px 0;
+  border-bottom-color: rgba(255, 214, 77, 0.14);
 }
 
-.deal-card.is-active {
-  background: linear-gradient(180deg, rgba(240, 79, 69, 0.28), rgba(255, 214, 77, 0.18));
-  border-color: rgba(255, 216, 79, 0.28);
-  box-shadow: 0 12px 24px rgba(239, 75, 63, 0.18);
-}
-
-.deal-day-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.deal-day {
-  color: #fff8e9;
-  font-size: 0.62rem;
+.family-spotlight .item-name {
+  font-size: 0.66rem;
   font-weight: 900;
-  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.deal-status {
-  display: inline-flex;
-  align-items: center;
-  min-height: 20px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: rgba(255, 216, 79, 0.14);
-  border: 1px solid rgba(255, 216, 79, 0.16);
-  color: var(--yellow-soft);
-  font-size: 0.5rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.family-spotlight .price {
+  background: linear-gradient(90deg, rgba(240, 79, 69, 0.34), rgba(255, 214, 77, 0.32));
+  color: #fff8e6;
 }
 
-.deal-card.is-active .deal-status {
-  background: rgba(255, 248, 233, 0.22);
-  border-color: rgba(255, 248, 233, 0.24);
-  color: #fffaf1;
-}
-
-.deal-copy {
+.family-spotlight-note {
   color: rgba(255, 249, 238, 0.92);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   line-height: 1.26;
 }
 
@@ -429,6 +398,7 @@ h1 {
   min-height: 86px;
   object-fit: cover;
   display: block;
+  background: url("/menu-board/PlentyOfFishVideo-poster.jpg") center / cover no-repeat;
 }
 
 .hero-video-fallback {
@@ -489,8 +459,14 @@ h1 {
   overflow: hidden;
   padding: 4px 0;
   white-space: nowrap;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(240, 79, 69, 0.45);
+  border-bottom: 1px solid rgba(240, 79, 69, 0.45);
+  background:
+    linear-gradient(90deg, rgba(240, 79, 69, 0.24), rgba(255, 214, 77, 0.08), rgba(240, 79, 69, 0.24)),
+    rgba(2, 18, 36, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 214, 77, 0.1),
+    inset 0 -1px 0 rgba(255, 214, 77, 0.1);
 }
 
 .ticker-track {
@@ -508,8 +484,8 @@ h1 {
   min-height: 28px;
   padding: 0 10px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(240, 79, 69, 0.22), rgba(255, 214, 77, 0.18));
-  border: 1px solid rgba(255, 214, 77, 0.24);
+  background: linear-gradient(90deg, rgba(207, 47, 39, 0.64), rgba(255, 214, 77, 0.2));
+  border: 1px solid rgba(255, 214, 77, 0.34);
   color: #fffaf0;
   font-size: 0.6rem;
   font-weight: 800;
