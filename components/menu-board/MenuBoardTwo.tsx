@@ -49,13 +49,14 @@ const extraSides = [
   "Okra",
   "Candy Yams",
 ];
+const VIP_URL = "orderplentyoffishseafood.com/vip";
 
 function findSection(data: MenuBoardTwoData, title: string) {
   return data.sections.find((section) => section.title === title);
 }
 
 export function MenuBoardTwo() {
-  const { data, error } = useMenuBoardRefresh({
+  const { data } = useMenuBoardRefresh({
     fallbackData: initialBoardData,
     publicJsonPath: "/menu-board/menu-board-two.json",
     formatTimestamp: formatBoardSyncTime,
@@ -81,7 +82,7 @@ export function MenuBoardTwo() {
         <section className="board">
           <OceanTexture />
           <SwimLine />
-          <Header data={data} error={error} activeFeature={activeFeature} />
+          <Header data={data} activeFeature={activeFeature} />
           <section className="top-grid">
             <MenuPanel
               section={findSection(data, "Seafood Combos")}
@@ -162,11 +163,9 @@ function SwimLine() {
 
 function Header({
   data,
-  error,
   activeFeature,
 }: {
   data: MenuBoardTwoData;
-  error: boolean;
   activeFeature: string;
 }) {
   return (
@@ -207,8 +206,8 @@ function Header({
           <span>NOW FEATURING</span>
           <b>{activeFeature}</b>
         </div>
-        <div className={error ? "sync-pill sync-error" : "sync-pill"}>
-          <i /> {error ? "RECONNECTING" : `SYNCED ${data.lastSync}`}
+        <div className="vip-pill">
+          <i /> JOIN VIP: {VIP_URL}
         </div>
       </div>
     </header>
@@ -414,6 +413,7 @@ function Footer() {
         <small>Thank you Lancaster!</small>
       </span>
       <strong>FOLLOW US FOR SPECIALS!</strong>
+      <strong>JOIN VIP: {VIP_URL}</strong>
     </footer>
   );
 }

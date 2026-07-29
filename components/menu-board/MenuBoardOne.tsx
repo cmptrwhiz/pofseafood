@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import fallbackMenuBoardOne from "@/data/menu-board-one.json";
-import { formatBoardSyncTime } from "@/lib/menu-board/format";
 import type {
   MenuBoardItem,
   MenuBoardOneColumn,
@@ -49,6 +48,7 @@ const heroSlides = [
 const BOARD_VIDEO_SRC = "/menu-board/PlentyOfFishVideo.mp4";
 const BOARD_VIDEO_POSTER_SRC = "/menu-board/PlentyOfFishVideo-poster.jpg";
 const FAMILY_MEALS_HEADING = "Family Meals";
+const VIP_URL = "orderplentyoffishseafood.com/vip";
 
 function useRotatingIndex(length: number, duration: number) {
   const [index, setIndex] = useState(0);
@@ -197,10 +197,10 @@ function MenuColumn({ column }: { column: MenuBoardOneColumn }) {
 }
 
 export function MenuBoardOne() {
-  const { data, error, lastUpdatedLabel } = useMenuBoardRefresh({
+  const { data } = useMenuBoardRefresh({
     fallbackData,
     publicJsonPath: "/menu-board/menu-board-one.json",
-    formatTimestamp: formatBoardSyncTime,
+    formatTimestamp: () => "",
   });
   const slideIndex = useRotatingIndex(data.slides.length, SLIDE_DURATION);
   const heroIndex = useRotatingIndex(heroSlides.length, HERO_DURATION);
@@ -225,10 +225,10 @@ export function MenuBoardOne() {
               />
               <div>
                 <p className="eyebrow">Lancaster, California</p>
-                <h1>Plenty Of Fish Market Board</h1>
+                <h1>Order More. Save More.</h1>
                 <p className="headline-note">
-                  Live seafood pricing board with rotating menu sectors and
-                  direct order visibility.
+                  Join VIP for Monday drops, taco alerts, dessert specials,
+                  and direct-order savings.
                 </p>
               </div>
             </div>
@@ -238,13 +238,11 @@ export function MenuBoardOne() {
               <div className="store-details">
                 <span>43937 15th Street West, Lancaster, CA</span>
                 <span>661.471.9620</span>
-                <span>order direct</span>
+                <span>skip the apps</span>
               </div>
-              <div className="sync-pill">
-                <span className="sync-dot" />
-                <span>
-                  {error ? "Using built-in menu" : `Synced ${formatBoardSyncTime()}`}
-                </span>
+              <div className="vip-pill">
+                <span className="vip-dot" />
+                <span>Join VIP: {VIP_URL}</span>
               </div>
             </div>
           </header>
@@ -268,9 +266,9 @@ export function MenuBoardOne() {
                   className="hero-video"
                 />
                 <div className="hero-video-caption">
-                  <span className="hero-video-tag">Plenty of Fish</span>
+                  <span className="hero-video-tag">VIP Deals</span>
                   <span className="hero-video-copy">
-                    Fresh seafood. Fast pickup. Order direct.
+                    Join before you leave: {VIP_URL}
                   </span>
                 </div>
               </div>
@@ -297,10 +295,8 @@ export function MenuBoardOne() {
                 <h3>{slide.title}</h3>
               </div>
               <div className="slide-controls">
-                <span>{lastUpdatedLabel}</span>
-                <span>
-                  {slideIndex + 1} / {data.slides.length}
-                </span>
+                <span>Fresh fried or grilled</span>
+                <span>Ask about VIP deals</span>
               </div>
             </div>
 
@@ -310,10 +306,7 @@ export function MenuBoardOne() {
                   <MenuColumn column={column} key={column.heading} />
                 ))}
               </div>
-              <p className="data-note">
-                {data.updatedLabel} Prices may change, so this board is
-                designed to be easy to update in <code>menu-board-one.json</code>.
-              </p>
+              <p className="data-note">Prices may change. Join VIP for the latest deals and launch drops.</p>
             </div>
             <div className="slide-progress" aria-hidden="true">
               <div className="slide-progress-bar is-animating" key={slideIndex} />
