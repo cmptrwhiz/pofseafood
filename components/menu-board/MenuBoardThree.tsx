@@ -91,6 +91,17 @@ export function MenuBoardThree() {
         </div>
 
         <section className="board-three-stage">
+          <div className="board-three-red-sprinkles" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+
+          <div className="board-three-floating-mascots" aria-hidden="true">
+            <img src="/menu-board/mascot-float-trimmed.png" alt="" />
+            <img src="/menu-board/mascot-float-trimmed.png" alt="" />
+          </div>
+
           <header className="board-three-header">
             <img
               className="board-three-logo"
