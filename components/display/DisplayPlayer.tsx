@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import playlistJson from "@/data/display/playlist.json";
 import { MenuBoardOne } from "@/components/menu-board/MenuBoardOne";
+import { MenuBoardSpecials } from "@/components/menu-board/MenuBoardSpecials";
 import { MenuBoardThree } from "@/components/menu-board/MenuBoardThree";
 import { MenuBoardTwo } from "@/components/menu-board/MenuBoardTwo";
 import type { CSSProperties } from "react";
@@ -11,7 +12,7 @@ import type { CSSProperties } from "react";
 type PlaylistMenuBoardItem = {
   id: string;
   title: string;
-  type: "menu-board-one" | "menu-board-two" | "menu-board-three";
+  type: "menu-board-one" | "menu-board-two" | "menu-board-three" | "menu-board-specials";
   durationSeconds: number;
 };
 
@@ -27,12 +28,16 @@ type PlaylistSpotlightItem = {
   items: { name: string; price: string }[];
 };
 
-type PlaylistItem = PlaylistMenuBoardItem | PlaylistSpotlightItem;
+export type PlaylistItem = PlaylistMenuBoardItem | PlaylistSpotlightItem;
 
-const playlist = playlistJson as {
+export type DisplayPlaylist = {
   updatedLabel: string;
   items: PlaylistItem[];
 };
+
+const defaultPlaylist = playlistJson as DisplayPlaylist;
+const DISPLAY_VIP_URL = "orderplentyoffishseafood.com/vip";
+const DISPLAY_PHONE = "661.471.9620";
 
 function getSafeDurationMs(item: PlaylistItem) {
   return Math.max(10, item.durationSeconds) * 1000;
@@ -101,6 +106,10 @@ function DisplaySlide({ item }: { item: PlaylistItem }) {
     return <MenuBoardThree />;
   }
 
+  if (item.type === "menu-board-specials") {
+    return <MenuBoardSpecials />;
+  }
+
   if (item.type === "spotlight") {
     return <SpotlightSlide item={item} />;
   }
@@ -108,7 +117,7 @@ function DisplaySlide({ item }: { item: PlaylistItem }) {
   return null;
 }
 
-export function DisplayPlayer() {
+export function DisplayPlayer({ playlist = defaultPlaylist }: { playlist?: DisplayPlaylist }) {
   const items = playlist.items;
   const [activeIndex, setActiveIndex] = useState(0);
   const activeItem = items[activeIndex] ?? items[0];
@@ -165,11 +174,9 @@ export function DisplayPlayer() {
       <DisplaySlide item={activeItem} key={activeItem.id} />
 
       <div className="display-status">
-        <span>{activeItem.title}</span>
-        <span>{playlist.updatedLabel}</span>
-        <span>
-          {activeIndex + 1} / {items.length}
-        </span>
+        <span>Order direct. Skip app fees.</span>
+        <span>Join VIP: {DISPLAY_VIP_URL}</span>
+        <span>Call {DISPLAY_PHONE}</span>
       </div>
 
       <div className="display-progress" aria-hidden="true">

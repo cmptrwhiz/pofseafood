@@ -3,6 +3,7 @@ import "@/components/display/display.css";
 import "@/components/menu-board/menu-board-one.css";
 import "@/components/menu-board/menu-board-two.css";
 import "@/components/menu-board/menu-board-three.css";
+import "@/components/menu-board/menu-board-specials.css";
 
 export const metadata: Metadata = {
   title: "Display Manager | Plenty of Fish Seafood",
