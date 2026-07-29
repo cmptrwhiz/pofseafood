@@ -434,17 +434,24 @@
   justify-content: space-between;
   gap: 1vw;
   padding: 0.5vw 0.9vw;
-  border: 1px solid rgba(115, 190, 245, 0.38);
+  border: 1px solid rgba(255, 181, 45, 0.42);
   border-radius: 12px;
-  background: rgba(3, 30, 56, 0.94);
+  background:
+    linear-gradient(90deg, rgba(220, 38, 38, 0.24), rgba(3, 30, 56, 0.94), rgba(255, 181, 45, 0.16)),
+    rgba(3, 30, 56, 0.94);
   color: #fff;
   font-size: clamp(0.68rem, 0.82vw, 1.05rem);
   font-weight: 950;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  box-shadow: inset 0 0 22px rgba(255, 181, 45, 0.1);
 }
 
 .board-three-footer b {
+  padding: 0.35vw 0.72vw;
+  border: 1px solid rgba(255, 181, 45, 0.48);
+  border-radius: 999px;
+  background: rgba(220, 38, 38, 0.22);
   color: #ffb52d;
 }
 

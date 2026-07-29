@@ -49,6 +49,8 @@ const BOARD_VIDEO_SRC = "/menu-board/PlentyOfFishVideo.mp4";
 const BOARD_VIDEO_POSTER_SRC = "/menu-board/PlentyOfFishVideo-poster.jpg";
 const FAMILY_MEALS_HEADING = "Family Meals";
 const VIP_URL = "orderplentyoffishseafood.com/vip";
+const STORE_HOURS = "Mon-Thu 11-7:30 • Fri-Sat 11-8:30 • Sun Closed";
+const STORE_PHONE = "661.471.9620";
 
 function useRotatingIndex(length: number, duration: number) {
   const [index, setIndex] = useState(0);
@@ -237,12 +239,12 @@ export function MenuBoardOne() {
               <div className="promo-ribbon">Free Side With Any Combo</div>
               <div className="store-details">
                 <span>43937 15th Street West, Lancaster, CA</span>
-                <span>661.471.9620</span>
-                <span>skip the apps</span>
+                <span>{STORE_PHONE}</span>
+                <span>{STORE_HOURS}</span>
               </div>
               <div className="vip-pill">
                 <span className="vip-dot" />
-                <span>Join VIP: {VIP_URL}</span>
+                <span>VIP deals: {VIP_URL}</span>
               </div>
             </div>
           </header>
@@ -268,7 +270,7 @@ export function MenuBoardOne() {
                 <div className="hero-video-caption">
                   <span className="hero-video-tag">VIP Deals</span>
                   <span className="hero-video-copy">
-                    Join before you leave: {VIP_URL}
+                    Text-ready offers at {VIP_URL}
                   </span>
                 </div>
               </div>
@@ -295,8 +297,8 @@ export function MenuBoardOne() {
                 <h3>{slide.title}</h3>
               </div>
               <div className="slide-controls">
-                <span>Fresh fried or grilled</span>
-                <span>Ask about VIP deals</span>
+                <span>Order direct. Skip app fees.</span>
+                <span>Call {STORE_PHONE}</span>
               </div>
             </div>
 
@@ -306,7 +308,7 @@ export function MenuBoardOne() {
                   <MenuColumn column={column} key={column.heading} />
                 ))}
               </div>
-              <p className="data-note">Prices may change. Join VIP for the latest deals and launch drops.</p>
+              <p className="data-note">Join VIP for Monday Madness, Taco Tuesday, dessert drops, and launch-only direct order deals.</p>
             </div>
             <div className="slide-progress" aria-hidden="true">
               <div className="slide-progress-bar is-animating" key={slideIndex} />
@@ -319,6 +321,11 @@ export function MenuBoardOne() {
               <span>Mon-Thu 11:00 AM-7:30 PM</span>
               <span>Fri-Sat 11:00 AM-8:30 PM</span>
               <span>Sun Closed</span>
+            </div>
+            <div className="footer-note footer-note-cta">
+              <strong>VIP:</strong>
+              <span>{VIP_URL}</span>
+              <span>Call {STORE_PHONE}</span>
             </div>
             <div className="footer-note">
               <strong>Sides:</strong>

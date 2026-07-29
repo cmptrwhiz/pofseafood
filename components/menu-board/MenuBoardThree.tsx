@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- TV menu board art is intentionally rendered at native size. */
 "use client";
 
-import { MapPin, Phone, Smartphone } from "lucide-react";
+import { Clock3, MapPin, Phone, Smartphone } from "lucide-react";
 import boardData from "@/data/menu-board-three.json";
 
 type BoardItem = {
@@ -28,6 +28,7 @@ type BoardThreeData = {
 
 const data = boardData as BoardThreeData;
 const VIP_URL = "orderplentyoffishseafood.com/vip";
+const STORE_HOURS = "Mon-Thu 11-7:30 • Fri-Sat 11-8:30 • Sun Closed";
 
 function MenuRows({ items }: { items: BoardItem[] }) {
   return (
@@ -122,12 +123,16 @@ export function MenuBoardThree() {
                   <Phone />
                   {data.business.phone}
                 </span>
+                <span>
+                  <Clock3 />
+                  {STORE_HOURS}
+                </span>
               </div>
             </div>
 
             <div className="board-three-vip">
               <Smartphone />
-              <span>Join VIP</span>
+              <span>VIP Specials</span>
               <b>{VIP_URL}</b>
             </div>
           </header>
@@ -145,9 +150,9 @@ export function MenuBoardThree() {
           </section>
 
           <footer className="board-three-footer">
-            <span>Fresh seafood made hot</span>
-            <b>Ask us about today&apos;s desserts</b>
-            <span>Thank you, Lancaster!</span>
+            <span>Add a side. Grab a drink.</span>
+            <b>Join VIP: {VIP_URL}</b>
+            <span>Call {data.business.phone}</span>
           </footer>
         </section>
       </main>

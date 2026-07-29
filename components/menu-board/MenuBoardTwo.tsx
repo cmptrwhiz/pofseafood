@@ -50,6 +50,7 @@ const extraSides = [
   "Candy Yams",
 ];
 const VIP_URL = "orderplentyoffishseafood.com/vip";
+const STORE_HOURS = "Mon-Thu 11-7:30 • Fri-Sat 11-8:30 • Sun Closed";
 
 function findSection(data: MenuBoardTwoData, title: string) {
   return data.sections.find((section) => section.title === title);
@@ -177,8 +178,8 @@ function Header({
       />
       <div className="brand-copy">
         <p className="eyebrow">{data.business.city}</p>
-        <h1>PLENTY OF FISH MENU BOARD</h1>
-        <p className="brand-subtitle">FRESH SEAFOOD. FAST PICKUP. ORDER DIRECT.</p>
+        <h1>FRESH SEAFOOD. BETTER DEALS.</h1>
+        <p className="brand-subtitle">ORDER DIRECT. JOIN VIP. COME BACK HUNGRY.</p>
         <div className="business-line">
           <span>
             <MapPin />
@@ -189,8 +190,12 @@ function Header({
             {data.business.phone}
           </span>
           <span>
+            <Clock3 />
+            {STORE_HOURS}
+          </span>
+          <span>
             <Globe2 />
-            {data.business.cta}
+            {VIP_URL}
           </span>
         </div>
       </div>
@@ -203,11 +208,11 @@ function Header({
           </div>
         ) : null}
         <div className="feature-chip" key={activeFeature}>
-          <span>NOW FEATURING</span>
+          <span>ORDER DIRECT PICK</span>
           <b>{activeFeature}</b>
         </div>
         <div className="vip-pill">
-          <i /> JOIN VIP: {VIP_URL}
+          <i /> VIP SPECIALS: {VIP_URL}
         </div>
       </div>
     </header>
@@ -394,13 +399,13 @@ function Footer() {
     <footer className="board-footer">
       <span>
         <Clock3 />
-        <b>FAST PICKUP</b>
-        <small>Skip the apps & the wait</small>
+        <b>HOURS</b>
+        <small>Mon-Thu 11-7:30 • Fri-Sat 11-8:30</small>
       </span>
       <span>
         <Smartphone />
-        <b>ORDER DIRECT</b>
-        <small>Save on fees</small>
+        <b>VIP CLUB</b>
+        <small>{VIP_URL}</small>
       </span>
       <span>
         <CheckCircle2 />
@@ -412,8 +417,8 @@ function Footer() {
         <b>SUPPORT LOCAL</b>
         <small>Thank you Lancaster!</small>
       </span>
-      <strong>FOLLOW US FOR SPECIALS!</strong>
-      <strong>JOIN VIP: {VIP_URL}</strong>
+      <strong>CALL {initialBoardData.business.phone}</strong>
+      <strong>JOIN VIP FOR SPECIALS</strong>
     </footer>
   );
 }
