@@ -113,7 +113,7 @@ export function MenuBoardThree() {
 
             <div>
               <p className="board-three-city">{data.business.city}</p>
-              <h1>Sides, Drinks & Desserts</h1>
+              <h1>Additional Sides, Drinks & Desserts</h1>
               <div className="board-three-meta">
                 <span>
                   <MapPin />
@@ -150,7 +150,7 @@ export function MenuBoardThree() {
           </section>
 
           <footer className="board-three-footer">
-            <span>Add a side. Grab a drink.</span>
+            <span>Add a side. Grab a drink. Make it a meal.</span>
             <b>Join VIP: {VIP_URL}</b>
             <span>Call {data.business.phone}</span>
           </footer>
