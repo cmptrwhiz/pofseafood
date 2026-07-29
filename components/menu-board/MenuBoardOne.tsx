@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import fallbackMenuBoardOne from "@/data/menu-board-one.json";
-import { formatBoardSyncTime } from "@/lib/menu-board/format";
 import type {
   MenuBoardItem,
   MenuBoardOneColumn,
@@ -46,6 +45,13 @@ const heroSlides = [
   },
 ];
 
+const BOARD_VIDEO_SRC = "/menu-board/PlentyOfFishVideo.mp4";
+const BOARD_VIDEO_POSTER_SRC = "/menu-board/PlentyOfFishVideo-poster.jpg";
+const FAMILY_MEALS_HEADING = "Family Meals";
+const VIP_URL = "orderplentyoffishseafood.com/vip";
+const STORE_HOURS = "Mon-Thu 11-7:30 • Fri-Sat 11-8:30 • Sun Closed";
+const STORE_PHONE = "661.471.9620";
+
 function useRotatingIndex(length: number, duration: number) {
   const [index, setIndex] = useState(0);
 
@@ -64,21 +70,99 @@ function useRotatingIndex(length: number, duration: number) {
   return index;
 }
 
-function dealIsActive(dealDay: string) {
-  const today = new Date().getDay();
-  return dealDay
-    .split(",")
-    .map((value) => Number(value.trim()))
-    .filter((value) => !Number.isNaN(value))
-    .includes(today);
-}
-
 function MenuItemRow({ item }: { item: MenuBoardItem }) {
   return (
     <div className="menu-item">
       <span className="item-name">{item.name}</span>
       <span className="price">{item.price}</span>
     </div>
+  );
+}
+
+function BoardVideo({
+  className,
+}: {
+  className: string;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    video.muted = true;
+    video.defaultMuted = true;
+
+    const playVideo = () => {
+      try {
+        const promise = video.play();
+
+        if (promise) {
+          void promise.catch(() => {
+            // Fire TV/Silk can delay autoplay. Keep the poster visible and retry.
+          });
+        }
+      } catch {
+        // Keep the video element mounted so browser-specific autoplay retries can work.
+      }
+    };
+
+    video.load();
+    playVideo();
+    const retryTimer = window.setInterval(playVideo, 2500);
+
+    return () => window.clearInterval(retryTimer);
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      className={className}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      poster={BOARD_VIDEO_POSTER_SRC}
+      disablePictureInPicture
+      onCanPlay={() => {
+        void videoRef.current?.play().catch(() => {
+          // Poster remains visible if autoplay is paused by the TV browser.
+        });
+      }}
+    >
+      <source src={BOARD_VIDEO_SRC} type="video/mp4" />
+    </video>
+  );
+}
+
+function FamilyMealsSpotlight({ slides }: { slides: MenuBoardOneData["slides"] }) {
+  const familyColumn = slides
+    .flatMap((menuSlide) => menuSlide.columns)
+    .find((column) => column.heading === FAMILY_MEALS_HEADING);
+
+  if (!familyColumn) {
+    return null;
+  }
+
+  return (
+    <aside className="family-spotlight" aria-label="Family meals">
+      <div className="family-spotlight-header">
+        <p className="eyebrow">Feeds The Crew</p>
+        <h3>Family Meals</h3>
+      </div>
+      <div className="family-spotlight-list">
+        {familyColumn.items.slice(0, 3).map((item) => (
+          <MenuItemRow item={item} key={`family-${item.name}`} />
+        ))}
+      </div>
+      {familyColumn.callout ? (
+        <p className="family-spotlight-note">{familyColumn.callout}</p>
+      ) : null}
+    </aside>
   );
 }
 
@@ -115,10 +199,10 @@ function MenuColumn({ column }: { column: MenuBoardOneColumn }) {
 }
 
 export function MenuBoardOne() {
-  const { data, error, lastUpdatedLabel } = useMenuBoardRefresh({
+  const { data } = useMenuBoardRefresh({
     fallbackData,
     publicJsonPath: "/menu-board/menu-board-one.json",
-    formatTimestamp: formatBoardSyncTime,
+    formatTimestamp: () => "",
   });
   const slideIndex = useRotatingIndex(data.slides.length, SLIDE_DURATION);
   const heroIndex = useRotatingIndex(heroSlides.length, HERO_DURATION);
@@ -130,9 +214,7 @@ export function MenuBoardOne() {
   return (
     <div className="menu-board-one-root">
       <main className="board-shell">
-        <video className="board-video" autoPlay muted loop playsInline>
-          <source src="/menu-board/PlentyOfFishVideo.mp4" type="video/mp4" />
-        </video>
+        <div className="board-video board-video-still" aria-hidden="true" />
         <div className="board-overlay" />
 
         <section className="board-frame">
@@ -145,10 +227,10 @@ export function MenuBoardOne() {
               />
               <div>
                 <p className="eyebrow">Lancaster, California</p>
-                <h1>Plenty Of Fish Market Board</h1>
+                <h1>Order More. Save More.</h1>
                 <p className="headline-note">
-                  Live seafood pricing board with rotating menu sectors and
-                  direct order visibility.
+                  Join VIP for Monday drops, taco alerts, dessert specials,
+                  and direct-order savings.
                 </p>
               </div>
             </div>
@@ -157,14 +239,12 @@ export function MenuBoardOne() {
               <div className="promo-ribbon">Free Side With Any Combo</div>
               <div className="store-details">
                 <span>43937 15th Street West, Lancaster, CA</span>
-                <span>661.471.9620</span>
-                <span>order direct</span>
+                <span>{STORE_PHONE}</span>
+                <span>{STORE_HOURS}</span>
               </div>
-              <div className="sync-pill">
-                <span className="sync-dot" />
-                <span>
-                  {error ? "Using built-in menu" : `Synced ${formatBoardSyncTime()}`}
-                </span>
+              <div className="vip-pill">
+                <span className="vip-dot" />
+                <span>VIP deals: {VIP_URL}</span>
               </div>
             </div>
           </header>
@@ -179,58 +259,18 @@ export function MenuBoardOne() {
                 <p className="hero-note">{hero.note}</p>
               </div>
 
-              <aside className="weekly-deals" aria-label="Weekly deals">
-                <div className="weekly-deals-header">
-                  <p className="eyebrow">This Week</p>
-                  <h3>Weekly Deals</h3>
-                </div>
-                <div className="weekly-deals-list">
-                  {[
-                    {
-                      day: "1",
-                      title: "Monday Madness",
-                      copy: "$3 off shrimp baskets today only.",
-                    },
-                    {
-                      day: "2",
-                      title: "Taco Tuesday",
-                      copy: "Fish or shrimp tacos on special. Skip the apps.",
-                    },
-                    {
-                      day: "0,6",
-                      title: "Saturday - Sunday (TBD)",
-                      copy: "Gumbo is ready. Limited batch, and when it is gone, it is gone.",
-                    },
-                  ].map((deal) => {
-                    const active = dealIsActive(deal.day);
-                    return (
-                      <article
-                        className={active ? "deal-card is-active" : "deal-card"}
-                        key={deal.title}
-                      >
-                        <div className="deal-day-row">
-                          <span className="deal-day">{deal.title}</span>
-                          <span className="deal-status">
-                            {active ? "Today" : "Weekly"}
-                          </span>
-                        </div>
-                        <p className="deal-copy">{deal.copy}</p>
-                      </article>
-                    );
-                  })}
-                </div>
-              </aside>
+              <FamilyMealsSpotlight slides={data.slides} />
             </div>
 
             <div className="hero-card">
               <div className="hero-video-shell">
-                <video className="hero-video" autoPlay muted loop playsInline>
-                  <source src="/menu-board/PlentyOfFishVideo.mp4" type="video/mp4" />
-                </video>
+                <BoardVideo
+                  className="hero-video"
+                />
                 <div className="hero-video-caption">
-                  <span className="hero-video-tag">Plenty of Fish</span>
+                  <span className="hero-video-tag">VIP Deals</span>
                   <span className="hero-video-copy">
-                    Fresh seafood. Fast pickup. Order direct.
+                    Text-ready offers at {VIP_URL}
                   </span>
                 </div>
               </div>
@@ -257,10 +297,8 @@ export function MenuBoardOne() {
                 <h3>{slide.title}</h3>
               </div>
               <div className="slide-controls">
-                <span>{lastUpdatedLabel}</span>
-                <span>
-                  {slideIndex + 1} / {data.slides.length}
-                </span>
+                <span>Order direct. Skip app fees.</span>
+                <span>Call {STORE_PHONE}</span>
               </div>
             </div>
 
@@ -270,10 +308,7 @@ export function MenuBoardOne() {
                   <MenuColumn column={column} key={column.heading} />
                 ))}
               </div>
-              <p className="data-note">
-                {data.updatedLabel} Prices may change, so this board is
-                designed to be easy to update in <code>menu-board-one.json</code>.
-              </p>
+              <p className="data-note">Join VIP for Monday Madness, Taco Tuesday, dessert drops, and launch-only direct order deals.</p>
             </div>
             <div className="slide-progress" aria-hidden="true">
               <div className="slide-progress-bar is-animating" key={slideIndex} />
@@ -286,6 +321,11 @@ export function MenuBoardOne() {
               <span>Mon-Thu 11:00 AM-7:30 PM</span>
               <span>Fri-Sat 11:00 AM-8:30 PM</span>
               <span>Sun Closed</span>
+            </div>
+            <div className="footer-note footer-note-cta">
+              <strong>VIP:</strong>
+              <span>{VIP_URL}</span>
+              <span>Call {STORE_PHONE}</span>
             </div>
             <div className="footer-note">
               <strong>Sides:</strong>

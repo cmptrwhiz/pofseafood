@@ -1,0 +1,49 @@
+{
+  "business": {
+    "city": "Lancaster, California",
+    "address": "43937 15th Street West, Lancaster, CA",
+    "phone": "661.471.9620",
+    "vipUrl": "orderplentyoffishseafood.com/vip",
+    "hours": "Mon-Thu 11-7:30 • Fri-Sat 11-8:30 • Sun Closed"
+  },
+  "headline": "Special Days",
+  "subheadline": "Weekly reasons to come back hungry.",
+  "hero": {
+    "kicker": "Monday Madness",
+    "title": "1/2 Off All Lunches",
+    "time": "Mondays 11 AM - 2 PM",
+    "description": "Every Monday lunch special at the Lancaster location. Ask the counter what lunch plates qualify today."
+  },
+  "specials": [
+    {
+      "label": "Monday Madness",
+      "title": "1/2 Off All Lunches",
+      "time": "Mondays 11 AM - 2 PM",
+      "description": "Lunch plates move fast. Come early, bring the crew, and skip the app fees."
+    },
+    {
+      "label": "Everyday Lunch Special",
+      "title": "2pc Fish + 1 Side",
+      "time": "Lunch hours",
+      "description": "A hot, crispy lunch plate built for fast pickup."
+    },
+    {
+      "label": "Everyday Lunch Special",
+      "title": "6 Shrimp or Oyster + 1 Side",
+      "time": "Lunch hours",
+      "description": "Add a drink or dessert and make it a full meal."
+    },
+    {
+      "label": "Coming Soon",
+      "title": "Gumbo Weekends",
+      "time": "Limited batches",
+      "description": "Weekend gumbo drops are coming. Join VIP so you know when the pot is ready."
+    }
+  ],
+  "cta": [
+    "Join VIP for Monday drops",
+    "Ask about today's lunch special",
+    "Call ahead for pickup",
+    "Order direct and save"
+  ]
+}

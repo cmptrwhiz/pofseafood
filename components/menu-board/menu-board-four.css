@@ -1,0 +1,365 @@
+.menu-board-four-root {
+  min-height: 100vh;
+  overflow: hidden;
+  background: #010e1d;
+  color: #fff;
+  font-family: "Avenir Next", Avenir, "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.menu-board-four-root * {
+  box-sizing: border-box;
+}
+
+.board-four-shell {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 0.74fr) minmax(0, 1fr) auto;
+  gap: clamp(8px, 0.72vw, 14px);
+  width: 100vw;
+  height: 100vh;
+  padding: clamp(10px, 0.78vw, 16px);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(35, 116, 184, 0.42), transparent 28%),
+    radial-gradient(circle at 86% 8%, rgba(238, 28, 37, 0.18), transparent 24%),
+    radial-gradient(circle at 54% 100%, rgba(0, 121, 199, 0.26), transparent 36%),
+    linear-gradient(145deg, #06345d, #031b35 78%);
+}
+
+.board-four-texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.48;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.board-four-header,
+.board-four-hero,
+.board-four-grid,
+.board-four-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.board-four-header {
+  display: grid;
+  grid-template-columns: clamp(76px, 6.4vw, 124px) minmax(0, 1fr) minmax(250px, 0.34fr);
+  gap: clamp(12px, 1vw, 22px);
+  align-items: center;
+  padding: clamp(8px, 0.62vw, 14px);
+  border: 1px solid rgba(115, 190, 245, 0.38);
+  border-radius: 18px;
+  background: rgba(2, 24, 48, 0.76);
+  box-shadow: inset 0 0 26px rgba(68, 151, 213, 0.14);
+}
+
+.board-four-logo {
+  width: 100%;
+  max-height: 7vw;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.34));
+}
+
+.board-four-brand p,
+.board-four-feature p,
+.board-four-family p,
+.board-four-panel-heading p {
+  margin: 0;
+  color: #ffb52d;
+  font-size: clamp(0.72rem, 0.86vw, 1.15rem);
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.board-four-brand h1 {
+  margin: 0.12vw 0 0;
+  color: #fff;
+  font-family: "Arial Rounded MT Bold", "Trebuchet MS", "Avenir Next", sans-serif;
+  font-size: clamp(2.2rem, 4.15vw, 5.9rem);
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+.board-four-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42vw 0.9vw;
+  margin-top: 0.5vw;
+  color: rgba(225, 240, 255, 0.86);
+  font-size: clamp(0.62rem, 0.74vw, 0.98rem);
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.board-four-meta span,
+.board-four-vip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42vw;
+}
+
+.board-four-meta svg,
+.board-four-vip svg {
+  width: 1em;
+  height: 1em;
+  color: #00e09c;
+}
+
+.board-four-vip {
+  justify-self: end;
+  align-self: start;
+  padding: 0.55vw 0.86vw;
+  border: 1px solid rgba(255, 181, 45, 0.52);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(238, 28, 37, 0.82), rgba(255, 181, 45, 0.18));
+  color: #fff7d6;
+  font-size: clamp(0.62rem, 0.78vw, 1rem);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.board-four-vip b {
+  color: #fff;
+}
+
+.board-four-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 0.72fr) minmax(0, 0.72fr);
+  gap: clamp(8px, 0.72vw, 14px);
+  min-height: 0;
+}
+
+.board-four-feature,
+.board-four-photo-card,
+.board-four-family,
+.board-four-panel,
+.board-four-footer {
+  border: 1px solid rgba(115, 190, 245, 0.38);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(238, 28, 37, 0.13), transparent 34%),
+    linear-gradient(145deg, rgba(5, 50, 91, 0.96), rgba(2, 27, 54, 0.98));
+  box-shadow: inset 0 0 22px rgba(68, 151, 213, 0.12);
+}
+
+.board-four-feature {
+  display: grid;
+  align-content: center;
+  gap: 0.45vw;
+  min-height: 0;
+  overflow: hidden;
+  padding: 1vw 1.2vw;
+  border-left: 0.35vw solid #ef2a25;
+}
+
+.board-four-feature h2,
+.board-four-family h2,
+.board-four-panel h2 {
+  margin: 0;
+  color: #fff;
+  font-family: "Arial Rounded MT Bold", "Trebuchet MS", "Avenir Next", sans-serif;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+.board-four-feature h2 {
+  font-size: clamp(2.4rem, 4vw, 5.7rem);
+}
+
+.board-four-feature strong {
+  color: #ffb52d;
+  font-size: clamp(1.9rem, 3vw, 4rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.board-four-feature span,
+.board-four-callout {
+  color: rgba(226, 239, 252, 0.84);
+  font-size: clamp(0.8rem, 0.98vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.22;
+}
+
+.board-four-photo-card {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.board-four-photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.board-four-photo-card::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(0deg, rgba(1, 14, 29, 0.7), transparent 52%);
+}
+
+.board-four-photo-card div {
+  position: absolute;
+  right: 0.8vw;
+  bottom: 0.8vw;
+  z-index: 1;
+  display: grid;
+  gap: 0.15vw;
+  padding: 0.55vw 0.75vw;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ef2a25, #ffb52d);
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.board-four-photo-card b {
+  font-size: clamp(0.9rem, 1.05vw, 1.35rem);
+  font-weight: 950;
+}
+
+.board-four-photo-card span {
+  color: #fff7d6;
+  font-size: clamp(0.68rem, 0.78vw, 1rem);
+  font-weight: 900;
+}
+
+.board-four-family {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 0.5vw;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.8vw;
+}
+
+.board-four-family h2,
+.board-four-panel h2 {
+  font-size: clamp(1.35rem, 1.95vw, 2.85rem);
+}
+
+.board-four-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(8px, 0.72vw, 14px);
+  min-height: 0;
+}
+
+.board-four-panel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.52vw;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.75vw;
+  border-top: 0.28vw solid rgba(255, 181, 45, 0.68);
+}
+
+.board-four-panel--red {
+  border-top-color: rgba(239, 42, 37, 0.9);
+}
+
+.board-four-panel--blue {
+  border-top-color: rgba(0, 224, 156, 0.68);
+}
+
+.board-four-rows {
+  display: grid;
+  gap: 0.34vw;
+  min-height: 0;
+}
+
+.board-four-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8vw;
+  min-height: clamp(28px, 2.05vw, 42px);
+  padding: 0.34vw 0.46vw;
+  animation: boardFourRowIn 520ms ease both;
+  animation-delay: var(--row-delay);
+  border-bottom: 1px dotted rgba(171, 211, 239, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.board-four-row span,
+.board-four-row b {
+  font-size: clamp(0.78rem, 0.95vw, 1.24rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.board-four-row b {
+  color: #ffb52d;
+  white-space: nowrap;
+}
+
+.board-four-specials .board-four-row span,
+.board-four-specials .board-four-row b,
+.board-four-family .board-four-row span,
+.board-four-family .board-four-row b {
+  font-size: clamp(0.86rem, 1.05vw, 1.45rem);
+}
+
+.board-four-callout {
+  margin: 0;
+  padding: 0.5vw;
+  border: 1px solid rgba(255, 181, 45, 0.28);
+  border-radius: 10px;
+  background: rgba(239, 42, 37, 0.12);
+}
+
+.board-four-footer {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 1.2vw;
+  align-items: center;
+  padding: 0.42vw 0.8vw;
+  color: #fff;
+  font-size: clamp(0.74rem, 0.88vw, 1.1rem);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.board-four-footer img {
+  width: min(4.8vw, 90px);
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.34));
+}
+
+.board-four-footer b,
+.board-four-footer strong {
+  padding: 0.36vw 0.75vw;
+  border: 1px solid rgba(255, 181, 45, 0.46);
+  border-radius: 999px;
+  color: #ffb52d;
+}
+
+.board-four-footer strong {
+  color: #fff7d6;
+}
+
+@keyframes boardFourRowIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

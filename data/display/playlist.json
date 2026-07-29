@@ -1,0 +1,29 @@
+{
+  "updatedLabel": "POF display playlist v2",
+  "items": [
+    {
+      "id": "menu-board",
+      "title": "Rotating Menu Board",
+      "type": "menu-board-one",
+      "durationSeconds": 180
+    },
+    {
+      "id": "menu-board-2",
+      "title": "Full Menu Board",
+      "type": "menu-board-two",
+      "durationSeconds": 180
+    },
+    {
+      "id": "menu-board-3",
+      "title": "Sides, Drinks & Desserts",
+      "type": "menu-board-three",
+      "durationSeconds": 180
+    },
+    {
+      "id": "menu-board-specials",
+      "title": "Special Days",
+      "type": "menu-board-specials",
+      "durationSeconds": 180
+    }
+  ]
+}
