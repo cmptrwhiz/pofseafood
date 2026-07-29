@@ -8,9 +8,12 @@
   "sections": [
     {
       "title": "Additional Side Orders",
-      "kicker": "Hot sides for every basket",
+      "kicker": "$5 nuggets until inventory is gone",
       "image": "/Images/combo.png",
       "items": [
+        { "name": "Catfish Nuggets", "price": "$5.00" },
+        { "name": "Red Snapper Nuggets", "price": "$5.00" },
+        { "name": "Salmon Nuggets", "price": "$5.00" },
         { "name": "Hush Puppies", "price": "$3.08+" },
         { "name": "Garlic Bread", "price": "$3.59+" },
         { "name": "Candy Yams", "price": "$0.00+" },

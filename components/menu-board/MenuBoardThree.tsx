@@ -140,12 +140,6 @@ export function MenuBoardThree() {
           <section className="board-three-grid">
             <SectionPanel section={sides} variant="sides" />
 
-            <div className="board-three-mascot-card" aria-hidden="true">
-              <img src="/menu-board/mascot-float-trimmed.png" alt="" />
-              <strong>ADD A SIDE</strong>
-              <span>MAKE IT A MEAL</span>
-            </div>
-
             <SectionPanel section={drinks} variant="drinks" />
           </section>
 

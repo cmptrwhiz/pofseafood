@@ -21,6 +21,12 @@ const tvOnePlaylist: DisplayPlaylist = {
       type: "menu-board-four",
       durationSeconds: 210,
     },
+    {
+      id: "menu-board-5",
+      title: "Best Sellers",
+      type: "menu-board-five",
+      durationSeconds: 210,
+    },
   ],
 };
 

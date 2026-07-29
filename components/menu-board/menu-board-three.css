@@ -45,9 +45,9 @@
   z-index: 1;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: clamp(8px, 0.7vw, 14px);
+  gap: clamp(7px, 0.6vw, 12px);
   height: 100%;
-  padding: clamp(12px, 0.9vw, 18px);
+  padding: clamp(10px, 0.8vw, 16px);
   overflow: hidden;
   border: 1px solid rgba(72, 156, 218, 0.55);
   border-radius: 18px;
@@ -152,13 +152,13 @@
   z-index: 2;
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: clamp(12px, 1vw, 20px);
+  gap: clamp(10px, 0.9vw, 18px);
   align-items: center;
-  min-height: 12vh;
+  min-height: 10vh;
 }
 
 .board-three-logo {
-  width: clamp(72px, 6vw, 115px);
+  width: clamp(64px, 5.4vw, 104px);
   filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.35));
 }
 
@@ -173,9 +173,9 @@
 
 .board-three-header h1 {
   margin: 0;
-  max-width: 18ch;
+  max-width: 24ch;
   color: #fff;
-  font-size: clamp(2.7rem, 4.6vw, 7rem);
+  font-size: clamp(2.2rem, 3.55vw, 5.6rem);
   font-weight: 950;
   letter-spacing: -0.06em;
   line-height: 0.86;
@@ -241,19 +241,19 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(10px, 0.9vw, 18px);
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(12px, 1vw, 20px);
   min-height: 0;
 }
 
 .board-three-panel {
   position: relative;
   display: grid;
-  grid-template-rows: 26% 1fr;
+  grid-template-rows: 22% 1fr;
   min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(115, 190, 245, 0.38);
-  border-radius: 14px;
+  border-radius: 16px;
   background:
     linear-gradient(145deg, rgba(5, 50, 91, 0.97), rgba(2, 27, 54, 0.98));
   box-shadow:
@@ -314,7 +314,7 @@
 
 .board-three-panel-copy {
   min-height: 0;
-  padding: clamp(10px, 0.85vw, 17px);
+  padding: clamp(9px, 0.75vw, 15px);
 }
 
 .board-three-panel-copy p {
@@ -327,9 +327,9 @@
 }
 
 .board-three-panel-copy h2 {
-  margin: 0 0 0.62vw;
+  margin: 0 0 0.5vw;
   color: #ffb52d;
-  font-size: clamp(1.55rem, 2.3vw, 3.45rem);
+  font-size: clamp(1.35rem, 1.85vw, 2.85rem);
   font-weight: 950;
   letter-spacing: -0.04em;
   line-height: 0.9;
@@ -339,7 +339,7 @@
 .board-three-rows {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(6px, 0.46vw, 10px);
+  gap: clamp(5px, 0.4vw, 8px);
 }
 
 .board-three-row {
@@ -347,21 +347,21 @@
   align-items: center;
   justify-content: space-between;
   gap: 1vw;
-  min-height: clamp(30px, 2.55vw, 49px);
-  padding: 0.44vw 0.6vw;
+  min-height: clamp(28px, 2.05vw, 42px);
+  padding: 0.34vw 0.52vw;
   animation: boardThreeRowIn 520ms ease both;
   animation-delay: var(--row-delay);
   border: 1px solid rgba(255, 255, 255, 0.17);
-  border-radius: 13px;
+  border-radius: 10px;
   background: rgba(4, 39, 73, 0.36);
   border-bottom: 1px dotted rgba(171, 211, 239, 0.22);
 }
 
 .board-three-row span,
 .board-three-row b {
-  font-size: clamp(0.85rem, 1.05vw, 1.55rem);
+  font-size: clamp(0.78rem, 0.92vw, 1.35rem);
   font-weight: 950;
-  line-height: 1;
+  line-height: 0.98;
 }
 
 .board-three-row b {
@@ -376,54 +376,7 @@
 
 .board-three-panel--sides .board-three-row span,
 .board-three-panel--sides .board-three-row b {
-  font-size: clamp(1.15rem, 1.65vw, 2.45rem);
-}
-
-.board-three-mascot-card {
-  position: absolute;
-  left: 50%;
-  top: 1.2vw;
-  z-index: 4;
-  width: clamp(82px, 8vw, 145px);
-  min-height: clamp(82px, 8vw, 145px);
-  transform: translateX(-50%) rotate(-4deg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0.55vw;
-  border: 1px solid rgba(115, 190, 245, 0.38);
-  border-radius: 14px;
-  background:
-    radial-gradient(circle at center, rgba(255, 181, 45, 0.13), transparent 54%),
-    rgba(2, 17, 35, 0.72);
-  text-align: center;
-}
-
-.board-three-mascot-card img {
-  width: min(6.6vw, 115px);
-  max-width: 100%;
-  filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.48));
-  transform: rotate(-8deg);
-}
-
-.board-three-mascot-card strong {
-  margin-top: 0.25vw;
-  color: #ffb52d;
-  font-size: clamp(0.55rem, 0.72vw, 0.95rem);
-  font-weight: 950;
-  letter-spacing: 0.16em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.board-three-mascot-card span {
-  margin-top: 0.18vw;
-  color: #fff;
-  font-size: clamp(0.48rem, 0.58vw, 0.78rem);
-  font-weight: 950;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: clamp(0.95rem, 1.3vw, 2rem);
 }
 
 .board-three-footer {

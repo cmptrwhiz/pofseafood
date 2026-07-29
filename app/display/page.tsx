@@ -1,5 +1,5 @@
-import { DisplayPlayer } from "@/components/display/DisplayPlayer";
+import { redirect } from "next/navigation";
 
 export default function DisplayPage() {
-  return <DisplayPlayer />;
+  redirect("/tv-1");
 }

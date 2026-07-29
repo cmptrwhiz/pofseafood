@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import playlistJson from "@/data/display/playlist.json";
 import { MenuBoardOne } from "@/components/menu-board/MenuBoardOne";
 import { MenuBoardFour } from "@/components/menu-board/MenuBoardFour";
+import { MenuBoardFive } from "@/components/menu-board/MenuBoardFive";
 import { MenuBoardSpecials } from "@/components/menu-board/MenuBoardSpecials";
 import { MenuBoardThree } from "@/components/menu-board/MenuBoardThree";
 import { MenuBoardTwo } from "@/components/menu-board/MenuBoardTwo";
@@ -18,6 +19,7 @@ type PlaylistMenuBoardItem = {
     | "menu-board-two"
     | "menu-board-three"
     | "menu-board-four"
+    | "menu-board-five"
     | "menu-board-specials";
   durationSeconds: number;
 };
@@ -114,6 +116,10 @@ function DisplaySlide({ item }: { item: PlaylistItem }) {
 
   if (item.type === "menu-board-four") {
     return <MenuBoardFour />;
+  }
+
+  if (item.type === "menu-board-five") {
+    return <MenuBoardFive />;
   }
 
   if (item.type === "menu-board-specials") {
