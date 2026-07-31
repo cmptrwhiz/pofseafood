@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- TV menu board art is intentionally rendered at native size. */
 "use client";
 
-import { Clock3, MapPin, Phone, Smartphone } from "lucide-react";
+import { Clock3, MapPin, Phone, Smartphone, Star } from "lucide-react";
 import menuBoardOneData from "@/data/menu-board-one.json";
 import type { MenuBoardItem, MenuBoardOneColumn, MenuBoardOneData } from "@/lib/menu-board/types";
 
@@ -25,7 +25,7 @@ const dinner = findColumn(lunchDinnerSlide.columns, "Dinner");
 const combos = findColumn(comboSlide.columns, "Combo Meals");
 const familyMeals = findColumn(comboSlide.columns, "Family Meals");
 
-const topPicks: MenuBoardItem[] = [
+const bestSellers: MenuBoardItem[] = [
   { name: "Catfish Filet Lunch", price: "$15.98" },
   { name: "Fish & Shrimp Combo", price: "$25.88" },
   { name: "Salmon & Shrimp Combo", price: "$33.75" },
@@ -33,12 +33,12 @@ const topPicks: MenuBoardItem[] = [
   { name: "Po' Boy Sandwich", price: "$19.25" },
 ];
 
-function MenuRows({ items = [], limit = 7 }: { items?: MenuBoardItem[]; limit?: number }) {
+function BoardFiveRows({ items = [], limit = 7 }: { items?: MenuBoardItem[]; limit?: number }) {
   return (
-    <div className="board-four-rows">
+    <div className="board-five-rows">
       {items.slice(0, limit).map((item, index) => (
         <div
-          className="board-four-row"
+          className="board-five-row"
           key={`${item.name}-${item.price}`}
           style={{ "--row-delay": `${index * 45}ms` } as React.CSSProperties}
         >
@@ -50,47 +50,45 @@ function MenuRows({ items = [], limit = 7 }: { items?: MenuBoardItem[]; limit?: 
   );
 }
 
-function MenuPanel({
+function SalesPanel({
   title,
   kicker,
   items,
-  accent = "gold",
   limit,
 }: {
   title: string;
   kicker: string;
   items?: MenuBoardItem[];
-  accent?: MenuBoardOneColumn["accent"];
   limit?: number;
 }) {
   return (
-    <article className={`board-four-panel board-four-panel--${accent}`}>
-      <div className="board-four-panel-heading">
+    <article className="board-five-panel">
+      <div className="board-five-panel-heading">
         <p>{kicker}</p>
         <h2>{title}</h2>
       </div>
-      <MenuRows items={items} limit={limit} />
+      <BoardFiveRows items={items} limit={limit} />
     </article>
   );
 }
 
 export function MenuBoardFive() {
   return (
-    <div className="menu-board-four-root">
-      <main className="board-four-shell">
-        <div className="board-four-texture" aria-hidden="true" />
+    <div className="menu-board-five-root">
+      <main className="board-five-shell">
+        <div className="board-five-texture" aria-hidden="true" />
 
-        <header className="board-four-header">
+        <header className="board-five-header">
           <img
-            className="board-four-logo"
+            className="board-five-logo"
             src="/menu-board/logo-board-transparent-trimmed.png"
             alt="Plenty of Fish Seafood"
           />
 
-          <div className="board-four-brand">
+          <div className="board-five-brand">
             <p>Lancaster, California</p>
-            <h1>Best Sellers. Fast Pickup.</h1>
-            <div className="board-four-meta">
+            <h1>Order More. Save More.</h1>
+            <div className="board-five-meta">
               <span>
                 <MapPin />
                 {STORE_ADDRESS}
@@ -106,48 +104,65 @@ export function MenuBoardFive() {
             </div>
           </div>
 
-          <div className="board-four-vip">
-            <Smartphone />
-            <span>VIP Deals</span>
+          <aside className="board-five-top-cta">
+            <span>Skip app fees</span>
+            <strong>Order Direct</strong>
             <b>{VIP_URL}</b>
-          </div>
+          </aside>
         </header>
 
-        <section className="board-four-hero">
-          <div className="board-four-feature">
-            <p>Most Craveable</p>
-            <h2>Fish. Shrimp. Fries.</h2>
-            <strong>Order Direct</strong>
-            <span>Skip app markups. Add sides, drinks, and dessert before pickup.</span>
-          </div>
+        <section className="board-five-hero">
+          <article className="board-five-offer">
+            <p>Top Lunch Pick</p>
+            <h2>Catfish Filet Lunch</h2>
+            <strong>$15.98</strong>
+            <ul>
+              <li>Fresh fried, fast pickup</li>
+              <li>Great with fries, slaw, or yams</li>
+              <li>Add a drink and dessert before you go</li>
+            </ul>
+          </article>
 
-          <div className="board-four-photo-card">
-            <img src="/menu-board/shrimp-platter.png" alt="Shrimp basket" />
-            <div>
-              <b>Make it a meal</b>
-              <span>Add side + drink</span>
+          <article className="board-five-photo-card">
+            <img src="/menu-board/combo-platter.png" alt="Seafood combo plate" />
+            <div className="board-five-photo-badge">
+              <b>Free side</b>
+              <span>with any combo</span>
             </div>
-          </div>
+          </article>
 
-          <div className="board-four-family">
-            <p>Customer Picks</p>
-            <h2>Top Orders</h2>
-            <MenuRows items={topPicks} limit={5} />
-          </div>
+          <article className="board-five-vip-card">
+            <img src="/menu-board/mascot-float-trimmed.png" alt="" />
+            <p>Join VIP</p>
+            <h2>Text-ready deals</h2>
+            <span>Monday Madness • Taco Tuesday • Gumbo Weekend</span>
+            <b>{VIP_URL}</b>
+          </article>
         </section>
 
-        <section className="board-four-grid">
-          <MenuPanel title="Lunch Favorites" kicker="Fast Midday Plates" items={lunch?.items} limit={8} />
-          <MenuPanel title="Dinner Plates" kicker="Hot After Work" items={dinner?.items} accent="red" limit={8} />
-          <MenuPanel title="Seafood Combos" kicker="Big Flavor" items={combos?.items} accent="blue" limit={8} />
-          <MenuPanel title="Family Meals" kicker="Feeds The Crew" items={familyMeals?.items} limit={3} />
+        <section className="board-five-selling-strip">
+          <span>
+            <Star />
+            Customer Favorites
+          </span>
+          <span>Order direct and keep more cash in your pocket</span>
+          <span>Call ahead: {STORE_PHONE}</span>
         </section>
 
-        <footer className="board-four-footer">
-          <img src="/menu-board/mascot-float-trimmed.png" alt="" />
-          <span>Join VIP for specials.</span>
-          <b>{VIP_URL}</b>
-          <strong>Call {STORE_PHONE}</strong>
+        <section className="board-five-grid">
+          <SalesPanel title="Best Sellers" kicker="Start Here" items={bestSellers} limit={4} />
+          <SalesPanel title="Seafood Combos" kicker="Big Flavor" items={combos?.items} limit={4} />
+          <SalesPanel title="Lunch Favorites" kicker="Fast Midday Plates" items={lunch?.items} limit={4} />
+          <SalesPanel title="Family Meals" kicker="Feeds The Crew" items={familyMeals?.items} limit={3} />
+        </section>
+
+        <footer className="board-five-footer">
+          <span>
+            <Smartphone />
+            VIP specials: {VIP_URL}
+          </span>
+          <strong>Order direct. Skip app fees.</strong>
+          <b>Call {STORE_PHONE}</b>
         </footer>
       </main>
     </div>

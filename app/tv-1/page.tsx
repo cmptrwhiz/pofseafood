@@ -31,5 +31,9 @@ const tvOnePlaylist: DisplayPlaylist = {
 };
 
 export default function TvOnePage() {
-  return <DisplayPlayer playlist={tvOnePlaylist} />;
+  return (
+    <div className="tv-one-display">
+      <DisplayPlayer playlist={tvOnePlaylist} />
+    </div>
+  );
 }

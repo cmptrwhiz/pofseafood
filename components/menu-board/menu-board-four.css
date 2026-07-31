@@ -1,7 +1,7 @@
 .menu-board-four-root {
   min-height: 100vh;
   overflow: hidden;
-  background: #010e1d;
+  background: #07111f;
   color: #fff;
   font-family: "Avenir Next", Avenir, "Trebuchet MS", "Segoe UI", sans-serif;
 }
@@ -13,66 +13,69 @@
 .board-four-shell {
   position: relative;
   display: grid;
-  grid-template-rows: auto minmax(0, 0.74fr) minmax(0, 1fr) auto;
-  gap: clamp(8px, 0.72vw, 14px);
+  grid-template-rows: 0.58fr 1.26fr auto 1.6fr;
+  gap: clamp(8px, 0.62vw, 13px);
   width: 100vw;
   height: 100vh;
-  padding: clamp(10px, 0.78vw, 16px);
+  padding: clamp(10px, 0.74vw, 15px) clamp(16px, 1.15vw, 24px) clamp(34px, 2.9vw, 54px);
   overflow: hidden;
   background:
-    radial-gradient(circle at 12% 0%, rgba(35, 116, 184, 0.42), transparent 28%),
-    radial-gradient(circle at 86% 8%, rgba(238, 28, 37, 0.18), transparent 24%),
-    radial-gradient(circle at 54% 100%, rgba(0, 121, 199, 0.26), transparent 36%),
-    linear-gradient(145deg, #06345d, #031b35 78%);
+    radial-gradient(circle at 8% 4%, rgba(29, 117, 183, 0.48), transparent 29%),
+    radial-gradient(circle at 92% 8%, rgba(239, 42, 37, 0.16), transparent 24%),
+    radial-gradient(circle at 52% 98%, rgba(0, 224, 156, 0.12), transparent 34%),
+    linear-gradient(135deg, #073963 0%, #031b35 58%, #020d1c 100%);
 }
 
 .board-four-texture {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.48;
+  opacity: 0.3;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-size: 46px 46px;
 }
 
 .board-four-header,
 .board-four-hero,
-.board-four-grid,
-.board-four-footer {
+.board-four-ticker,
+.board-four-grid {
   position: relative;
   z-index: 1;
 }
 
 .board-four-header {
   display: grid;
-  grid-template-columns: clamp(76px, 6.4vw, 124px) minmax(0, 1fr) minmax(250px, 0.34fr);
-  gap: clamp(12px, 1vw, 22px);
+  grid-template-columns: clamp(70px, 4.9vw, 98px) minmax(0, 1fr) minmax(420px, 0.5fr);
+  gap: clamp(12px, 0.82vw, 18px);
   align-items: center;
-  padding: clamp(8px, 0.62vw, 14px);
-  border: 1px solid rgba(115, 190, 245, 0.38);
-  border-radius: 18px;
-  background: rgba(2, 24, 48, 0.76);
-  box-shadow: inset 0 0 26px rgba(68, 151, 213, 0.14);
+  padding: clamp(7px, 0.52vw, 11px) clamp(10px, 0.72vw, 15px);
+  border: 1px solid rgba(107, 186, 243, 0.42);
+  border-radius: 22px;
+  background:
+    linear-gradient(90deg, rgba(3, 31, 58, 0.94), rgba(2, 18, 37, 0.82)),
+    radial-gradient(circle at 0% 0%, rgba(0, 224, 156, 0.12), transparent 34%);
+  box-shadow: inset 0 0 34px rgba(75, 159, 221, 0.13);
 }
 
 .board-four-logo {
   width: 100%;
-  max-height: 7vw;
+  max-height: 4.9vw;
   object-fit: contain;
-  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.34));
+  filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.36));
 }
 
 .board-four-brand p,
 .board-four-feature p,
 .board-four-family p,
-.board-four-panel-heading p {
+.board-four-panel-heading p,
+.board-four-cta-card p {
   margin: 0;
   color: #ffb52d;
-  font-size: clamp(0.72rem, 0.86vw, 1.15rem);
+  font-size: clamp(0.72rem, 0.8vw, 1.04rem);
   font-weight: 950;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.17em;
   text-transform: uppercase;
 }
 
@@ -80,30 +83,53 @@
   margin: 0.12vw 0 0;
   color: #fff;
   font-family: "Arial Rounded MT Bold", "Trebuchet MS", "Avenir Next", sans-serif;
-  font-size: clamp(2.2rem, 4.15vw, 5.9rem);
+  font-size: clamp(2rem, 3.1vw, 4.2rem);
   font-weight: 950;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   line-height: 0.88;
   text-transform: uppercase;
+  text-shadow: 0.16em 0.13em 0 rgba(239, 42, 37, 0.2);
 }
 
 .board-four-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.42vw 0.9vw;
-  margin-top: 0.5vw;
-  color: rgba(225, 240, 255, 0.86);
-  font-size: clamp(0.62rem, 0.74vw, 0.98rem);
+  gap: 0.38vw 0.82vw;
+  margin-top: 0.32vw;
+  color: rgba(229, 242, 255, 0.9);
+  font-size: clamp(0.58rem, 0.66vw, 0.86rem);
   font-weight: 900;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .board-four-meta span,
-.board-four-vip {
+.board-four-vip,
+.board-four-cta-cluster {
   display: inline-flex;
   align-items: center;
-  gap: 0.42vw;
+  gap: 0.38vw;
+}
+
+.board-four-cta-cluster {
+  justify-self: end;
+  gap: 0.55vw;
+}
+
+.board-four-red-offer {
+  display: inline-flex;
+  align-items: center;
+  min-height: clamp(32px, 2.35vw, 48px);
+  padding: 0.46vw 0.78vw;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ef2a25, #ff8c35);
+  color: #fff;
+  font-size: clamp(0.64rem, 0.76vw, 0.98rem);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 14px 28px rgba(239, 42, 37, 0.22);
 }
 
 .board-four-meta svg,
@@ -114,17 +140,16 @@
 }
 
 .board-four-vip {
-  justify-self: end;
-  align-self: start;
-  padding: 0.55vw 0.86vw;
-  border: 1px solid rgba(255, 181, 45, 0.52);
+  padding: 0.52vw 0.78vw;
+  border: 1px solid rgba(255, 181, 45, 0.62);
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(238, 28, 37, 0.82), rgba(255, 181, 45, 0.18));
+  background: linear-gradient(90deg, rgba(239, 42, 37, 0.9), rgba(255, 181, 45, 0.22));
   color: #fff7d6;
-  font-size: clamp(0.62rem, 0.78vw, 1rem);
+  font-size: clamp(0.56rem, 0.64vw, 0.84rem);
   font-weight: 950;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  box-shadow: 0 18px 38px rgba(239, 42, 37, 0.15);
 }
 
 .board-four-vip b {
@@ -133,138 +158,187 @@
 
 .board-four-hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 0.72fr) minmax(0, 0.72fr);
-  gap: clamp(8px, 0.72vw, 14px);
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.16fr) minmax(0, 0.92fr);
+  gap: clamp(8px, 0.66vw, 13px);
   min-height: 0;
 }
 
 .board-four-feature,
-.board-four-photo-card,
+.board-four-video-card,
 .board-four-family,
-.board-four-panel,
-.board-four-footer {
-  border: 1px solid rgba(115, 190, 245, 0.38);
-  border-radius: 16px;
+.board-four-panel {
+  border: 1px solid rgba(112, 190, 247, 0.4);
+  border-radius: 20px;
   background:
-    radial-gradient(circle at 14% 0%, rgba(238, 28, 37, 0.13), transparent 34%),
-    linear-gradient(145deg, rgba(5, 50, 91, 0.96), rgba(2, 27, 54, 0.98));
-  box-shadow: inset 0 0 22px rgba(68, 151, 213, 0.12);
+    radial-gradient(circle at 4% 0%, rgba(239, 42, 37, 0.12), transparent 32%),
+    linear-gradient(145deg, rgba(6, 55, 95, 0.96), rgba(2, 24, 49, 0.98));
+  box-shadow:
+    inset 0 0 26px rgba(79, 165, 228, 0.13),
+    0 18px 46px rgba(0, 0, 0, 0.18);
 }
 
 .board-four-feature {
   display: grid;
   align-content: center;
-  gap: 0.45vw;
+  gap: 0.44vw;
   min-height: 0;
   overflow: hidden;
-  padding: 1vw 1.2vw;
-  border-left: 0.35vw solid #ef2a25;
+  padding: 1.15vw 1.25vw;
+  border-left: 0.34vw solid #ef2a25;
 }
 
 .board-four-feature h2,
 .board-four-family h2,
-.board-four-panel h2 {
+.board-four-panel h2,
+.board-four-cta-card h2 {
   margin: 0;
   color: #fff;
   font-family: "Arial Rounded MT Bold", "Trebuchet MS", "Avenir Next", sans-serif;
   font-weight: 950;
   letter-spacing: -0.04em;
-  line-height: 0.88;
+  line-height: 0.92;
   text-transform: uppercase;
 }
 
 .board-four-feature h2 {
-  font-size: clamp(2.4rem, 4vw, 5.7rem);
+  font-size: clamp(2rem, 2.85vw, 4rem);
 }
 
 .board-four-feature strong {
   color: #ffb52d;
-  font-size: clamp(1.9rem, 3vw, 4rem);
+  font-size: clamp(2rem, 2.7vw, 3.75rem);
   font-weight: 950;
   line-height: 1;
 }
 
 .board-four-feature span,
-.board-four-callout {
+.board-four-family > span,
+.board-four-callout,
+.board-four-cta-card span {
   color: rgba(226, 239, 252, 0.84);
-  font-size: clamp(0.8rem, 0.98vw, 1.28rem);
+  font-size: clamp(0.72rem, 0.84vw, 1.08rem);
   font-weight: 800;
-  line-height: 1.22;
+  line-height: 1.24;
 }
 
-.board-four-photo-card {
+.board-four-video-card {
   position: relative;
   min-height: 0;
   overflow: hidden;
 }
 
-.board-four-photo-card img {
+.board-four-video,
+.board-four-video-card::after {
+  position: absolute;
+  inset: 0;
+}
+
+.board-four-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.board-four-photo-card::after {
-  position: absolute;
-  inset: 0;
+.board-four-video-card::after {
   content: "";
-  background: linear-gradient(0deg, rgba(1, 14, 29, 0.7), transparent 52%);
+  background: linear-gradient(0deg, rgba(1, 14, 29, 0.74), transparent 54%);
 }
 
-.board-four-photo-card div {
+.board-four-video-caption {
   position: absolute;
   right: 0.8vw;
   bottom: 0.8vw;
+  left: 0.8vw;
   z-index: 1;
-  display: grid;
-  gap: 0.15vw;
-  padding: 0.55vw 0.75vw;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #ef2a25, #ffb52d);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1vw;
+  padding: 0.58vw 0.75vw;
+  border-radius: 999px;
+  background: rgba(2, 19, 39, 0.76);
   color: #fff;
   text-transform: uppercase;
 }
 
-.board-four-photo-card b {
-  font-size: clamp(0.9rem, 1.05vw, 1.35rem);
+.board-four-video-caption b {
+  color: #ffb52d;
+  font-size: clamp(0.86rem, 0.95vw, 1.18rem);
   font-weight: 950;
 }
 
-.board-four-photo-card span {
+.board-four-video-caption span {
   color: #fff7d6;
-  font-size: clamp(0.68rem, 0.78vw, 1rem);
-  font-weight: 900;
+  font-size: clamp(0.58rem, 0.64vw, 0.84rem);
+  font-weight: 950;
+  letter-spacing: 0.08em;
 }
 
 .board-four-family {
   display: grid;
-  grid-template-rows: auto auto 1fr;
-  gap: 0.5vw;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 0.52vw;
   min-height: 0;
   overflow: hidden;
-  padding: 0.8vw;
+  padding: 0.92vw;
+  border-right: 0.28vw solid rgba(255, 181, 45, 0.75);
 }
 
 .board-four-family h2,
-.board-four-panel h2 {
-  font-size: clamp(1.35rem, 1.95vw, 2.85rem);
+.board-four-panel h2,
+.board-four-cta-card h2 {
+  font-size: clamp(1.2rem, 1.55vw, 2.25rem);
+}
+
+.board-four-ticker {
+  min-height: clamp(36px, 3vw, 58px);
+  overflow: hidden;
+  border-block: 2px solid rgba(239, 42, 37, 0.78);
+  background: linear-gradient(90deg, rgba(239, 42, 37, 0.62), rgba(255, 181, 45, 0.12));
+}
+
+.board-four-ticker-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  align-items: center;
+  gap: 0.7vw;
+  padding: 0.36vw 0;
+  animation: boardFourTicker 72s linear infinite;
+  will-change: transform;
+}
+
+.board-four-ticker-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: clamp(24px, 2vw, 38px);
+  padding: 0.35vw 0.78vw;
+  border: 1px solid rgba(255, 181, 45, 0.55);
+  border-radius: 999px;
+  background: rgba(4, 31, 58, 0.74);
+  color: #fff7d6;
+  font-size: clamp(0.66rem, 0.75vw, 0.94rem);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .board-four-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(8px, 0.72vw, 14px);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(8px, 0.66vw, 13px);
   min-height: 0;
 }
 
 .board-four-panel {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 0.52vw;
+  gap: 0.42vw;
   min-height: 0;
   overflow: hidden;
-  padding: 0.75vw;
-  border-top: 0.28vw solid rgba(255, 181, 45, 0.68);
+  padding: 0.66vw;
+  border-top: 0.22vw solid rgba(255, 181, 45, 0.7);
 }
 
 .board-four-panel--red {
@@ -277,7 +351,7 @@
 
 .board-four-rows {
   display: grid;
-  gap: 0.34vw;
+  gap: 0.28vw;
   min-height: 0;
 }
 
@@ -285,21 +359,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.8vw;
-  min-height: clamp(28px, 2.05vw, 42px);
-  padding: 0.34vw 0.46vw;
+  gap: 0.7vw;
+  min-height: clamp(25px, 1.82vw, 36px);
+  padding: 0.28vw 0.46vw;
   animation: boardFourRowIn 520ms ease both;
   animation-delay: var(--row-delay);
-  border-bottom: 1px dotted rgba(171, 211, 239, 0.24);
+  border-bottom: 1px dotted rgba(171, 211, 239, 0.26);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .board-four-row span,
 .board-four-row b {
-  font-size: clamp(0.78rem, 0.95vw, 1.24rem);
+  font-size: clamp(0.68rem, 0.78vw, 1.02rem);
   font-weight: 950;
-  line-height: 1;
+  line-height: 1.05;
 }
 
 .board-four-row b {
@@ -307,49 +381,17 @@
   white-space: nowrap;
 }
 
-.board-four-specials .board-four-row span,
-.board-four-specials .board-four-row b,
 .board-four-family .board-four-row span,
 .board-four-family .board-four-row b {
-  font-size: clamp(0.86rem, 1.05vw, 1.45rem);
+  font-size: clamp(0.72rem, 0.86vw, 1.12rem);
 }
 
 .board-four-callout {
   margin: 0;
-  padding: 0.5vw;
+  padding: 0.42vw;
   border: 1px solid rgba(255, 181, 45, 0.28);
   border-radius: 10px;
   background: rgba(239, 42, 37, 0.12);
-}
-
-.board-four-footer {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 1.2vw;
-  align-items: center;
-  padding: 0.42vw 0.8vw;
-  color: #fff;
-  font-size: clamp(0.74rem, 0.88vw, 1.1rem);
-  font-weight: 950;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.board-four-footer img {
-  width: min(4.8vw, 90px);
-  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.34));
-}
-
-.board-four-footer b,
-.board-four-footer strong {
-  padding: 0.36vw 0.75vw;
-  border: 1px solid rgba(255, 181, 45, 0.46);
-  border-radius: 999px;
-  color: #ffb52d;
-}
-
-.board-four-footer strong {
-  color: #fff7d6;
 }
 
 @keyframes boardFourRowIn {
@@ -361,5 +403,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes boardFourTicker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
   }
 }

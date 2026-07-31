@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "@/components/menu-board/menu-board-four.css";
+import "@/components/menu-board/menu-board-five.css";
 
 export const metadata: Metadata = {
   title: "Menu Board 5 | Plenty of Fish Seafood",

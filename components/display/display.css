@@ -254,6 +254,28 @@
   background: linear-gradient(90deg, var(--display-red), #ff4a2f, var(--display-gold));
 }
 
+.tv-one-display .display-status {
+  display: none;
+}
+
+.tv-one-display .display-progress {
+  z-index: 40;
+  height: 5px;
+}
+
+.tv-one-display .menu-board-one-root .board-frame {
+  max-height: 96dvh;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+.tv-one-display .menu-board-one-root .board-footer {
+  display: none;
+}
+
+.tv-one-display .menu-board-one-root .slides-panel {
+  padding-bottom: 16px;
+}
+
 @keyframes displayProgress {
   from {
     transform: scaleX(0);
