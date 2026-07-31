@@ -47,6 +47,12 @@ const defaultPlaylist = playlistJson as DisplayPlaylist;
 const DISPLAY_VIP_URL = "orderplentyoffishseafood.com/vip";
 const DISPLAY_PHONE = "661.471.9620";
 
+type DisplayPlayerProps = {
+  playlist?: DisplayPlaylist;
+  rotateByUrl?: boolean;
+  routePath?: string;
+};
+
 function getSafeDurationMs(item: PlaylistItem) {
   return Math.max(10, item.durationSeconds) * 1000;
 }
@@ -133,9 +139,28 @@ function DisplaySlide({ item }: { item: PlaylistItem }) {
   return null;
 }
 
-export function DisplayPlayer({ playlist = defaultPlaylist }: { playlist?: DisplayPlaylist }) {
+function getInitialSlideIndex(itemsLength: number) {
+  if (typeof window === "undefined" || itemsLength <= 0) {
+    return 0;
+  }
+
+  const slideParam = new URLSearchParams(window.location.search).get("slide");
+  const slideIndex = Number.parseInt(slideParam ?? "0", 10);
+
+  if (Number.isNaN(slideIndex)) {
+    return 0;
+  }
+
+  return ((slideIndex % itemsLength) + itemsLength) % itemsLength;
+}
+
+export function DisplayPlayer({
+  playlist = defaultPlaylist,
+  rotateByUrl = false,
+  routePath,
+}: DisplayPlayerProps) {
   const items = playlist.items;
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(() => getInitialSlideIndex(items.length));
   const activeItem = items[activeIndex] ?? items[0];
   const progressDuration = useMemo(
     () => `${getSafeDurationMs(activeItem)}ms`,
@@ -147,12 +172,20 @@ export function DisplayPlayer({ playlist = defaultPlaylist }: { playlist?: Displ
       return;
     }
 
+    const durationMs = getSafeDurationMs(activeItem);
     const timer = window.setTimeout(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % items.length);
-    }, getSafeDurationMs(activeItem));
+      const nextIndex = (activeIndex + 1) % items.length;
+
+      setActiveIndex(nextIndex);
+
+      if (rotateByUrl && routePath) {
+        const nextUrl = `${routePath}?slide=${nextIndex}&ts=${Date.now()}`;
+        window.location.replace(nextUrl);
+      }
+    }, durationMs);
 
     return () => window.clearTimeout(timer);
-  }, [activeItem, items.length]);
+  }, [activeIndex, activeItem, items.length, rotateByUrl, routePath]);
 
   useEffect(() => {
     const reloadTimer = window.setTimeout(() => {

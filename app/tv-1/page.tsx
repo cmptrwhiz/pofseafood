@@ -33,7 +33,7 @@ const tvOnePlaylist: DisplayPlaylist = {
 export default function TvOnePage() {
   return (
     <div className="tv-one-display">
-      <DisplayPlayer playlist={tvOnePlaylist} />
+      <DisplayPlayer playlist={tvOnePlaylist} rotateByUrl routePath="/tv-1" />
     </div>
   );
 }
