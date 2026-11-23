@@ -1,0 +1,2 @@
+# Design Governance
+WCAG 2.2 AA; 44px minimum counter/kitchen targets, larger primary actions; visible focus, keyboard, labels, contrast, reduced motion. No hover-only actions. Loading/empty/error/success/offline states. Role-gated confirmation for financial/destructive actions; prevent double submits. Reuse components and Tailwind tokens. Existing token values/type scale/component inventory UNKNOWN pending source inspection; do not invent or replace brand tokens. Browser and accessibility checks NOT TESTED.
