@@ -1,0 +1,3 @@
+# Decision Log
+2026-11-23 — Adopt AGENTS.md v2.0 and independent POF OS direction per technical lead authorization. Clover/Menufy remain operational transitional integrations. Prior Clover audit retained; Clover-centric architecture superseded, defects not closed. Pilot scope pickup/counter/KDS, sandbox payments, local cash/printing recovery; advanced AI and delivery deferred. No production authorization. New dependencies, financial schema changes and tax configuration require Tier 3 approval.
+Branch preview policy UNKNOWN; verify before additional application-code pushes.
